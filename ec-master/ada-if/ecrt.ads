@@ -1,0 +1,26 @@
+pragma Ada_2005;
+pragma Style_Checks (Off);
+
+with Interfaces.C; --use Interfaces.C;
+
+package Ecrt is
+
+   ------------------
+   --  data types  --
+   ------------------
+
+   type ec_request_state_t is
+   -- This is used as return type for ecrt_sdo_request_state() and
+   -- ecrt_voe_handler_state().
+     (EC_REQUEST_UNUSED,
+   -- Not requested.
+      EC_REQUEST_BUSY,
+   -- Request is being processed.
+      EC_REQUEST_SUCCESS,
+   -- Request was processed successfully.
+      EC_REQUEST_ERROR
+   -- Request processing failed.
+   );
+   pragma Convention (C, ec_request_state_t);
+
+end Ecrt;

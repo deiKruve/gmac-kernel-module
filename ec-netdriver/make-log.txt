@@ -1,0 +1,28 @@
+# Build and install the module
+make -C /usr/src/linux M=/usr/src/modules/ec_e1000e
+make[1]: Entering directory '/usr/src/linux-headers-3.16.0-4-amd64'
+make[1]: Entering directory `/usr/src/linux-headers-3.16.0-4-amd64'
+  CC [M]  /usr/src/modules/ec_e1000e/80003es2lan-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/82571-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/ethtool-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/ich8lan-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/mac-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/manage-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/netdev-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/nvm-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/param-3.16-ethercat.o
+  CC [M]  /usr/src/modules/ec_e1000e/phy-3.16-ethercat.o
+  LD [M]  /usr/src/modules/ec_e1000e/ec_e1000e.o
+  Building modules, stage 2.
+  MODPOST 1 modules
+WARNING: "ecdev_open" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "ecdev_withdraw" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "e1000e_ptp_remove" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "ecdev_offer" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "e1000e_ptp_init" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "ecdev_receive" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "ecdev_set_link" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "ecdev_get_link" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+WARNING: "ecdev_close" [/usr/src/modules/ec_e1000e/ec_e1000e.ko] undefined!
+  CC      /usr/src/modules/ec_e1000e/ec_e1000e.mod.o
+  LD [M]  /usr/src/modules/ec_e1000e/ec_e1000e.ko

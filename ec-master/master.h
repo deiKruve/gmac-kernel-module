@@ -1,0 +1,361 @@
+/******************************************************************************
+ *Compile command:
+ * gcc  -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/4.8/include
+       -I /usr/src/linux-headers-3.16.0-4-common/arch/x86/include
+       -I /usr/src/linux-headers-3.16.0-4-amd64/arch/x86/include/generated
+       -I /usr/src/linux-headers-3.16.0-4-common/include
+       -I include
+        -c master.h
+ *  $Id$
+ *
+ *  Copyright (C) 2006-2012  Florian Pose, Ingenieurgemeinschaft IgH
+ *
+ *  This file is part of the IgH EtherCAT Master.
+ *
+ *  The IgH EtherCAT Master is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License version 2, as
+ *  published by the Free Software Foundation.
+ *
+ *  The IgH EtherCAT Master is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+ *  Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with the IgH EtherCAT Master; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  ---
+ *
+ *  The license mentioned above concerns the source code only. Using the
+ *  EtherCAT technology and brand is only permitted in compliance with the
+ *  industrial property and similar rights of Beckhoff Automation GmbH.
+ *
+ *****************************************************************************/
+
+/**
+   \file
+   EtherCAT master structure.
+*/
+
+/*****************************************************************************/
+
+#ifndef __EC_MASTER_H__
+#define __EC_MASTER_H__
+
+#ifndef __KERNEL__
+#define __KERNEL__
+#endif
+
+#include <linux/version.h>
+
+#include "device.h"
+#include "cdev.h"
+
+
+//EXTERN "C"{
+
+/*****************************************************************************/
+
+/** Convenience macro for printing master-specific information to syslog.
+ *
+ * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * where INDEX is the master index.
+ *
+ * \param master EtherCAT master
+ * \param fmt format string (like in printf())
+ * \param args arguments (optional)
+ */
+#define EC_MASTER_INFO(master, fmt, args...) \
+    printk(KERN_INFO "EtherCAT %u: " fmt, master->index, ##args)
+
+/** Convenience macro for printing master-specific errors to syslog.
+ *
+ * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * where INDEX is the master index.
+ *
+ * \param master EtherCAT master
+ * \param fmt format string (like in printf())
+ * \param args arguments (optional)
+ */
+#define EC_MASTER_ERR(master, fmt, args...) \
+    printk(KERN_ERR "EtherCAT ERROR %u: " fmt, master->index, ##args)
+
+/** Convenience macro for printing master-specific warnings to syslog.
+ *
+ * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * where INDEX is the master index.
+ *
+ * \param master EtherCAT master
+ * \param fmt format string (like in printf())
+ * \param args arguments (optional)
+ */
+#define EC_MASTER_WARN(master, fmt, args...) \
+    printk(KERN_WARNING "EtherCAT WARNING %u: " fmt, master->index, ##args)
+
+/** Convenience macro for printing master-specific debug messages to syslog.
+ *
+ * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * where INDEX is the master index.
+ *
+ * \param master EtherCAT master
+ * \param level Debug level. Master's debug level must be >= \a level for
+ * output.
+ * \param fmt format string (like in printf())
+ * \param args arguments (optional)
+ */
+#define EC_MASTER_DBG(master, level, fmt, args...) \
+    do { \
+        if (master->debug_level >= level) { \
+            printk(KERN_DEBUG "EtherCAT DEBUG %u: " fmt, \
+                    master->index, ##args); \
+        } \
+    } while (0)
+
+
+/** Size of the external datagram ring.
+ *
+ * The external datagram ring is used for slave FSMs.
+ */
+#define EC_EXT_RING_SIZE 32
+
+/*****************************************************************************/
+
+/** EtherCAT master phase.
+ */
+typedef enum {
+    EC_ORPHANED, /**< Orphaned phase. The master has no Ethernet device
+                   attached. */
+    EC_IDLE, /**< Idle phase. An Ethernet device is attached, but the master
+               is not in use, yet. */
+    EC_OPERATION /**< Operation phase. The master was requested by a realtime
+                   application. */
+} ec_master_phase_t;
+
+/*****************************************************************************/
+
+ /** Cyclic statistics.
+ */
+typedef struct {
+    unsigned int timeouts; /**< datagram timeouts */
+    unsigned int corrupted; /**< corrupted frames */
+    unsigned int unmatched; /**< unmatched datagrams (received, but not
+                               queued any longer) */
+    unsigned long output_jiffies; /**< time of last output */
+} ec_stats_t;
+
+/*****************************************************************************/
+
+/** Device statistics.
+ */
+typedef struct {
+    u64 tx_count; /**< Number of frames sent. */
+    u64 last_tx_count; /**< Number of frames sent of last statistics cycle. */
+    u64 rx_count; /**< Number of frames received. */
+    u64 last_rx_count; /**< Number of frames received of last statistics
+                         cycle. */
+    u64 tx_bytes; /**< Number of bytes sent. */
+    u64 last_tx_bytes; /**< Number of bytes sent of last statistics cycle. */
+    u64 rx_bytes; /**< Number of bytes received. */
+    u64 last_rx_bytes; /**< Number of bytes received of last statistics cycle.
+                        */
+    u64 last_loss; /**< Tx/Rx difference of last statistics cycle. */
+    s32 tx_frame_rates[EC_RATE_COUNT]; /**< Transmit rates in frames/s for
+                                         different statistics cycle periods.
+                                        */
+    s32 rx_frame_rates[EC_RATE_COUNT]; /**< Receive rates in frames/s for
+                                         different statistics cycle periods.
+                                        */
+    s32 tx_byte_rates[EC_RATE_COUNT]; /**< Transmit rates in byte/s for
+                                        different statistics cycle periods. */
+    s32 rx_byte_rates[EC_RATE_COUNT]; /**< Receive rates in byte/s for
+                                        different statistics cycle periods. */
+    s32 loss_rates[EC_RATE_COUNT]; /**< Frame loss rates for different
+                                     statistics cycle periods. */
+    unsigned long jiffies; /**< Jiffies of last statistic cycle. */
+} ec_device_stats_t;
+
+
+/*****************************************************************************/
+
+#if EC_MAX_NUM_DEVICES < 1
+#error Invalid number of devices
+#endif
+
+/*****************************************************************************/
+
+/** EtherCAT master.
+ *
+ * Manages slaves, domains and IO.
+ */
+struct ec_master {
+    unsigned int index; /**< Index. */
+    unsigned int reserved; /**< \a True, if the master is in use. */
+
+    ec_cdev_t cdev; /**< Master character device. */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 26)
+    struct device *class_device; /**< Master class device. */
+#else
+    struct class_device *class_device; /**< Master class device. */
+#endif
+
+#ifdef EC_RTDM
+    ec_rtdm_dev_t rtdm_dev; /**< RTDM device. */
+#endif
+
+    struct semaphore master_sem; /**< Master semaphore. */
+
+    ec_device_t devices[EC_MAX_NUM_DEVICES]; /**< EtherCAT devices. */
+    const uint8_t *macs[EC_MAX_NUM_DEVICES]; /**< Device MAC addresses. */
+#if EC_MAX_NUM_DEVICES > 1
+    unsigned int num_devices; /**< Number of devices. Access this always via
+                                ec_master_num_devices(), because it may be
+                                optimized! */
+#endif
+    struct semaphore device_sem; /**< Device semaphore. */
+    ec_device_stats_t device_stats; /**< Device statistics. */
+
+  //jdk//ec_fsm_master_t fsm; /**< Master state machine. */
+  //jdk//ec_datagram_t fsm_datagram; /**< Datagram used for state machines. */
+    ec_master_phase_t phase; /**< Master phase. */
+    unsigned int active; /**< Master has been activated. */
+    unsigned int config_changed; /**< The configuration changed. */
+    unsigned int injection_seq_fsm; /**< Datagram injection sequence number
+                                      for the FSM side. */
+    unsigned int injection_seq_rt; /**< Datagram injection sequence number
+                                     for the realtime side. */
+
+    ec_slave_t *slaves; /**< Array of slaves on the bus. */
+    unsigned int slave_count; /**< Number of slaves on the bus. */
+
+    /* Configuration applied by the application. */
+    struct list_head configs; /**< List of slave configurations. */
+    struct list_head domains; /**< List of domains. */
+
+    u64 app_time; /**< Time of the last ecrt_master_sync() call. */
+    u64 app_start_time; /**< Application start time. */
+    u8 has_app_time; /**< Application time is valid. */
+  //jdk//ec_datagram_t ref_sync_datagram;
+  /**< Datagram used for synchronizing the
+                                       reference clock to the master clock. */
+  //jdk//ec_datagram_t sync_datagram;
+  /**< Datagram used for DC drift
+                                   compensation. */
+  //jdk//ec_datagram_t sync_mon_datagram;
+  /**< Datagram used for DC synchronisation
+                                       monitoring. */
+    ec_slave_config_t *dc_ref_config; /**< Application-selected DC reference
+                                        clock slave config. */
+    ec_slave_t *dc_ref_clock; /**< DC reference clock slave. */
+
+    unsigned int scan_busy; /**< Current scan state. */
+    unsigned int allow_scan; /**< \a True, if slave scanning is allowed. */
+    struct semaphore scan_sem; /**< Semaphore protecting the \a scan_busy
+                                 variable and the \a allow_scan flag. */
+    wait_queue_head_t scan_queue; /**< Queue for processes that wait for
+                                    slave scanning. */
+
+    unsigned int config_busy; /**< State of slave configuration. */
+    struct semaphore config_sem; /**< Semaphore protecting the \a config_busy
+                                   variable and the allow_config flag. */
+    wait_queue_head_t config_queue; /**< Queue for processes that wait for
+                                      slave configuration. */
+
+    struct list_head datagram_queue; /**< Datagram queue. */
+    uint8_t datagram_index; /**< Current datagram index. */
+
+    struct list_head ext_datagram_queue; /**< Queue for non-application
+                                           datagrams. */
+    struct semaphore ext_queue_sem; /**< Semaphore protecting the \a
+                                      ext_datagram_queue. */
+
+  //jdk//ec_datagram_t ext_datagram_ring[EC_EXT_RING_SIZE];
+  /**< External datagram
+                                                         ring. */
+    unsigned int ext_ring_idx_rt; /**< Index in external datagram ring for RT
+                                    side. */
+    unsigned int ext_ring_idx_fsm; /**< Index in external datagram ring for
+                                     FSM side. */
+    unsigned int send_interval; /**< Interval between two calls to
+                                  ecrt_master_send(). */
+    size_t max_queue_size; /**< Maximum size of datagram queue */
+
+    ec_slave_t *fsm_slave; /**< Slave that is queried next for FSM exec. */
+    struct list_head fsm_exec_list; /**< Slave FSM execution list. */
+    unsigned int fsm_exec_count; /**< Number of entries in execution list. */
+
+    unsigned int debug_level; /**< Master debug level. */
+    ec_stats_t stats; /**< Cyclic statistics. */
+
+    struct task_struct *thread; /**< Master thread. */
+
+#ifdef EC_EOE
+    struct task_struct *eoe_thread; /**< EoE thread. */
+    struct list_head eoe_handlers; /**< Ethernet over EtherCAT handlers. */
+#endif
+
+    struct semaphore io_sem; /**< Semaphore used in \a IDLE phase. */
+
+    void (*send_cb)(void *); /**< Current send datagrams callback. */
+    void (*receive_cb)(void *); /**< Current receive datagrams callback. */
+    void *cb_data; /**< Current callback data. */
+    void (*app_send_cb)(void *); /**< Application's send datagrams
+                                          callback. */
+    void (*app_receive_cb)(void *); /**< Application's receive datagrams
+                                      callback. */
+    void *app_cb_data; /**< Application callback data. */
+
+    struct list_head sii_requests; /**< SII write requests. */
+    struct list_head emerg_reg_requests; /**< Emergency register access
+                                           requests. */
+
+    wait_queue_head_t request_queue; /**< Wait queue for external requests
+                                       from user space. */
+};
+
+/*****************************************************************************/
+
+// static funtions
+void ec_master_init_static(void);
+
+// master creation/deletion
+int ec_master_init(ec_master_t *, unsigned int, const uint8_t *,
+        const uint8_t *, dev_t, struct class *, unsigned int);
+void ec_master_clear(ec_master_t *);
+
+/** Number of Ethernet devices.
+ */
+#if EC_MAX_NUM_DEVICES > 1
+#define ec_master_num_devices(MASTER) ((MASTER)->num_devices)
+#else
+#define ec_master_num_devices(MASTER) 1
+#endif
+
+
+// phase transitions
+int ec_master_enter_idle_phase(ec_master_t *);
+void ec_master_leave_idle_phase(ec_master_t *);
+int ec_master_enter_operation_phase(ec_master_t *);
+void ec_master_leave_operation_phase(ec_master_t *);
+
+// datagram IO
+void ec_master_receive_datagrams(ec_master_t *, ec_device_t *,
+        const uint8_t *, size_t);
+//jdk//void ec_master_queue_datagram(ec_master_t *, ec_datagram_t *);
+//jdk//void ec_master_queue_datagram_ext(ec_master_t *, ec_datagram_t *);
+
+// misc.
+void ec_master_set_send_interval(ec_master_t *, unsigned int);
+
+int ec_master_debug_level(ec_master_t *, unsigned int);
+
+ extern const unsigned int rate_intervals[EC_RATE_COUNT]; // see master.c
+
+/*****************************************************************************/
+
+#endif
+
+
+ 
+
+//}

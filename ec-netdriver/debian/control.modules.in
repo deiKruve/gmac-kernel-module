@@ -1,0 +1,20 @@
+Source: ec_e1000e
+Section: kernel
+Priority: extra
+Maintainer: Jan de Kruyf <jan.de.kruyf@hotmail.com>
+Uploaders: 
+ Jan de Kruyf <jan.de.kruyf@hotmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.4
+Homepage: to be decided
+Source code originates from : http://etherlab.org/en/ethercat
+
+Package: ec_e1000e-modules-_KVERS_
+Architecture: all
+Depends: linux-image-_KVERS_
+Provides: ec_e1000e-modules
+Suggests: 
+Description: ethercat e1000e kernel module. e1000e specially adapted for
+ethercat type frames.
+ .
+ This package contains the compiled Linux kernel modules for _KVERS_

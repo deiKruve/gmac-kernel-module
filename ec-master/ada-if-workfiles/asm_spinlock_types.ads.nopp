@@ -1,0 +1,39 @@
+pragma Ada_2005;
+pragma Style_Checks (Off);
+
+with Interfaces.C; use Interfaces.C;
+
+with Linux_Types;
+
+package asm_spinlock_types is
+   package L  renames Linux_Types;
+   
+   subtype uu_ticket_t is L.u16;
+   
+   subtype uu_ticketpair_t is L.u32;
+   
+   type anon_17;
+   type uu_raw_tickets is record
+      head : aliased uu_ticket_t;
+      tail : aliased uu_ticket_t;
+   end record;
+   pragma Convention (C_Pass_By_Copy, uu_raw_tickets);
+   type anon_17 (discr : unsigned := 0) is record
+      case discr is
+         when 0 =>
+            head_tail : aliased uu_ticketpair_t;
+         when others =>
+            tickets : aliased uu_raw_tickets;
+      end case;
+   end record;
+   pragma Convention (C_Pass_By_Copy, anon_17);
+   pragma Unchecked_Union (anon_17);
+   
+   type arch_spinlock is record
+      parent : aliased anon_17;
+   end record;
+   pragma Convention (C_Pass_By_Copy, arch_spinlock);
+
+   subtype arch_spinlock_t is arch_spinlock;
+   
+end Asm_Spinlock_Types;

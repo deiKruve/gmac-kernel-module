@@ -1,0 +1,55 @@
+pragma Ada_2005;
+pragma Style_Checks (Off);
+
+with Interfaces.C; use Interfaces.C;
+with Linux_Types;
+
+package linux_time is
+   package L  renames Linux_Types;
+   
+   
+   type timespec is record
+      Tv_Sec  : aliased L.uu_kernel_time_t;
+      -- seconds 
+      tv_nsec : aliased long;
+      -- nanoseconds 
+   end record;
+   pragma Convention (C_Pass_By_Copy, timespec);
+   
+   
+   type timeval is record
+      tv_sec : aliased L.uu_kernel_time_t;
+      -- seconds 
+      tv_usec : aliased L.uu_kernel_suseconds_t;
+      -- microseconds 
+   end record;
+   pragma Convention (C_Pass_By_Copy, timeval);
+   
+   
+   type timezone is record
+      tz_minuteswest : aliased int;
+      -- minutes west of Greenwich
+      tz_dsttime     : aliased int;
+      -- type of dst correction
+   end record;
+   pragma Convention (C_Pass_By_Copy, timezone);
+   
+   
+   type itimerspec is record
+      it_interval : aliased timespec;
+      -- timer period
+      it_value    : aliased timespec;
+      -- timer expiration  
+   end record;
+   pragma Convention (C_Pass_By_Copy, itimerspec);
+   
+   
+   type itimerval is record
+      it_interval : aliased timeval;
+      -- timer interval
+      it_value    : aliased timeval;
+      -- current value
+   end record;
+   pragma Convention (C_Pass_By_Copy, itimerval);
+   
+end Linux_Time;

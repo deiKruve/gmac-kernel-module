@@ -1,0 +1,31 @@
+Source: ec_e1000e
+Section: kernel
+Priority: extra
+Maintainer: Jan de Kruyf <jan.de.kruyf@hotmail.com>
+Uploaders: 
+ Jan de Kruyf <jan.de.kruyf@hotmail.com>
+Build-Depends: debhelper (>= 9), dkms
+Standards-Version: 3.9.5
+Homepage: to be decided
+Source code originates from : http://etherlab.org/en/ethercat
+
+Package: ec_e1000e-dkms
+Architecture: linux-any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, dkms
+Suggests: 
+Description: ethercat e1000e kernel module.
+ .
+ This package uses DKMS to automatically build the bbswitch kernel module.
+
+Package: ec_e1000e-source
+Architecture: linux-any
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Recommends: module-assistant
+Suggests: 
+Description: ethercat e1000e kernel module. e1000e specially adapted for
+ethercat type frames.
+ .
+ This package contains source code only, and is intended to be used with
+ module-assistant to build the ec_e1000e kernel module.

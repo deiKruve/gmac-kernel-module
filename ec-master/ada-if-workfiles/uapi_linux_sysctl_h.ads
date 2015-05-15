@@ -1,0 +1,248 @@
+pragma Ada_2005;
+pragma Style_Checks (Off);
+
+with Interfaces.C; use Interfaces.C;
+with System;
+with linux_types_h;
+
+package uapi_linux_sysctl_h is
+
+   --  unsupported macro: CTL_MAXNAME 10
+  -- * sysctl.h: General linux system control interface
+  -- *
+  -- * Begun 24 March 1995, Stephen Tweedie
+  -- *
+  -- ****************************************************************
+  -- ****************************************************************
+  -- **
+  -- **  WARNING:
+  -- **  The values in this file are exported to user space via 
+  -- **  the sysctl() binary interface.  Do *NOT* change the
+  -- **  numbering of any existing values here, and do not change
+  -- **  any numbers within any one set of values.  If you have to
+  -- **  redefine an existing interface, use a new number for it.
+  -- **  The kernel will then return -ENOTDIR to any application using
+  -- **  the old binary interface.
+  -- **
+  -- ****************************************************************
+  -- ****************************************************************
+  --  
+
+   type uu_sysctl_args_uu_unused_array is array (0 .. 3) of aliased unsigned_long;
+   type uu_sysctl_args is record
+      name : access int;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:37
+      nlen : aliased int;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:38
+      oldval : System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:39
+      oldlenp : access linux_types_h.size_t;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:40
+      newval : System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:41
+      newlen : aliased linux_types_h.size_t;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:42
+      uu_unused : aliased uu_sysctl_args_uu_unused_array;  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:43
+   end record;
+   pragma Convention (C_Pass_By_Copy, uu_sysctl_args);  -- /usr/src/linux-headers-3.16.0-4-common/include/uapi/linux/sysctl.h:36
+
+  -- Define sysctl names first  
+  -- Top-level names:  
+  -- General kernel info and control  
+  -- VM management  
+  -- Networking  
+  -- removal breaks strace(1) compilation  
+  -- Filesystems  
+  -- Debugging  
+  -- Devices  
+  -- Busses  
+  -- Binary emulation  
+  -- CPU stuff (speed scaling, etc)  
+  -- arlan wireless driver  
+  -- s390 debug  
+  -- sunrpc debug  
+  -- frv power management  
+  -- frv specific sysctls  
+  -- CTL_BUS names:  
+  -- ISA  
+  -- /proc/sys/fs/inotify/  
+  -- max instances per user  
+  -- max watches per user  
+  -- max queued events per instance  
+  -- CTL_KERN names:  
+  -- string: system version  
+  -- string: system release  
+  -- int: system revision  
+  -- string: compile time info  
+  -- struct: maximum rights mask  
+  -- table: profiling information  
+  -- string: hostname  
+  -- string: domainname  
+  -- int: panic timeout  
+  -- real root device to mount after initrd  
+  -- reboot command on Sparc  
+  -- int: allow ctl-alt-del to reboot  
+  -- struct: control printk logging parameters  
+  -- Name translation  
+  -- turn htab reclaimation on/off on PPC  
+  -- turn idle page zeroing on/off on PPC  
+  -- use nap mode for power saving  
+  -- string: modprobe path  
+  -- int: sg driver reserved buffer size  
+  -- BSD process accounting parameters  
+  -- l2cr register on PPC  
+  -- Number of rt sigs queued  
+  -- Max queuable  
+  -- long: Maximum shared memory segment  
+  -- int: Maximum size of a messege  
+  -- int: Maximum message queue size  
+  -- int: Maximum system message pool size  
+  -- int: Sysreq enable  
+  -- int: Maximum nr of threads in the system  
+  -- Random driver  
+  -- int: Maximum size of shared memory  
+  -- int: msg queue identifiers  
+  -- struct: sysv semaphore limits  
+  -- int: Sparc Stop-A enable  
+  -- int: shm array identifiers  
+  -- int: overflow UID  
+  -- int: overflow GID  
+  -- string: path to shm fs  
+  -- string: path to uevent helper (deprecated)  
+  -- int: unimplemented ieee instructions  
+  -- int: dumps of user faults  
+  -- int: use core or core.%pid  
+  -- int: various kernel tainted flags  
+  -- int: PID of the process to notify on CAD  
+  -- int: PID # limit  
+  -- string: pattern for core-file names  
+  -- int: whether we will panic on an oops  
+  -- int: hppa soft-power enable  
+  -- int: hppa unaligned-trap enable  
+  -- int: tune printk ratelimiting  
+  -- int: tune printk ratelimiting  
+  -- dir: pty driver  
+  -- int: NGROUPS_MAX  
+  -- int: serial console power-off halt  
+  -- int: hz timer on or off  
+  -- int: unknown nmi panic flag  
+  -- int: boot loader type  
+  -- int: randomize virtual address space  
+  -- int: behaviour of dumps for setuid core  
+  -- int: number of spinlock retries  
+  -- int: flags for setting up video after ACPI sleep  
+  -- int: ia64 unaligned userland trap enable  
+  -- int: print compat layer  messages  
+  -- int: rtmutex's maximum lock depth  
+  -- int: enable/disable nmi watchdog  
+  -- int: whether we will panic on an unrecovered  
+  -- CTL_VM names:  
+  -- was: struct: Set vm swapping control  
+  -- was; int: Linear or sqrt() swapout for hogs  
+  -- was: struct: Set free page thresholds  
+  -- Spare  
+  -- Turn off the virtual memory safety limit  
+  -- was: struct: Set buffer memory thresholds  
+  -- was: struct: Set cache memory thresholds  
+  -- was: struct: Control kswapd behaviour  
+  -- was: struct: Set page table cache parameters  
+  -- int: set number of pages to swap together  
+  -- dirty_background_ratio  
+  -- dirty_ratio  
+  -- dirty_writeback_centisecs  
+  -- dirty_expire_centisecs  
+  -- nr_pdflush_threads  
+  -- percent of RAM to allow overcommit in  
+  -- struct: Control pagebuf parameters  
+  -- int: Number of available Huge Pages  
+  -- Tendency to steal mapped memory  
+  -- reservation ratio for lower memory zones  
+  -- Minimum free kilobytes to maintain  
+  -- int: Maximum number of mmaps/address-space  
+  -- vm laptop mode  
+  -- block dump mode  
+  -- permitted hugetlb group  
+  -- dcache/icache reclaim pressure  
+  -- legacy/compatibility virtual address space layout  
+  -- default time for token time out  
+  -- int: nuke lots of pagecache  
+  -- int: fraction of pages in each percpu_pagelist  
+  -- reclaim local zone memory before going off node  
+  -- Set min percent of unmapped pages  
+  -- panic at out-of-memory  
+  -- map VDSO into new processes?  
+  -- Percent pages ignored by zone reclaim  
+  -- CTL_NET names:  
+  -- /proc/sys/kernel/random  
+  -- /proc/sys/kernel/pty  
+  -- /proc/sys/bus/isa  
+  -- /proc/sys/net/core  
+  -- was	NET_CORE_DESTROY_DELAY  
+  -- /proc/sys/net/ethernet  
+  -- /proc/sys/net/802  
+  -- /proc/sys/net/unix  
+  -- /proc/sys/net/netfilter  
+  -- /proc/sys/net/ipv4  
+  -- v2.0 compatibile variables  
+  -- obsolete since 2.6.25  
+  -- obsolete since 2.6.25  
+  -- obsolete since 2.6.38  
+  -- And device ifindices ...  
+  -- /proc/sys/net/ipv4/netfilter  
+  -- /proc/sys/net/ipv6  
+  -- /proc/sys/net/ipv6/icmp  
+  -- /proc/sys/net/<protocol>/neigh/<dev>  
+  -- /proc/sys/net/dccp  
+  -- /proc/sys/net/ipx  
+  -- /proc/sys/net/llc  
+  -- /proc/sys/net/llc/llc2  
+  -- /proc/sys/net/llc/station  
+  -- /proc/sys/net/llc/llc2/timeout  
+  -- /proc/sys/net/appletalk  
+  -- /proc/sys/net/netrom  
+  -- /proc/sys/net/ax25  
+  -- /proc/sys/net/rose  
+  -- /proc/sys/net/x25  
+  -- /proc/sys/net/token-ring  
+  -- /proc/sys/net/decnet/  
+  -- /proc/sys/net/decnet/conf/<dev>  
+  -- ... and ifindex of devices  
+  -- /proc/sys/net/decnet/conf/<dev>/  
+  -- /proc/sys/net/sctp  
+  -- /proc/sys/net/bridge  
+  -- proc/sys/net/irda  
+  -- CTL_FS names:  
+  -- int:current number of allocated inodes  
+  -- int:maximum number of inodes that can be allocated  
+  -- int:current number of allocated dquots  
+  -- int:maximum number of dquots that can be allocated  
+  -- int:current number of allocated filedescriptors  
+  -- int:maximum number of filedescriptors that can be allocated  
+  -- int:current number of allocated super_blocks  
+  -- int:maximum number of super_blocks that can be allocated  
+  -- int: overflow UID  
+  -- int: overflow GID  
+  -- int: leases enabled  
+  -- int: directory notification enabled  
+  -- int: maximum time to wait for a lease break  
+  -- disc quota usage statistics and control  
+  -- struct: control xfs parameters  
+  -- current system-wide number of aio requests  
+  -- system-wide maximum number of aio requests  
+  -- inotify submenu  
+  -- ocfs2  
+  -- /proc/sys/fs/quota/  
+  -- CTL_DEBUG names:  
+  -- CTL_DEV names:  
+  -- /proc/sys/dev/cdrom  
+  -- /proc/sys/dev/parport  
+  -- /proc/sys/dev/raid  
+  -- /proc/sys/dev/parport/default  
+  -- /proc/sys/dev/parport/parport n  
+  -- /proc/sys/dev/parport/parport n/devices/  
+  -- /proc/sys/dev/parport/parport n/devices/device n  
+  -- /proc/sys/dev/mac_hid  
+  -- /proc/sys/dev/scsi  
+  -- /proc/sys/dev/ipmi  
+  -- /proc/sys/abi  
+  -- default handler for coff binaries  
+  -- default handler for ELF binaries  
+  -- default handler for procs using lcall7  
+  -- default handler for an libc.so ELF interp  
+  -- tracing flags  
+  -- fake target utsname information  
+end uapi_linux_sysctl_h;

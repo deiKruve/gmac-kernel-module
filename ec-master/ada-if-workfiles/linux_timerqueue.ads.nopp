@@ -1,0 +1,22 @@
+pragma Ada_2005;
+pragma Style_Checks (Off);
+
+with Interfaces.C; use Interfaces.C;
+with linux_rbtree;
+with linux_ktime;
+
+package Linux_Timerqueue is
+   
+   type timerqueue_node is record
+      node : aliased linux_rbtree.rb_node;
+      expires : linux_ktime.ktime_t;
+   end record;
+   pragma Convention (C_Pass_By_Copy, timerqueue_node);
+
+   type timerqueue_head is record
+      head : aliased linux_rbtree.rb_root;
+      next : access timerqueue_node;
+   end record;
+   pragma Convention (C_Pass_By_Copy, timerqueue_head);
+   
+end Linux_Timerqueue;

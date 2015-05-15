@@ -1,0 +1,258 @@
+pragma Ada_2005;
+pragma Style_Checks (Off);
+
+with Interfaces.C; use Interfaces.C;
+
+package uapi_linux_snmp_h is
+
+  -- * Definitions for MIBs
+  -- *
+  -- * Author: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+  --  
+
+  -- ipstats mib definitions  
+  -- * RFC 1213:  MIB-II
+  -- * RFC 2011 (updates 1213):  SNMPv2-MIB-IP
+  -- * RFC 2863:  Interfaces Group MIB
+  -- * RFC 2465:  IPv6 MIB: General Group
+  -- * draft-ietf-ipv6-rfc2011-update-10.txt: MIB for IP: IP Statistics Tables
+  --  
+
+  -- frequently written fields in fast path, kept in same cache line  
+  -- InReceives  
+  -- InOctets  
+  -- InDelivers  
+  -- OutForwDatagrams  
+  -- OutRequests  
+  -- OutOctets  
+  -- other fields  
+  -- InHdrErrors  
+  -- InTooBigErrors  
+  -- InNoRoutes  
+  -- InAddrErrors  
+  -- InUnknownProtos  
+  -- InTruncatedPkts  
+  -- InDiscards  
+  -- OutDiscards  
+  -- OutNoRoutes  
+  -- ReasmTimeout  
+  -- ReasmReqds  
+  -- ReasmOKs  
+  -- ReasmFails  
+  -- FragOKs  
+  -- FragFails  
+  -- FragCreates  
+  -- InMcastPkts  
+  -- OutMcastPkts  
+  -- InBcastPkts  
+  -- OutBcastPkts  
+  -- InMcastOctets  
+  -- OutMcastOctets  
+  -- InBcastOctets  
+  -- OutBcastOctets  
+  -- InCsumErrors  
+  -- InNoECTPkts  
+  -- InECT1Pkts  
+  -- InECT0Pkts  
+  -- InCEPkts  
+  -- icmp mib definitions  
+  -- * RFC 1213:  MIB-II ICMP Group
+  -- * RFC 2011 (updates 1213):  SNMPv2 MIB for IP: ICMP group
+  --  
+
+  -- InMsgs  
+  -- InErrors  
+  -- InDestUnreachs  
+  -- InTimeExcds  
+  -- InParmProbs  
+  -- InSrcQuenchs  
+  -- InRedirects  
+  -- InEchos  
+  -- InEchoReps  
+  -- InTimestamps  
+  -- InTimestampReps  
+  -- InAddrMasks  
+  -- InAddrMaskReps  
+  -- OutMsgs  
+  -- OutErrors  
+  -- OutDestUnreachs  
+  -- OutTimeExcds  
+  -- OutParmProbs  
+  -- OutSrcQuenchs  
+  -- OutRedirects  
+  -- OutEchos  
+  -- OutEchoReps  
+  -- OutTimestamps  
+  -- OutTimestampReps  
+  -- OutAddrMasks  
+  -- OutAddrMaskReps  
+  -- InCsumErrors  
+  -- icmp6 mib definitions  
+  -- * RFC 2466:  ICMPv6-MIB
+  --  
+
+  -- InMsgs  
+  -- InErrors  
+  -- OutMsgs  
+  -- OutErrors  
+  -- InCsumErrors  
+  -- tcp mib definitions  
+  -- * RFC 1213:  MIB-II TCP group
+  -- * RFC 2012 (updates 1213):  SNMPv2-MIB-TCP
+  --  
+
+  -- RtoAlgorithm  
+  -- RtoMin  
+  -- RtoMax  
+  -- MaxConn  
+  -- ActiveOpens  
+  -- PassiveOpens  
+  -- AttemptFails  
+  -- EstabResets  
+  -- CurrEstab  
+  -- InSegs  
+  -- OutSegs  
+  -- RetransSegs  
+  -- InErrs  
+  -- OutRsts  
+  -- InCsumErrors  
+  -- udp mib definitions  
+  -- * RFC 1213:  MIB-II UDP group
+  -- * RFC 2013 (updates 1213):  SNMPv2-MIB-UDP
+  --  
+
+  -- InDatagrams  
+  -- NoPorts  
+  -- InErrors  
+  -- OutDatagrams  
+  -- RcvbufErrors  
+  -- SndbufErrors  
+  -- InCsumErrors  
+  -- linux mib definitions  
+  -- SyncookiesSent  
+  -- SyncookiesRecv  
+  -- SyncookiesFailed  
+  -- EmbryonicRsts  
+  -- PruneCalled  
+  -- RcvPruned  
+  -- OfoPruned  
+  -- OutOfWindowIcmps  
+  -- LockDroppedIcmps  
+  -- ArpFilter  
+  -- TimeWaited  
+  -- TimeWaitRecycled  
+  -- TimeWaitKilled  
+  -- PAWSPassiveRejected  
+  -- PAWSActiveRejected  
+  -- PAWSEstabRejected  
+  -- DelayedACKs  
+  -- DelayedACKLocked  
+  -- DelayedACKLost  
+  -- ListenOverflows  
+  -- ListenDrops  
+  -- TCPPrequeued  
+  -- TCPDirectCopyFromBacklog  
+  -- TCPDirectCopyFromPrequeue  
+  -- TCPPrequeueDropped  
+  -- TCPHPHits  
+  -- TCPHPHitsToUser  
+  -- TCPPureAcks  
+  -- TCPHPAcks  
+  -- TCPRenoRecovery  
+  -- TCPSackRecovery  
+  -- TCPSACKReneging  
+  -- TCPFACKReorder  
+  -- TCPSACKReorder  
+  -- TCPRenoReorder  
+  -- TCPTSReorder  
+  -- TCPFullUndo  
+  -- TCPPartialUndo  
+  -- TCPDSACKUndo  
+  -- TCPLossUndo  
+  -- TCPLostRetransmit  
+  -- TCPRenoFailures  
+  -- TCPSackFailures  
+  -- TCPLossFailures  
+  -- TCPFastRetrans  
+  -- TCPForwardRetrans  
+  -- TCPSlowStartRetrans  
+  -- TCPTimeouts  
+  -- TCPLossProbes  
+  -- TCPLossProbeRecovery  
+  -- TCPRenoRecoveryFail  
+  -- TCPSackRecoveryFail  
+  -- TCPSchedulerFailed  
+  -- TCPRcvCollapsed  
+  -- TCPDSACKOldSent  
+  -- TCPDSACKOfoSent  
+  -- TCPDSACKRecv  
+  -- TCPDSACKOfoRecv  
+  -- TCPAbortOnData  
+  -- TCPAbortOnClose  
+  -- TCPAbortOnMemory  
+  -- TCPAbortOnTimeout  
+  -- TCPAbortOnLinger  
+  -- TCPAbortFailed  
+  -- TCPMemoryPressures  
+  -- TCPSACKDiscard  
+  -- TCPSACKIgnoredOld  
+  -- TCPSACKIgnoredNoUndo  
+  -- TCPSpuriousRTOs  
+  -- TCPMD5NotFound  
+  -- TCPMD5Unexpected  
+  -- RFC 5082  
+  -- IP Reverse Path Filter (rp_filter)  
+  -- TCPTimeWaitOverflow  
+  -- TCPReqQFullDoCookies  
+  -- TCPReqQFullDrop  
+  -- TCPRetransFail  
+  -- TCPRcvCoalesce  
+  -- TCPOFOQueue  
+  -- TCPOFODrop  
+  -- TCPOFOMerge  
+  -- TCPChallengeACK  
+  -- TCPSYNChallenge  
+  -- TCPFastOpenActive  
+  -- TCPFastOpenActiveFail  
+  -- TCPFastOpenPassive 
+  -- TCPFastOpenPassiveFail  
+  -- TCPFastOpenListenOverflow  
+  -- TCPFastOpenCookieReqd  
+  -- TCPSpuriousRtxHostQueues  
+  -- BusyPollRxPackets  
+  -- TCPAutoCorking  
+  -- TCPFromZeroWindowAdv  
+  -- TCPToZeroWindowAdv  
+  -- TCPWantZeroWindowAdv  
+  -- TCPSynRetrans  
+  -- TCPOrigDataSent  
+  -- linux Xfrm mib definitions  
+  -- XfrmInError  
+  -- XfrmInBufferError  
+  -- XfrmInHdrError  
+  -- XfrmInNoStates  
+  -- XfrmInStateProtoError  
+  -- XfrmInStateModeError  
+  -- XfrmInStateSeqError  
+  -- XfrmInStateExpired  
+  -- XfrmInStateMismatch  
+  -- XfrmInStateInvalid  
+  -- XfrmInTmplMismatch  
+  -- XfrmInNoPols  
+  -- XfrmInPolBlock  
+  -- XfrmInPolError  
+  -- XfrmOutError  
+  -- XfrmOutBundleGenError  
+  -- XfrmOutBundleCheckError  
+  -- XfrmOutNoStates  
+  -- XfrmOutStateProtoError  
+  -- XfrmOutStateModeError  
+  -- XfrmOutStateSeqError  
+  -- XfrmOutStateExpired  
+  -- XfrmOutPolBlock  
+  -- XfrmOutPolDead  
+  -- XfrmOutPolError  
+  -- XfrmFwdHdrError 
+  -- XfrmOutStateInvalid  
+  -- XfrmAcquireError  
+end uapi_linux_snmp_h;
