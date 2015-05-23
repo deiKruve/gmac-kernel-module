@@ -81,7 +81,7 @@ package uapi_asm_sigcontext_h is
    type u_fpstate_xmm_space_array is array (0 .. 63) of aliased uapi_asm_generic_int_ll64_h.uu_u32;
    type u_fpstate_reserved2_array is array (0 .. 11) of aliased uapi_asm_generic_int_ll64_h.uu_u32;
    type u_fpstate_reserved3_array is array (0 .. 11) of aliased uapi_asm_generic_int_ll64_h.uu_u32;
-   type anon_22 (discr : unsigned := 0) is record
+   type anon_24 (discr : unsigned := 0) is record
       case discr is
          when 0 =>
             reserved3 : aliased u_fpstate_reserved3_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:150
@@ -89,8 +89,8 @@ package uapi_asm_sigcontext_h is
             sw_reserved : aliased u_fpx_sw_bytes;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:151
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_22);
-   pragma Unchecked_Union (anon_22);
+   pragma Convention (C_Pass_By_Copy, anon_24);
+   pragma Unchecked_Union (anon_24);
    type u_fpstate is record
       cwd : aliased uapi_asm_generic_int_ll64_h.uu_u16;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:137
       swd : aliased uapi_asm_generic_int_ll64_h.uu_u16;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:138
@@ -103,7 +103,7 @@ package uapi_asm_sigcontext_h is
       st_space : aliased u_fpstate_st_space_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:146
       xmm_space : aliased u_fpstate_xmm_space_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:147
       reserved2 : aliased u_fpstate_reserved2_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:148
-      field_12 : aliased anon_22;
+      field_12 : aliased anon_24;
    end record;
    pragma Convention (C_Pass_By_Copy, u_fpstate);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/uapi/asm/sigcontext.h:136
 

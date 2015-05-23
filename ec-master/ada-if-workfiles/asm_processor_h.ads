@@ -5,12 +5,9 @@ with Interfaces.C; use Interfaces.C;
 with System;
 with asm_generic_int_ll64_h;
 with uapi_asm_generic_int_ll64_h;
-with linux_seq_file_h;
 limited with asm_pgtable_types_h;
 limited with asm_math_emu_h;
 with Interfaces.C.Strings;
-limited with linux_sched_h;
-limited with linux_slab_def_h;
 with asm_desc_defs_h;
 with Interfaces.C.Extensions;
 limited with asm_ptrace_h;
@@ -182,7 +179,9 @@ package asm_processor_h is
    cpu_info : aliased cpuinfo_x86;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:155
    pragma Import (C, cpu_info, "cpu_info");
 
-   cpuinfo_op : aliased linux_seq_file_h.seq_operations;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:162
+   --  skipped empty struct seq_operations
+
+   cpuinfo_op : aliased seq_operations;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:162
    pragma Import (C, cpuinfo_op, "cpuinfo_op");
 
    procedure cpu_detect (c : access cpuinfo_x86);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:166
@@ -315,30 +314,30 @@ package asm_processor_h is
    type i387_fxsave_struct_st_space_array is array (0 .. 31) of aliased asm_generic_int_ll64_h.u32;
    type i387_fxsave_struct_xmm_space_array is array (0 .. 63) of aliased asm_generic_int_ll64_h.u32;
    type i387_fxsave_struct_padding_array is array (0 .. 11) of aliased asm_generic_int_ll64_h.u32;
-   type anon_27;
-   type anon_28 is record
+   type anon_29;
+   type anon_30 is record
       rip : aliased asm_generic_int_ll64_h.u64;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:320
       rdp : aliased asm_generic_int_ll64_h.u64;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:321
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_28);
-   type anon_29 is record
+   pragma Convention (C_Pass_By_Copy, anon_30);
+   type anon_31 is record
       fip : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:324
       fcs : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:325
       foo : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:326
       fos : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:327
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_29);
-   type anon_27 (discr : unsigned := 0) is record
+   pragma Convention (C_Pass_By_Copy, anon_31);
+   type anon_29 (discr : unsigned := 0) is record
       case discr is
-            parent : aliased anon_28;
-            field_2 : aliased anon_29;
+            parent : aliased anon_30;
+            field_2 : aliased anon_31;
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_27);
-   pragma Unchecked_Union (anon_27);
+   pragma Convention (C_Pass_By_Copy, anon_29);
+   pragma Unchecked_Union (anon_29);
    type i387_fxsave_struct_padding1_array is array (0 .. 11) of aliased asm_generic_int_ll64_h.u32;
    type i387_fxsave_struct_sw_reserved_array is array (0 .. 11) of aliased asm_generic_int_ll64_h.u32;
-   type anon_30 (discr : unsigned := 0) is record
+   type anon_32 (discr : unsigned := 0) is record
       case discr is
          when 0 =>
             padding1 : aliased i387_fxsave_struct_padding1_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:342
@@ -346,20 +345,20 @@ package asm_processor_h is
             sw_reserved : aliased i387_fxsave_struct_sw_reserved_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:343
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_30);
-   pragma Unchecked_Union (anon_30);
+   pragma Convention (C_Pass_By_Copy, anon_32);
+   pragma Unchecked_Union (anon_32);
    type i387_fxsave_struct is record
       cwd : aliased asm_generic_int_ll64_h.u16;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:314
       swd : aliased asm_generic_int_ll64_h.u16;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:315
       twd : aliased asm_generic_int_ll64_h.u16;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:316
       fop : aliased asm_generic_int_ll64_h.u16;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:317
-      field_5 : aliased anon_27;
+      field_5 : aliased anon_29;
       mxcsr : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:330
       mxcsr_mask : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:331
       st_space : aliased i387_fxsave_struct_st_space_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:334
       xmm_space : aliased i387_fxsave_struct_xmm_space_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:337
       padding : aliased i387_fxsave_struct_padding_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:339
-      field_11 : aliased anon_30;
+      field_11 : aliased anon_32;
    end record;
    pragma Convention (C_Pass_By_Copy, i387_fxsave_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:313
 
@@ -472,16 +471,16 @@ package asm_processor_h is
    subtype irq_stack_union_irq_stack_array is Interfaces.C.char_array (0 .. 16383);
    type irq_stack_union;
    subtype irq_stack_union_gs_base_array is Interfaces.C.char_array (0 .. 39);
-   type anon_31 is record
+   type anon_33 is record
       gs_base : aliased irq_stack_union_gs_base_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:427
       stack_canary : aliased unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:428
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_31);
+   pragma Convention (C_Pass_By_Copy, anon_33);
    type irq_stack_union (discr : unsigned := 0) is record
       case discr is
          when 0 =>
             irq_stack : aliased irq_stack_union_irq_stack_array;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:420
-            field_2 : aliased anon_31;
+            field_2 : aliased anon_33;
       end case;
    end record;
    pragma Convention (C_Pass_By_Copy, irq_stack_union);
@@ -517,10 +516,12 @@ package asm_processor_h is
    xstate_size : aliased unsigned;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:463
    pragma Import (C, xstate_size, "xstate_size");
 
-   procedure free_thread_xstate (arg1 : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:464
+   procedure free_thread_xstate (arg1 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:464
    pragma Import (CPP, free_thread_xstate, "_Z18free_thread_xstateP11task_struct");
 
-   task_xstate_cachep : access linux_slab_def_h.kmem_cache;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:465
+   --  skipped empty struct kmem_cache
+
+   task_xstate_cachep : System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:465
    pragma Import (C, task_xstate_cachep, "task_xstate_cachep");
 
    --  skipped empty struct perf_event
@@ -606,13 +607,13 @@ package asm_processor_h is
    end record;
    pragma Convention (C_Pass_By_Copy, mm_segment_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:617
 
-   --  skipped anonymous struct anon_32
+   --  skipped anonymous struct anon_34
 
   -- Free all resources held by a thread.  
-   procedure release_thread (arg1 : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:621
+   procedure release_thread (arg1 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:621
    pragma Import (CPP, release_thread, "_Z14release_threadP11task_struct");
 
-   function get_wchan (p : access linux_sched_h.task_struct) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:623
+   function get_wchan (p : System.Address) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:623
    pragma Import (CPP, get_wchan, "_Z9get_wchanP11task_struct");
 
   -- * Generic CPUID function
@@ -717,13 +718,16 @@ package asm_processor_h is
    procedure load_percpu_segment (arg1 : int);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:749
    pragma Import (CPP, load_percpu_segment, "_Z19load_percpu_segmenti");
 
+   procedure cpu_init;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:750
+   pragma Import (CPP, cpu_init, "_Z8cpu_initv");
+
    function get_debugctlmsr return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:752
    pragma Import (CPP, get_debugctlmsr, "_ZL15get_debugctlmsrv");
 
    procedure update_debugctlmsr (debugctlmsr : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:765
    pragma Import (CPP, update_debugctlmsr, "_ZL18update_debugctlmsrm");
 
-   procedure set_task_blockstep (c_task : access linux_sched_h.task_struct; on : Extensions.bool);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:774
+   procedure set_task_blockstep (c_task : System.Address; on : Extensions.bool);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:774
    pragma Import (CPP, set_task_blockstep, "_Z18set_task_blockstepP11task_structb");
 
   -- * from system description table in BIOS. Mostly for MCA use, but
@@ -799,7 +803,7 @@ package asm_processor_h is
   -- * What is this good for? it will be always the scheduler or ret_from_fork.
   --  
 
-   function KSTK_ESP (c_task : access linux_sched_h.task_struct) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:928
+   function KSTK_ESP (c_task : System.Address) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/processor.h:928
    pragma Import (CPP, KSTK_ESP, "_Z8KSTK_ESPP11task_struct");
 
   -- * User space RSP while inside the SYSCALL fast path

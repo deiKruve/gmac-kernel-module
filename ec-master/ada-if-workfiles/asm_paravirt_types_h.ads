@@ -8,8 +8,6 @@ with Interfaces.C.Strings;
 with Interfaces.C.Extensions;
 limited with asm_desc_defs_h;
 limited with asm_processor_h;
-limited with linux_sched_h;
-limited with linux_mm_types_h;
 limited with linux_cpumask_h;
 with asm_pgtable_types_h;
 with asm_pgtable_64_types_h;
@@ -80,6 +78,10 @@ package asm_paravirt_types_h is
    --  unsupported macro: paravirt_nop ((void *)_paravirt_nop)
   -- Bitmask of what can be clobbered: usually at least eax.  
   -- CLBR_ANY should match all regs platform has. For i386, that's just it  
+   --  skipped empty struct mm_struct
+
+   --  skipped empty struct task_struct
+
   -- * Wrapper type for pointers to code which uses the non-standard
   -- * calling convention.  See PV_CALL_SAVE_REGS_THUNK below.
   --  
@@ -190,8 +192,8 @@ package asm_paravirt_types_h is
       usergs_sysret32 : access procedure;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:185
       iret : access procedure;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:189
       swapgs : access procedure;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:191
-      start_context_switch : access procedure (arg1 : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:193
-      end_context_switch : access procedure (arg1 : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:194
+      start_context_switch : access procedure (arg1 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:193
+      end_context_switch : access procedure (arg1 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:194
    end record;
    pragma Convention (C_Pass_By_Copy, pv_cpu_ops);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:103
 
@@ -255,59 +257,59 @@ package asm_paravirt_types_h is
       write_cr2 : access procedure (arg1 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:230
       read_cr3 : access function return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:232
       write_cr3 : access procedure (arg1 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:233
-      activate_mm : access procedure (arg1 : access linux_mm_types_h.mm_struct; arg2 : access linux_mm_types_h.mm_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:240
-      dup_mmap : access procedure (arg1 : access linux_mm_types_h.mm_struct; arg2 : access linux_mm_types_h.mm_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:242
-      exit_mmap : access procedure (arg1 : access linux_mm_types_h.mm_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:243
+      activate_mm : access procedure (arg1 : System.Address; arg2 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:240
+      dup_mmap : access procedure (arg1 : System.Address; arg2 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:242
+      exit_mmap : access procedure (arg1 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:243
       flush_tlb_user : access procedure;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:247
       flush_tlb_kernel : access procedure;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:248
       flush_tlb_single : access procedure (arg1 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:249
       flush_tlb_others : access procedure
            (arg1 : access constant linux_cpumask_h.cpumask;
-            arg2 : access linux_mm_types_h.mm_struct;
+            arg2 : System.Address;
             arg3 : unsigned_long;
             arg4 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:253
-      pgd_alloc : access function (arg1 : access linux_mm_types_h.mm_struct) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:256
-      pgd_free : access procedure (arg1 : access linux_mm_types_h.mm_struct; arg2 : access asm_pgtable_types_h.pgd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:257
-      alloc_pte : access procedure (arg1 : access linux_mm_types_h.mm_struct; arg2 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:263
-      alloc_pmd : access procedure (arg1 : access linux_mm_types_h.mm_struct; arg2 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:264
-      alloc_pud : access procedure (arg1 : access linux_mm_types_h.mm_struct; arg2 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:265
+      pgd_alloc : access function (arg1 : System.Address) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:256
+      pgd_free : access procedure (arg1 : System.Address; arg2 : access asm_pgtable_types_h.pgd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:257
+      alloc_pte : access procedure (arg1 : System.Address; arg2 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:263
+      alloc_pmd : access procedure (arg1 : System.Address; arg2 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:264
+      alloc_pud : access procedure (arg1 : System.Address; arg2 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:265
       release_pte : access procedure (arg1 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:266
       release_pmd : access procedure (arg1 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:267
       release_pud : access procedure (arg1 : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:268
       set_pte : access procedure (arg1 : access asm_pgtable_64_types_h.pte_t; arg2 : asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:271
       set_pte_at : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_64_types_h.pte_t;
             arg4 : asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:273
       set_pmd : access procedure (arg1 : access asm_pgtable_types_h.pmd_t; arg2 : asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:274
       set_pmd_at : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_types_h.pmd_t;
             arg4 : asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:276
       pte_update : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:278
       pte_update_defer : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:280
       pmd_update : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:282
       pmd_update_defer : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:284
       ptep_modify_prot_start : access function
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_64_types_h.pte_t) return asm_pgtable_64_types_h.pte_t;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:287
       ptep_modify_prot_commit : access procedure
-           (arg1 : access linux_mm_types_h.mm_struct;
+           (arg1 : System.Address;
             arg2 : unsigned_long;
             arg3 : access asm_pgtable_64_types_h.pte_t;
             arg4 : asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:289
@@ -533,10 +535,10 @@ package asm_paravirt_types_h is
    function paravirt_get_lazy_mode return paravirt_lazy_mode;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:681
    pragma Import (CPP, paravirt_get_lazy_mode, "_Z22paravirt_get_lazy_modev");
 
-   procedure paravirt_start_context_switch (prev : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:682
+   procedure paravirt_start_context_switch (prev : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:682
    pragma Import (CPP, paravirt_start_context_switch, "_Z29paravirt_start_context_switchP11task_struct");
 
-   procedure paravirt_end_context_switch (next : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:683
+   procedure paravirt_end_context_switch (next : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:683
    pragma Import (CPP, paravirt_end_context_switch, "_Z27paravirt_end_context_switchP11task_struct");
 
    procedure paravirt_enter_lazy_mmu;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt_types.h:685

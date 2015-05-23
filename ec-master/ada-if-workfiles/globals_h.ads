@@ -5,6 +5,7 @@ with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Extensions;
 with linux_types_h;
 with Interfaces.C.Strings;
+with System;
 with ecrt_h;
 
 package globals_h is
@@ -157,7 +158,7 @@ package globals_h is
    pragma Convention (C_Pass_By_Copy, ec_sii_coe_details_t);
    pragma Pack (ec_sii_coe_details_t);  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:164
 
-   --  skipped anonymous struct anon_394
+   --  skipped anonymous struct anon_41
 
   --*< SDO information service available.  
   --*< PDO mapping configurable.  
@@ -175,7 +176,7 @@ package globals_h is
    pragma Convention (C_Pass_By_Copy, ec_sii_general_flags_t);
    pragma Pack (ec_sii_general_flags_t);  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:171
 
-   --  skipped anonymous struct anon_395
+   --  skipped anonymous struct anon_42
 
   --*< Slave does not support LRW.  
   --* EtherCAT slave distributed clocks range.
@@ -200,7 +201,7 @@ package globals_h is
    end record;
    pragma Convention (C_Pass_By_Copy, ec_sync_signal_t);  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:186
 
-   --  skipped anonymous struct anon_397
+   --  skipped anonymous struct anon_44
 
   --*< Shift time [ns].  
   --* Access states for SDO entries.
@@ -292,7 +293,7 @@ package globals_h is
    function ec_mac_is_zero (arg1 : access linux_types_h.uint8_t) return int;  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:267
    pragma Import (CPP, ec_mac_is_zero, "_Z14ec_mac_is_zeroPKh");
 
-   function ecrt_request_master_err (arg1 : unsigned) return access ecrt_h.ec_master_t;  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:269
+   function ecrt_request_master_err (arg1 : unsigned) return System.Address;  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:269
    pragma Import (CPP, ecrt_request_master_err, "_Z23ecrt_request_master_errj");
 
   --*************************************************************************** 
@@ -309,7 +310,7 @@ package globals_h is
    end record;
    pragma Convention (C_Pass_By_Copy, ec_code_msg_t);  -- /home/jan/MMS/programs-KERNEL/ec-master/globals.h:281
 
-   --  skipped anonymous struct anon_400
+   --  skipped anonymous struct anon_47
 
   --*< Message belonging to \a code.  
   --*************************************************************************** 

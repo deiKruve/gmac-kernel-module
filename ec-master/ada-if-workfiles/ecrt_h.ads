@@ -2,7 +2,6 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
-with master_h;
 
 package ecrt_h is
 
@@ -67,8 +66,10 @@ package ecrt_h is
   -- * Data types
   -- **************************************************************************** 
 
+   --  skipped empty struct ec_master
+
   --*< \see ec_master  
-   subtype ec_master_t is master_h.ec_master;
+   --  skipped empty struct ec_master_t
 
    --  skipped empty struct ec_slave_config
 

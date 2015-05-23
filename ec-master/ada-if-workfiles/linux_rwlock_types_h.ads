@@ -21,6 +21,6 @@ package linux_rwlock_types_h is
    end record;
    pragma Convention (C_Pass_By_Copy, rwlock_t);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/rwlock_types.h:23
 
-   --  skipped anonymous struct anon_20
+   --  skipped anonymous struct anon_36
 
 end linux_rwlock_types_h;

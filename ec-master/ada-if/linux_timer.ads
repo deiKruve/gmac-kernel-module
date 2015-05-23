@@ -4,7 +4,7 @@ pragma Style_Checks (Off);
 with Interfaces.C; use Interfaces.C;
 with Linux_Types;
 with System;
-with Interfaces.C.Strings;
+-- with Interfaces.C.Strings;
 
 package linux_timer is
    package L renames Linux_Types;

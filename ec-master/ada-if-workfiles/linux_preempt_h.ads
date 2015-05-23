@@ -3,7 +3,6 @@ pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
 with System;
-limited with linux_sched_h;
 with linux_types_h;
 
 package linux_preempt_h is
@@ -65,7 +64,7 @@ package linux_preempt_h is
 
    type preempt_ops is record
       sched_in : access procedure (arg1 : System.Address; arg2 : int);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/preempt.h:166
-      sched_out : access procedure (arg1 : System.Address; arg2 : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/preempt.h:168
+      sched_out : access procedure (arg1 : System.Address; arg2 : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/preempt.h:168
    end record;
    pragma Convention (C_Pass_By_Copy, preempt_ops);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/preempt.h:165
 

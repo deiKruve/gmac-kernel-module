@@ -2,10 +2,9 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
-limited with linux_sched_h;
+with System;
 with Interfaces.C.Extensions;
 with Interfaces.C.Strings;
-with System;
 
 package asm_ptrace_h is
 
@@ -59,11 +58,11 @@ package asm_ptrace_h is
    function profile_pc (regs : access pt_regs) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/ptrace.h:70
    pragma Import (CPP, profile_pc, "_Z10profile_pcP7pt_regs");
 
-   function convert_ip_to_linear (child : access linux_sched_h.task_struct; regs : access pt_regs) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/ptrace.h:74
+   function convert_ip_to_linear (child : System.Address; regs : access pt_regs) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/ptrace.h:74
    pragma Import (CPP, convert_ip_to_linear, "_Z20convert_ip_to_linearP11task_structP7pt_regs");
 
    procedure send_sigtrap
-     (tsk : access linux_sched_h.task_struct;
+     (tsk : System.Address;
       regs : access pt_regs;
       error_code : int;
       si_code : int);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/ptrace.h:75
@@ -169,13 +168,13 @@ package asm_ptrace_h is
    --  skipped empty struct user_desc
 
    function do_get_thread_area
-     (p : access linux_sched_h.task_struct;
+     (p : System.Address;
       idx : int;
       info : System.Address) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/ptrace.h:251
    pragma Import (CPP, do_get_thread_area, "_Z18do_get_thread_areaP11task_structiP9user_desc");
 
    function do_set_thread_area
-     (p : access linux_sched_h.task_struct;
+     (p : System.Address;
       idx : int;
       info : System.Address;
       can_allocate : int) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/ptrace.h:253

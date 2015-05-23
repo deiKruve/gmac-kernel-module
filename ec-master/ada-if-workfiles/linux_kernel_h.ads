@@ -3,13 +3,10 @@ pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
 with asm_generic_int_ll64_h;
-with linux_notifier_h;
 with Interfaces.C.Strings;
-limited with linux_completion_h;
+with System;
 with Interfaces.C.Extensions;
 with linux_types_h;
-with System;
-limited with linux_pid_h;
 
 package linux_kernel_h is
 
@@ -173,7 +170,11 @@ package linux_kernel_h is
   -- * @n: the number we're accessing
   --  
 
+   --  skipped empty struct completion
+
    --  skipped empty struct user
+
+   --  skipped func _cond_resched
 
   --*
   -- * might_sleep - annotation for functions that can sleep
@@ -215,7 +216,9 @@ package linux_kernel_h is
    procedure might_fault;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:232
    pragma Import (CPP, might_fault, "_ZL11might_faultv");
 
-   panic_notifier_list : aliased linux_notifier_h.atomic_notifier_head;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:235
+   --  skipped empty struct atomic_notifier_head
+
+   panic_notifier_list : aliased atomic_notifier_head;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:235
    pragma Import (C, panic_notifier_list, "panic_notifier_list");
 
    panic_blink : access function (arg1 : int) return long;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:236
@@ -240,7 +243,7 @@ package linux_kernel_h is
    procedure do_exit (error_code : long);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:244
    pragma Import (CPP, do_exit, "_Z7do_exitl");
 
-   procedure complete_and_exit (arg1 : access linux_completion_h.completion; arg2 : long);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:246
+   procedure complete_and_exit (arg1 : System.Address; arg2 : long);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:246
    pragma Import (CPP, complete_and_exit, "_Z17complete_and_exitP10completionl");
 
   -- Internal, do not use.  
@@ -588,7 +591,9 @@ package linux_kernel_h is
    function func_ptr_is_kernel_text (ptr : System.Address) return int;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:415
    pragma Import (CPP, func_ptr_is_kernel_text, "_Z23func_ptr_is_kernel_textPv");
 
-   function session_of_pgrp (pgrp : access linux_pid_h.pid) return access linux_pid_h.pid;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:418
+   --  skipped empty struct pid
+
+   function session_of_pgrp (pgrp : System.Address) return System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:418
    pragma Import (CPP, session_of_pgrp, "_Z15session_of_pgrpP3pid");
 
    function int_sqrt (arg1 : unsigned_long) return unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/kernel.h:420

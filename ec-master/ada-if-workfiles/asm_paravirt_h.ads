@@ -8,11 +8,9 @@ with Interfaces.C.Extensions;
 with linux_jump_label_h;
 limited with asm_desc_defs_h;
 with System;
-limited with linux_mm_types_h;
 limited with linux_cpumask_h;
 with asm_pgtable_types_h;
 with asm_pgtable_64_types_h;
-limited with linux_sched_h;
 
 package asm_paravirt_h is
 
@@ -218,13 +216,13 @@ package asm_paravirt_h is
       start_esp : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:319
    pragma Import (CPP, startup_ipi_hook, "_ZL16startup_ipi_hookimm");
 
-   procedure paravirt_activate_mm (prev : access linux_mm_types_h.mm_struct; next : access linux_mm_types_h.mm_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:327
+   procedure paravirt_activate_mm (prev : System.Address; next : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:327
    pragma Import (CPP, paravirt_activate_mm, "_ZL20paravirt_activate_mmP9mm_structS0_");
 
-   procedure arch_dup_mmap (oldmm : access linux_mm_types_h.mm_struct; mm : access linux_mm_types_h.mm_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:333
+   procedure arch_dup_mmap (oldmm : System.Address; mm : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:333
    pragma Import (CPP, arch_dup_mmap, "_ZL13arch_dup_mmapP9mm_structS0_");
 
-   procedure arch_exit_mmap (mm : access linux_mm_types_h.mm_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:339
+   procedure arch_exit_mmap (mm : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:339
    pragma Import (CPP, arch_exit_mmap, "_ZL14arch_exit_mmapP9mm_struct");
 
    --  skipped func __flush_tlb
@@ -235,55 +233,55 @@ package asm_paravirt_h is
 
    procedure flush_tlb_others
      (the_cpumask : access constant linux_cpumask_h.cpumask;
-      mm : access linux_mm_types_h.mm_struct;
+      mm : System.Address;
       start : unsigned_long;
       c_end : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:357
    pragma Import (CPP, flush_tlb_others, "_ZL16flush_tlb_othersPK7cpumaskP9mm_structmm");
 
-   function paravirt_pgd_alloc (mm : access linux_mm_types_h.mm_struct) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:365
+   function paravirt_pgd_alloc (mm : System.Address) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:365
    pragma Import (CPP, paravirt_pgd_alloc, "_ZL18paravirt_pgd_allocP9mm_struct");
 
-   procedure paravirt_pgd_free (mm : access linux_mm_types_h.mm_struct; pgd : access asm_pgtable_types_h.pgd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:370
+   procedure paravirt_pgd_free (mm : System.Address; pgd : access asm_pgtable_types_h.pgd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:370
    pragma Import (CPP, paravirt_pgd_free, "_ZL17paravirt_pgd_freeP9mm_structP5pgd_t");
 
-   procedure paravirt_alloc_pte (mm : access linux_mm_types_h.mm_struct; pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:375
+   procedure paravirt_alloc_pte (mm : System.Address; pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:375
    pragma Import (CPP, paravirt_alloc_pte, "_ZL18paravirt_alloc_pteP9mm_structm");
 
    procedure paravirt_release_pte (pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:379
    pragma Import (CPP, paravirt_release_pte, "_ZL20paravirt_release_ptem");
 
-   procedure paravirt_alloc_pmd (mm : access linux_mm_types_h.mm_struct; pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:384
+   procedure paravirt_alloc_pmd (mm : System.Address; pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:384
    pragma Import (CPP, paravirt_alloc_pmd, "_ZL18paravirt_alloc_pmdP9mm_structm");
 
    procedure paravirt_release_pmd (pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:389
    pragma Import (CPP, paravirt_release_pmd, "_ZL20paravirt_release_pmdm");
 
-   procedure paravirt_alloc_pud (mm : access linux_mm_types_h.mm_struct; pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:394
+   procedure paravirt_alloc_pud (mm : System.Address; pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:394
    pragma Import (CPP, paravirt_alloc_pud, "_ZL18paravirt_alloc_pudP9mm_structm");
 
    procedure paravirt_release_pud (pfn : unsigned_long);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:398
    pragma Import (CPP, paravirt_release_pud, "_ZL20paravirt_release_pudm");
 
    procedure pte_update
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       ptep : access asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:403
    pragma Import (CPP, pte_update, "_ZL10pte_updateP9mm_structmP5pte_t");
 
    procedure pmd_update
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       pmdp : access asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:408
    pragma Import (CPP, pmd_update, "_ZL10pmd_updateP9mm_structmP5pmd_t");
 
    procedure pte_update_defer
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       ptep : access asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:414
    pragma Import (CPP, pte_update_defer, "_ZL16pte_update_deferP9mm_structmP5pte_t");
 
    procedure pmd_update_defer
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       pmdp : access asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:420
    pragma Import (CPP, pmd_update_defer, "_ZL16pmd_update_deferP9mm_structmP5pmd_t");
@@ -299,13 +297,13 @@ package asm_paravirt_h is
    pragma Import (CPP, pgd_val, "_ZL7pgd_val5pgd_t");
 
    function ptep_modify_prot_start
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       ptep : access asm_pgtable_64_types_h.pte_t) return asm_pgtable_64_types_h.pte_t;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:485
    pragma Import (CPP, ptep_modify_prot_start, "_ZL22ptep_modify_prot_startP9mm_structmP5pte_t");
 
    procedure ptep_modify_prot_commit
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       ptep : access asm_pgtable_64_types_h.pte_t;
       pte : asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:496
@@ -316,7 +314,7 @@ package asm_paravirt_h is
    pragma Import (CPP, set_pte, "_ZL7set_pteP5pte_tS_");
 
    procedure set_pte_at
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       ptep : access asm_pgtable_64_types_h.pte_t;
       pte : asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:517
@@ -324,7 +322,7 @@ package asm_paravirt_h is
 
   -- 5 arg words  
    procedure set_pmd_at
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       pmdp : access asm_pgtable_types_h.pmd_t;
       pmd : asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:527
@@ -363,7 +361,7 @@ package asm_paravirt_h is
    pragma Import (CPP, set_pte_atomic, "_ZL14set_pte_atomicP5pte_tS_");
 
    procedure pte_clear
-     (mm : access linux_mm_types_h.mm_struct;
+     (mm : System.Address;
       addr : unsigned_long;
       ptep : access asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:668
    pragma Import (CPP, pte_clear, "_ZL9pte_clearP9mm_structmP5pte_t");
@@ -371,10 +369,10 @@ package asm_paravirt_h is
    procedure pmd_clear (pmdp : access asm_pgtable_types_h.pmd_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:674
    pragma Import (CPP, pmd_clear, "_ZL9pmd_clearP5pmd_t");
 
-   procedure arch_start_context_switch (prev : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:681
+   procedure arch_start_context_switch (prev : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:681
    pragma Import (CPP, arch_start_context_switch, "_ZL25arch_start_context_switchP11task_struct");
 
-   procedure arch_end_context_switch (next : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:686
+   procedure arch_end_context_switch (next : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:686
    pragma Import (CPP, arch_end_context_switch, "_ZL23arch_end_context_switchP11task_struct");
 
    procedure arch_enter_lazy_mmu_mode;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/paravirt.h:692

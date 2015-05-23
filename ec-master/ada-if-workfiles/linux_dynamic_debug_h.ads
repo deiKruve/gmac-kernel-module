@@ -56,7 +56,11 @@ package linux_dynamic_debug_h is
       modname : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/dynamic_debug.h:47
    pragma Import (CPP, ddebug_dyndbg_module_param_cb, "_Z29ddebug_dyndbg_module_param_cbPcS_PKc");
 
+   --  skipped empty struct device
+
    --  skipped func __dynamic_dev_dbg
+
+   --  skipped empty struct net_device
 
    --  skipped func __dynamic_netdev_dbg
 

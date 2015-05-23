@@ -8,6 +8,8 @@ with Interfaces.C.Strings;
 package Linux_Types is
 
    -- for amd64
+   
+   package Strings renames Interfaces.C.Strings;
 
    ------------------------------
    --  asm_generic_int_ll64_h  --

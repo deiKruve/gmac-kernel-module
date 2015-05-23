@@ -7,7 +7,7 @@ with Linux_Types;
 with Linux_Rbtree;
 with asm_pgtable_types;
 --  limited with linux_mm_types_h;
-with Interfaces.C.Strings;
+--  with Interfaces.C.Strings;
 
 package linux_vmalloc is
    package L renames Linux_Types;

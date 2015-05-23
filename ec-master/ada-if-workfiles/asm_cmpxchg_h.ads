@@ -34,6 +34,8 @@ package asm_cmpxchg_h is
 
    --  skipped func __xchg_wrong_size
 
+   --  skipped func __cmpxchg_wrong_size
+
    --  skipped func __xadd_wrong_size
 
    --  skipped func __add_wrong_size

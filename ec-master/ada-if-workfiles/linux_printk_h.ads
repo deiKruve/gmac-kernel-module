@@ -7,7 +7,6 @@ with stdarg_h;
 with System;
 with linux_types_h;
 with Interfaces.C.Extensions;
-with linux_fs_h;
 
 package linux_printk_h is
 
@@ -229,7 +228,9 @@ package linux_printk_h is
   -- no pr_cont_ratelimited, don't do that...  
   -- If you are writing a driver, please use dev_dbg instead  
   -- descriptor check is first to prevent flooding with "callbacks suppressed"  
-   kmsg_fops : aliased linux_fs_h.file_operations;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/printk.h:400
+   --  skipped empty struct file_operations
+
+   kmsg_fops : aliased file_operations;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/printk.h:400
    pragma Import (C, kmsg_fops, "kmsg_fops");
 
    procedure hex_dump_to_buffer

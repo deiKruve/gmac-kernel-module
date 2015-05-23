@@ -26,16 +26,16 @@ package linux_spinlock_types_h is
 
    subtype raw_spinlock_t is raw_spinlock;
 
-   type anon_19 (discr : unsigned := 0) is record
+   type anon_35 (discr : unsigned := 0) is record
       case discr is
          when others =>
             rlock : aliased raw_spinlock;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/spinlock_types.h:66
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_19);
-   pragma Unchecked_Union (anon_19);
+   pragma Convention (C_Pass_By_Copy, anon_35);
+   pragma Unchecked_Union (anon_35);
    type spinlock is record
-      parent : aliased anon_19;
+      parent : aliased anon_35;
    end record;
    pragma Convention (C_Pass_By_Copy, spinlock);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/spinlock_types.h:64
 

@@ -3,9 +3,6 @@ pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
 with asm_pgtable_64_types_h;
-limited with linux_mm_types_h;
-limited with linux_fs_h;
-limited with linux_seq_file_h;
 with System;
 with linux_types_h;
 with asm_generic_int_ll64_h;
@@ -149,7 +146,9 @@ package asm_pgtable_types_h is
    function pte_flags (pte : asm_pgtable_64_types_h.pte_t) return asm_pgtable_64_types_h.pteval_t;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:323
    pragma Import (CPP, pte_flags, "_ZL9pte_flags5pte_t");
 
-   type pgtable_t is access all linux_mm_types_h.page;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:332
+   --  skipped empty struct page
+
+   type pgtable_t is new System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:332
 
    procedure set_nx;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:335
    pragma Import (CPP, set_nx, "_Z6set_nxv");
@@ -161,15 +160,17 @@ package asm_pgtable_types_h is
    pragma Import (CPP, pgprot_writecombine, "_Z19pgprot_writecombine6pgprot");
 
   -- Indicate that x86 has its own track and untrack pfn vma functions  
+   --  skipped empty struct file
+
    function phys_mem_access_prot
-     (the_file : access linux_fs_h.file;
+     (the_file : System.Address;
       pfn : unsigned_long;
       size : unsigned_long;
       vma_prot : pgprot_t) return pgprot_t;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:346
    pragma Import (CPP, phys_mem_access_prot, "_Z20phys_mem_access_protP4filemm6pgprot");
 
    function phys_mem_access_prot_allowed
-     (the_file : access linux_fs_h.file;
+     (the_file : System.Address;
       pfn : unsigned_long;
       size : unsigned_long;
       vma_prot : access pgprot_t) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:348
@@ -179,7 +180,9 @@ package asm_pgtable_types_h is
    procedure set_pte_vaddr (vaddr : unsigned_long; pte : asm_pgtable_64_types_h.pte_t);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:352
    pragma Import (CPP, set_pte_vaddr, "_Z13set_pte_vaddrm5pte_t");
 
-   procedure arch_report_meminfo (m : access linux_seq_file_h.seq_file);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:361
+   --  skipped empty struct seq_file
+
+   procedure arch_report_meminfo (m : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/pgtable_types.h:361
    pragma Import (CPP, arch_report_meminfo, "_Z19arch_report_meminfoP8seq_file");
 
    type pg_level is 

@@ -2,7 +2,7 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
-with System;
+-- with System;
 
 package Linux_Rbtree is
 

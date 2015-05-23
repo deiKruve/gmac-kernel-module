@@ -2,7 +2,7 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
-limited with linux_sched_h;
+with System;
 
 package linux_lockdep_h is
 
@@ -283,7 +283,7 @@ package linux_lockdep_h is
   -- * that interrupts are not re-enabled during lock-acquire:
   --  
 
-   procedure print_irqtrace_events (curr : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/lockdep.h:464
+   procedure print_irqtrace_events (curr : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/lockdep.h:464
    pragma Import (CPP, print_irqtrace_events, "_ZL21print_irqtrace_eventsP11task_struct");
 
   -- * For trivial one-depth nesting of a lock-class, the following

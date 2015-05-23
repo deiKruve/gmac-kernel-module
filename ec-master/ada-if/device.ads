@@ -1,11 +1,11 @@
 pragma Ada_2005;
 pragma Style_Checks (Off);
 
-with Interfaces.C; use Interfaces.C;
-with System;
+-- with Interfaces.C; use Interfaces.C;
+-- with System;
 with Linux_Types;
-with ecdev;
-limited with Ecrt;
+-- with ecdev;
+-- limited with Ecrt;
 
 package device is
    package L renames Linux_Types;

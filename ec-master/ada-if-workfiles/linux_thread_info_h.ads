@@ -5,7 +5,6 @@ with Interfaces.C; use Interfaces.C;
 with asm_generic_int_ll64_h;
 with linux_types_h;
 limited with uapi_linux_time_h;
-limited with asm_compat_h;
 with System;
 limited with asm_thread_info_h;
 
@@ -30,11 +29,13 @@ package linux_thread_info_h is
   -- * - Incorporating suggestions made by Linus Torvalds
   --  
 
+   --  skipped empty struct compat_timespec
+
   -- * System call restart block.
   --  
 
-   type anon_33;
-   type anon_34 is record
+   type anon_19;
+   type anon_20 is record
       uaddr : access asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:24
       val : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:25
       flags : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:26
@@ -42,37 +43,37 @@ package linux_thread_info_h is
       time : aliased asm_generic_int_ll64_h.u64;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:28
       uaddr2 : access asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:29
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_34);
-   type anon_35 is record
+   pragma Convention (C_Pass_By_Copy, anon_20);
+   type anon_21 is record
       clockid : aliased linux_types_h.clockid_t;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:33
       rmtp : access uapi_linux_time_h.timespec;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:34
-      compat_rmtp : access asm_compat_h.compat_timespec;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:36
+      compat_rmtp : System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:36
       expires : aliased asm_generic_int_ll64_h.u64;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:38
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_35);
-   type anon_36 is record
+   pragma Convention (C_Pass_By_Copy, anon_21);
+   type anon_22 is record
       ufds : System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:42
       nfds : aliased int;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:43
       has_timeout : aliased int;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:44
       tv_sec : aliased unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:45
       tv_nsec : aliased unsigned_long;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:46
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_36);
-   type anon_33 (discr : unsigned := 0) is record
+   pragma Convention (C_Pass_By_Copy, anon_22);
+   type anon_19 (discr : unsigned := 0) is record
       case discr is
          when 0 =>
-            futex : aliased anon_34;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:30
+            futex : aliased anon_20;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:30
          when 1 =>
-            nanosleep : aliased anon_35;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:39
+            nanosleep : aliased anon_21;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:39
          when others =>
-            poll : aliased anon_36;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:47
+            poll : aliased anon_22;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:47
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_33);
-   pragma Unchecked_Union (anon_33);
+   pragma Convention (C_Pass_By_Copy, anon_19);
+   pragma Unchecked_Union (anon_19);
    type restart_block is record
       fn : access function (arg1 : access restart_block) return long;  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:20
-      field_2 : aliased anon_33;
+      field_2 : aliased anon_19;
    end record;
    pragma Convention (C_Pass_By_Copy, restart_block);  -- /usr/src/linux-headers-3.16.0-4-common/include/linux/thread_info.h:19
 

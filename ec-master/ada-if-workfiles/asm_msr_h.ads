@@ -22,23 +22,23 @@ package asm_msr_h is
    --    wrmsr(MSR_IA32_TSC, (low), (high))
    --  arg-macro: procedure write_rdtscp_aux wrmsr(MSR_TSC_AUX, (val), 0)
    --    wrmsr(MSR_TSC_AUX, (val), 0)
-   type anon_23;
-   type anon_24 is record
+   type anon_25;
+   type anon_26 is record
       l : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/msr.h:15
       h : aliased asm_generic_int_ll64_h.u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/msr.h:16
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_24);
-   type anon_23 (discr : unsigned := 0) is record
+   pragma Convention (C_Pass_By_Copy, anon_26);
+   type anon_25 (discr : unsigned := 0) is record
       case discr is
-            parent : aliased anon_24;
+            parent : aliased anon_26;
          when others =>
             q : aliased asm_generic_int_ll64_h.u64;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/msr.h:18
       end case;
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_23);
-   pragma Unchecked_Union (anon_23);
+   pragma Convention (C_Pass_By_Copy, anon_25);
+   pragma Unchecked_Union (anon_25);
    type msr is record
-      parent : aliased anon_23;
+      parent : aliased anon_25;
    end record;
    pragma Convention (C_Pass_By_Copy, msr);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/msr.h:12
 

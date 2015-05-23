@@ -4,7 +4,6 @@ pragma Style_Checks (Off);
 with Interfaces.C; use Interfaces.C;
 with linux_range_h;
 with System;
-limited with linux_mm_types_h;
 
 package asm_page_h is
 
@@ -23,14 +22,14 @@ package asm_page_h is
    procedure clear_user_page
      (page : System.Address;
       vaddr : unsigned_long;
-      pg : access linux_mm_types_h.page);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/page.h:24
+      pg : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/page.h:24
    pragma Import (CPP, clear_user_page, "_ZL15clear_user_pagePvmP4page");
 
    procedure copy_user_page
      (to : System.Address;
       from : System.Address;
       vaddr : unsigned_long;
-      topage : access linux_mm_types_h.page);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/page.h:30
+      topage : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/page.h:30
    pragma Import (CPP, copy_user_page, "_ZL14copy_user_pagePvS_mP4page");
 
   -- __pa_symbol should be used for C visible symbols.

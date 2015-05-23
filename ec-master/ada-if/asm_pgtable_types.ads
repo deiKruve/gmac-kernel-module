@@ -1,14 +1,14 @@
 pragma Ada_2005;
 pragma Style_Checks (Off);
 
-with Interfaces.C; use Interfaces.C;
+-- with Interfaces.C; use Interfaces.C;
 with asm_pgtable_64_types;
---limited with linux_mm_types_h;
---limited with linux_fs_h;
---limited with linux_seq_file_h;
-with System;
-with Linux_Types;
---with asm_generic_int_ll64_h;
+-- limited with linux_mm_types_h;
+-- limited with linux_fs_h;
+-- limited with linux_seq_file_h;
+-- with System;
+-- with Linux_Types;
+-- with asm_generic_int_ll64_h;
 
 package asm_pgtable_types is
 

@@ -1,8 +1,8 @@
 pragma Ada_2005;
 pragma Style_Checks (Off);
 
-with Interfaces.C; use Interfaces.C;
-with Interfaces.C.Extensions;
+-- with Interfaces.C; use Interfaces.C;
+-- with Interfaces.C.Extensions;
 
 with Linux_Types;
 --with Linux_Time;

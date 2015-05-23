@@ -2,12 +2,11 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
-limited with linux_sched_h;
+with System;
 limited with linux_personality_h;
 with uapi_asm_generic_int_ll64_h;
 with asm_processor_h;
 with linux_thread_info_h;
-with System;
 with Interfaces.C.Extensions;
 
 package asm_thread_info_h is
@@ -58,7 +57,7 @@ package asm_thread_info_h is
 
   -- main task structure  
    type thread_info is record
-      c_task : access linux_sched_h.task_struct;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:27
+      c_task : System.Address;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:27
       the_exec_domain : access linux_personality_h.exec_domain;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:28
       flags : aliased uapi_asm_generic_int_ll64_h.uu_u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:29
       status : aliased uapi_asm_generic_int_ll64_h.uu_u32;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:30
@@ -133,10 +132,10 @@ package asm_thread_info_h is
    procedure arch_task_cache_init;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:237
    pragma Import (CPP, arch_task_cache_init, "_Z20arch_task_cache_initv");
 
-   function arch_dup_task_struct (dst : access linux_sched_h.task_struct; src : access linux_sched_h.task_struct) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:238
+   function arch_dup_task_struct (dst : System.Address; src : System.Address) return int;  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:238
    pragma Import (CPP, arch_dup_task_struct, "_Z20arch_dup_task_structP11task_structS0_");
 
-   procedure arch_release_task_struct (tsk : access linux_sched_h.task_struct);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:239
+   procedure arch_release_task_struct (tsk : System.Address);  -- /usr/src/linux-headers-3.16.0-4-common/arch/x86/include/asm/thread_info.h:239
    pragma Import (CPP, arch_release_task_struct, "_Z24arch_release_task_structP11task_struct");
 
 end asm_thread_info_h;
