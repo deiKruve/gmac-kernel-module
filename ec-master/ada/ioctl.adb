@@ -11,7 +11,9 @@ package body Ioctl is
 			Arg  : Void_Ptr) 
 		     return Ic.Long
    is
+      Cty : access  Ec_Ioctl_Context_T; 
    begin
+      Cty := new Ec_Ioctl_Context_T;
       return 0;
    end Gm_Ioctl;
 begin

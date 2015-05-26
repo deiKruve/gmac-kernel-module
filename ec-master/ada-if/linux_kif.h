@@ -1,53 +1,10 @@
+#ifndef LINUX_KIF_H
+#define	LINUX_KIF_H
+
+void kif_destroy_mutex (struct mutex *lock);
+int kif_is_mutex_locked (struct mutex *lock);
 
 
-#include  <linux/mutex.h>
-#include <linux/slab.h>
-
-DEFINE_MUTEX(mname1);
-mutex_init(mname1);
-DEFINE_MUTEX(mname2);
-mutex_init(mname2);
-//  .
-//  .
-//  .
-// to be constructed with awk
-// so now there are 'n' mutexes available with names "mname1" ..... "mname<n>"
-// and in ada we can use them by saying
-// extern mname1 : linux_mutex.mutex with Import => True, Convention => C;
-
-
-void kif_destroy_mutex (struct mutex *lock)
-{
-  mutex_destroy (lock);
-}
-
-// mutex_is_locked - is the mutex locked
-// Returns 1 if the mutex is locked, 0 if unlocked.
-int kif_is_mutex_locked (struct mutex *lock)
-{
-  return mutex_is_locked (lock);
-}
-
-
-/* void mutex_lock (struct mutex *lock) */
-/* { */
-/*   mutex_lock_nested(lock, 0); */
-/* } */
-
-/* void mutex_lock_interruptible (struct mutex *lock) */
-/* { */
-/*   mutex_lock_interruptible_nested(lock, 0); */
-/* } */
-
-/* void mutex_lock_killable (struct mutex *lock) */
-/* { */
-/*   mutex_lock_killable_nested(lock, 0); */
-/* } */
-
-
-
-/*  Kernel Memory . . . . 
- */
 
 
 /**
@@ -103,38 +60,13 @@ int kif_is_mutex_locked (struct mutex *lock)
  * for general use, and so are not documented here. For a full list of
  * potential flags, always refer to linux/gfp.h.
  */
-
-void *kif_kmalloc_user (size_t size)
-{
-  return kmalloc(size, GFP_USER);
-}
-
-void *kif_kmalloc_kernel (size_t size)
-{
-  return kmalloc(size, GFP_KERNEL);
-}
-
-void *kif_kmalloc_atomic (size_t size)
-{
-  return kmalloc(size, GFP_ATOMIC);
-}
-
-void *kif_kmalloc_highuser (size_t size)
-{
-  return kmalloc(size, GFP_HIGHUSER);
-}
-
-void *kif_kmalloc_noio (size_t size)
-{
-  return kmalloc(size, GFP_NOIO);
-}
-
-void *kif_kmalloc_nofs (size_t size)
-{
-  return kmalloc(size, GFP_NOFS);
-}
-
-void *kif_kmalloc_nowait (size_t size)
-{
-  kmalloc(size, NOWAIT);
-}
+typedef unsigned long size_t;
+void *kif_kmalloc_user (size_t size);
+void *kif_kmalloc_kernel (size_t size);
+void *kif_kmalloc_atomic (size_t size);
+void *kif_kmalloc_highuser (size_t size);
+void *kif_kmalloc_noio (size_t size);
+void *kif_kmalloc_nofs (size_t size);
+void *kif_kmalloc_nowait (size_t size);
+  
+#endif // LINUX_KIF_H

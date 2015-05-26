@@ -4,12 +4,12 @@ Project Kernel is
    
    for Main use ("demo.adb");
    for Source_Dirs use (".", "../ada-if", "adainclude");
-   for Object_Dir use "aobj";
+   for Object_Dir use "../obj";
    
    package Compiler is
       for Default_Switches ("ada") use 
         ("-g", "-gnatwa", "-gnat12", "-gnatQ", "-gnatn",
-	 "-nostdinc", "-Dinhibit_libc",
+         "-nostdinc", "-Dinhibit_libc",
          "-fno-strict-aliasing", "-Wall", "-m64", 
          "-mno-mmx", "-mno-sse", "-mno-80387", 
          "-mno-fp-ret-in-387", "-mpreferred-stack-boundary=3", 
@@ -26,7 +26,7 @@ Project Kernel is
    
    package Builder is
       for Default_Switches ("ada") use
-	("-g",
+        ("-g",
          "--RTS=" & Project'project_dir);
    end Builder;
    
@@ -63,4 +63,7 @@ end Kernel;
 --   but add '-r -m elf_x86_64' and have a reasonable name for the outputfile 
 --  (after -o) it will look something like this:
   
---  ld -r -m elf_x86_64 b~demo.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/interfac.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/i-c.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/system.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/i-cexten.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/s-parame.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/i-cstrin.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/s-stalib.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/last_chance_handler.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/linux_types.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/cdev.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/master.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/ioctl.o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/demo.o -g -r -o /home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/demo.x -L/home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/aobj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/adalib/
+
+
+
+-- ld -r -m elf_x86_64 /home/jan/MMS/programs-KERNEL/ec-master/obj/b~demo.o /home/jan/MMS/programs-KERNEL/ec-master/obj/interfac.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-c.o /home/jan/MMS/programs-KERNEL/ec-master/obj/system.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cexten.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-parame.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cstrin.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stalib.o /home/jan/MMS/programs-KERNEL/ec-master/obj/last_chance_handler.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_types.o /home/jan/MMS/programs-KERNEL/ec-master/obj/cdev.o /home/jan/MMS/programs-KERNEL/ec-master/obj/master.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ioctl.o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.o -g -r -o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.x -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/adalib/

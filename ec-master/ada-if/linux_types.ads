@@ -57,7 +57,7 @@ package Linux_Types is
    subtype uu_kernel_time_t is long;
    subtype uu_kernel_suseconds_t is long;
 
-   subtype size_t is long;
+   subtype size_t is unsigned_long;
 
    subtype phys_addr_t is u64;
 
