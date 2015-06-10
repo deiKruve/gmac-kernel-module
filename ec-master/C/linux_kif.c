@@ -1,12 +1,21 @@
 
 
-#include  <linux/mutex.h>
+#include <linux/mutex.h>
 #include <linux/slab.h>
+#include <linux/sched.h>
+#include "linux_kif.h"
 
-DEFINE_MUTEX(mname1);
-mutex_init(mname1);
-DEFINE_MUTEX(mname2);
-mutex_init(mname2);
+//DEFINE_MUTEX(mname1);
+//DEFINE_MUTEX(mname2);
+
+/* void init_mutexes(void) */
+/* { */
+/*   DEFINE_MUTEX(mname1); */
+/*   mutex_init(mname1); */
+/*   DEFINE_MUTEX(mname2); */
+/*   mutex_init(mname2); */
+/* } */
+
 //  .
 //  .
 //  .
@@ -134,7 +143,14 @@ void *kif_kmalloc_nofs (size_t size)
   return kmalloc(size, GFP_NOFS);
 }
 
-void *kif_kmalloc_nowait (size_t size)
+/* void *kif_kmalloc_nowait (size_t size) */
+/* { */
+/*   return kmalloc(size, NOWAIT); */
+/* } */
+
+void kif_sleepforever(void)
 {
-  kmalloc(size, NOWAIT);
+  set_current_state(TASK_INTERRUPTIBLE);
+  schedule();
 }
+

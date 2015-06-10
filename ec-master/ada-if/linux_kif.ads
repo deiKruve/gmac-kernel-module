@@ -10,12 +10,16 @@ package linux_kif is
    package L  renames Linux_Types;
 
    procedure kif_destroy_mutex (lock : System.Address);
-   pragma Import (CPP, kif_destroy_mutex, "kif_destroy_mutex");
+   pragma Import (C, kif_destroy_mutex, "kif_destroy_mutex");
 
    --  skipped empty struct mutex
 
    function kif_is_mutex_locked (lock : System.Address) return int;
-   pragma Import (CPP, kif_is_mutex_locked, "kif_is_mutex_locked");
+   pragma Import (C, kif_is_mutex_locked, "kif_is_mutex_locked");
+   
+   
+   procedure Sleepforever;
+   pragma Import (C, Sleepforever, "kif_sleepforever");
    
    
    ---------------------------------------------------

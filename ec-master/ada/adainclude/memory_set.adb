@@ -1,3 +1,6 @@
+pragma Warnings (Off, "*may call Last_Chance_Handler");
+pragma Warnings (Off, "*(No_Exception_Propagation) in effect");
+
 with Ada.Unchecked_Conversion;
 
 package body Memory_Set is

@@ -7,24 +7,27 @@ Project Kernel is
    for Object_Dir use "../obj";
    
    package Compiler is
+      Local_Configuration_Pragmas := ("gnat.adc");
       for Default_Switches ("ada") use 
         ("-g", "-gnatwa", "-gnat12", "-gnatQ", "-gnatn",
          "-nostdinc", "-Dinhibit_libc",
          "-fno-strict-aliasing", "-Wall", "-m64", 
          "-mno-mmx", "-mno-sse", "-mno-80387", 
-         "-mno-fp-ret-in-387", "-mpreferred-stack-boundary=3", 
+         "-mno-fp-ret-in-387", "-mpreferred-stack-boundary=4", 
          "-mtune=generic", "-mno-red-zone", "-mcmodel=kernel", 
          "-funit-at-a-time", "-pipe", 
          "-fno-asynchronous-unwind-tables", "-mno-sse", 
          "-mno-mmx", "-mno-sse2", "-mno-3dnow", "-mno-avx", 
          "-fno-delete-null-pointer-checks", "-O2", "-Wframe-larger-than=2048", 
          "-fstack-protector", "-Wno-unused-but-set-variable", 
-         "-fno-var-tracking-assignments", "-g", "-pg", 
+         "-fno-var-tracking-assignments", "-g",
          "-fno-strict-overflow", "-fconserve-stack", "-Werror=implicit-int", 
-         "-Werror=strict-prototypes", "-c");
+         "-Werror=strict-prototypes", "-c"); --  , "-S"); 
+      --   "-pg", is for tracing.
    end Compiler;
    
    package Builder is
+      Global_Configuration_Pragmas := "gnat.adc";
       for Default_Switches ("ada") use
         ("-g",
          "--RTS=" & Project'project_dir);
@@ -50,7 +53,7 @@ end Kernel;
 
 --  Here is to build a sub'Ada'-section of a module
 
--- gnat compile -a -Pkernel.Gpr  (this project file)
+-- gnat compile -a -Pkernel.gpr  (this project file)
 -- gnat make -c -b -Pkernel.gpr
 -- fix up b~demo.adb, most variables can go i think, but not the E... type. 
 -- They are used for the init cycle. The loading of the handler can go 
@@ -60,6 +63,7 @@ end Kernel;
 --   gnat make -v -Pkernel.gpr  (to compile it)
 -- change to the object directory and
 -- then Run ld with the commandline options of the mishappen gcc link stage
+--  without  -lgnat -static-libgcc
 --   but add '-r -m elf_x86_64' and have a reasonable name for the outputfile 
 --  (after -o) it will look something like this:
   
@@ -67,3 +71,6 @@ end Kernel;
 
 
 -- ld -r -m elf_x86_64 /home/jan/MMS/programs-KERNEL/ec-master/obj/b~demo.o /home/jan/MMS/programs-KERNEL/ec-master/obj/interfac.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-c.o /home/jan/MMS/programs-KERNEL/ec-master/obj/system.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cexten.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-parame.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cstrin.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stalib.o /home/jan/MMS/programs-KERNEL/ec-master/obj/last_chance_handler.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_types.o /home/jan/MMS/programs-KERNEL/ec-master/obj/cdev.o /home/jan/MMS/programs-KERNEL/ec-master/obj/master.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ioctl.o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.o -g -r -o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.x -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/adalib/
+
+
+-- ld -r -m elf_x86_64 b~demo.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ada.o /home/jan/MMS/programs-KERNEL/ec-master/obj/interfac.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-c.o /home/jan/MMS/programs-KERNEL/ec-master/obj/system.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cexten.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-parame.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cstrin.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stoele.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-secsta.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stalib.o /home/jan/MMS/programs-KERNEL/ec-master/obj/last_chance_handler.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_gfp.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_kernel.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-memory.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_types.o /home/jan/MMS/programs-KERNEL/ec-master/obj/cdev.o /home/jan/MMS/programs-KERNEL/ec-master/obj/master.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ioctl.o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.o -g -r -o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.x -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/adalib/

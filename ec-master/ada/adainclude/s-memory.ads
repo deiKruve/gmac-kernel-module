@@ -36,10 +36,12 @@
 --  This package provides the low level memory allocation/deallocation
 --  mechanisms used by GNAT.
 
+with linux_gfp;
+
 package System.Memory is
    pragma Elaborate_Body;
 
-   type size_t is mod 2 ** Standard'Address_Size;
+   type size_t is mod 2**Standard'Address_Size;
    --  Note: the reason we redefine this here instead of using the
    --  definition in Interfaces.C is that we do not want to drag in
    --  all of Interfaces.C just because System.Memory is used.
@@ -58,9 +60,10 @@ package System.Memory is
    --  Note: this is roughly equivalent to the standard C malloc call
    --  with the additional semantics as described above.
    --
+   --  ON ERROR 0 is returned!!
+   --
    ----------------------------------------------------------------------
-   
-   
+
    ---------------------------------------------------
    --  these procedures are defined in linux_kif.c  --
    ---------------------------------------------------
@@ -68,88 +71,102 @@ package System.Memory is
    --  kmalloc - allocate memory
    --  @size: how many bytes of memory are required.
    --  @flags: the type of memory to allocate.
-   -- 
+   --
    --  kmalloc is the normal method of allocating memory
    --  for objects smaller than page size in the kernel.
-   -- 
+   --
    --  The @flags argument may be one of:
-   -- 
+   --
    --  %GFP_USER - Allocate memory on behalf of user.  May sleep.
-   -- 
+   --
    --  %GFP_KERNEL - Allocate normal kernel ram.  May sleep waiting for memory.
    --  caller must be re-entrant, cannot be used in atomic context
-   -- 
+   --
    --  %GFP_ATOMIC - Allocation will not sleep.  May use emergency pools.
    --    For example, use this inside interrupt handlers.
-   -- 
+   --
    --  %GFP_HIGHUSER - Allocate pages from high memory.
-   -- 
+   --
    --  %GFP_NOIO - Do not do any I/O at all while trying to get memory.
-   -- 
+   --
    --  %GFP_NOFS - Do not make any fs calls while trying to get memory.
-   -- 
+   --
    --  %GFP_NOWAIT - Allocation will not sleep.
-   -- 
+   --
    --  %__GFP_THISNODE - Allocate node-local memory only.
-   -- 
+   --
    --  %GFP_DMA - Allocation suitable for DMA.
    --    Should only be used for kmalloc() caches. Otherwise, use a
    --    slab created with SLAB_DMA.
-   -- 
+   --
    --  Also it is possible to set different flags by OR'ing
    --  in one or more of the following additional @flags:
-   -- 
+   --
    --  %__GFP_COLD - Request cache-cold pages instead of
    --    trying to return cache-warm pages.
-   -- 
-   --  %__GFP_HIGH - 
+   --
+   --  %__GFP_HIGH -
    --            This allocation has high priority and may use emergency pools.
-   -- 
-   --  %__GFP_NOFAIL - 
+   --
+   --  %__GFP_NOFAIL -
    --            Indicate that this allocation is in no way allowed to fail
    --    (think twice before using).
-   -- 
+   --
    --  %__GFP_NORETRY - If memory is not immediately available,
    --    then give up at once.
-   -- 
+   --
    --  %__GFP_NOWARN - If allocation fails, don't issue any warnings.
-   -- 
-   --  %__GFP_REPEAT - 
-   --               If allocation fails initially, try once more before failing.
-   -- 
+   --
+   --  %__GFP_REPEAT -
+--               If allocation fails initially, try once more before failing.
+   --
    --  There are other flags available as well, but these are not intended
    --  for general use, and so are not documented here. For a full list of
    --  potential flags, always refer to linux/gfp.h.
    --
 
-   
-   function kif_kmalloc_user (size : L.size_t) return System.Address;
+   function kif_kmalloc_user (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_user, "kif_kmalloc_user");
 
-   function kif_kmalloc_kernel (size : L.size_t) return System.Address;
+   function kif_kmalloc_kernel (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_kernel, "kif_kmalloc_kernel");
 
-   function kif_kmalloc_atomic (size : L.size_t) return System.Address;
+   function kif_kmalloc_atomic (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_atomic, "kif_kmalloc_atomic");
 
-   function kif_kmalloc_highuser (size : L.size_t) return System.Address;
+   function kif_kmalloc_highuser (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_highuser, "kif_kmalloc_highuser");
 
-   function kif_kmalloc_noio (size : L.size_t) return System.Address;
+   function kif_kmalloc_noio (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_noio, "kif_kmalloc_noiom");
 
-   function kif_kmalloc_nofs (size : L.size_t) return System.Address;
+   function kif_kmalloc_nofs (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_nofs, "kif_kmalloc_nofs");
 
-   function kif_kmalloc_nowait (size : L.size_t) return System.Address;
+   function kif_kmalloc_nowait (size : size_t) return System.Address;
    pragma Import (C, kif_kmalloc_nowait, "kif_kmalloc_nowait");
 
-   
-   
-   
+   -----------------------
+   --  get_free_pages   --
+   -----------------------
+
+   Order     : constant := linux_gfp.Pages_2;
+   --  pages to request from the kernel
+   --  these values give 2 pages which is 8192 bytes see page_size in private)
+
+   procedure Get_Free_Pages;
+   --  Request Pages From The kernel
+   --  You will have to check after every NEW that you did not
+   --  get a System.Nul address back.
+   --  if you did there were not enough pages or the kernel did not
+   --  have any available. See dmesg for answers.
+
 private
+   Page_Size : constant := 4096;
+   --  page size is a system constant, see asm/page.h
+
    --  The following names are used from the generated compiler code
 
-   pragma Export (C, Alloc,   "__gnat_malloc");
+   pragma Export (C, Alloc, "__gnat_malloc");
 
 end System.Memory;

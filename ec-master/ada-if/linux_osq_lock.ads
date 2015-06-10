@@ -19,6 +19,6 @@ package Linux_Osq_Lock is
    
    procedure osq_lock_init (lock : access optimistic_spin_queue);
    -- Init macro and function. and check on the macro bit.!!!!!!!!!!!!!!!
-   pragma Import (CPP, osq_lock_init, "osq_lock_init");
+   pragma Import (C, osq_lock_init, "osq_lock_init");
    
 end Linux_Osq_Lock;

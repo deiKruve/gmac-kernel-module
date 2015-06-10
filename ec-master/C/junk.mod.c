@@ -26,11 +26,14 @@ __attribute__((section("__versions"))) = {
 	{ 0x7d11c268, __VMLINUX_SYMBOL_STR(jiffies) },
 	{ 0x190b5c8d, __VMLINUX_SYMBOL_STR(__netdev_alloc_skb) },
 	{ 0x5d41c87c, __VMLINUX_SYMBOL_STR(param_ops_charp) },
+	{ 0x8e663bd9, __VMLINUX_SYMBOL_STR(current_task) },
 	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
 	{ 0x4b26f12d, __VMLINUX_SYMBOL_STR(skb_push) },
 	{ 0x68aca4ad, __VMLINUX_SYMBOL_STR(down) },
 	{ 0x4d7cc695, __VMLINUX_SYMBOL_STR(module_put) },
+	{ 0x93fca811, __VMLINUX_SYMBOL_STR(__get_free_pages) },
 	{ 0xdb7305a1, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
+	{ 0x1000e51, __VMLINUX_SYMBOL_STR(schedule) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 	{ 0x37a0cba, __VMLINUX_SYMBOL_STR(kfree) },
 	{ 0x20b2bb2d, __VMLINUX_SYMBOL_STR(param_array_ops) },
@@ -49,5 +52,3 @@ __used
 __attribute__((section(".modinfo"))) =
 "depends=";
 
-
-MODULE_INFO(srcversion, "7F46F49374E66B09585347A");

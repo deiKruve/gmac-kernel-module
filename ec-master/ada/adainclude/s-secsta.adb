@@ -32,8 +32,11 @@
 --  This is the HI-E version of this package
 
 with Ada.Unchecked_Conversion;
+with Ada.Exceptions;
 
 package body System.Secondary_Stack is
+
+   package Ae renames Ada.Exceptions;
 
    use type SSE.Storage_Offset;
 
@@ -95,20 +98,22 @@ package body System.Secondary_Stack is
 
    procedure SS_Allocate
      (Address      : out System.Address;
-      Storage_Size : SSE.Storage_Count)
+      Storage_Size :     SSE.Storage_Count)
    is
-      Max_Align    : constant Mark_Id := Mark_Id (Standard'Maximum_Alignment);
-      Max_Size     : constant Mark_Id :=
-                       ((Mark_Id (Storage_Size) + Max_Align - 1) / Max_Align)
-                         * Max_Align;
-      Sec_Stack    : constant Stack_Ptr := Get_Sec_Stack;
+      Max_Align : constant Mark_Id := Mark_Id (Standard'Maximum_Alignment);
+      Max_Size  : constant Mark_Id :=
+        ((Mark_Id (Storage_Size) + Max_Align - 1) / Max_Align) * Max_Align;
+      Sec_Stack : constant Stack_Ptr := Get_Sec_Stack;
 
    begin
       if Sec_Stack.Top + Max_Size > Sec_Stack.Last then
-         raise Storage_Error;
+         Ae.Raise_Exception
+           (Ae.Null_Id,
+            "s-secsta : size requested too big." & ASCII.LF & ASCII.NUL);
+         --  raise Storage_Error;
       end if;
 
-      Address := Sec_Stack.Mem (Sec_Stack.Top)'Address;
+      Address       := Sec_Stack.Mem (Sec_Stack.Top)'Address;
       Sec_Stack.Top := Sec_Stack.Top + Max_Size;
    end SS_Allocate;
 
@@ -123,7 +128,7 @@ package body System.Secondary_Stack is
       Stack : constant Stack_Ptr := From_Addr (Stk);
    begin
       pragma Assert (Size >= 2 * Mark_Id'Max_Size_In_Storage_Elements);
-      Stack.Top := Stack.Mem'First;
+      Stack.Top  := Stack.Mem'First;
       Stack.Last := Mark_Id (Size) - 2 * Mark_Id'Max_Size_In_Storage_Elements;
    end SS_Init;
 

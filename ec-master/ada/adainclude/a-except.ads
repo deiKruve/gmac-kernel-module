@@ -57,6 +57,15 @@ package Ada.Exceptions is
    --  any case, and this way we avoid introducing Raise_Exception_Always and
    --  we also avoid the if test in Raise_Exception).
 
+   -----------------------------------
+   --  dummies to keep gnat normal  --
+   -----------------------------------
+   procedure Rcheck_CE_Access_Check
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_CE_Access_Check);
+   pragma Export (C, Rcheck_CE_Access_Check,
+                  "__gnat_rcheck_CE_Access_Check");
+
 private
 
    ------------------

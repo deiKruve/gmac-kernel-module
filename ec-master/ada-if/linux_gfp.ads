@@ -5,8 +5,8 @@ with Interfaces.C; use Interfaces.C;
 --with linux_types_h;
 --with linux_mmzone_h;
 --limited with linux_mm_types_h;
-with System;
-with Interfaces.C.Extensions;
+--with System;
+--with Interfaces.C.Extensions;
 
 package linux_gfp is
    
@@ -54,15 +54,18 @@ package linux_gfp is
    function k_get_free_pages (gfp_mask : gfp_t; 
 			      order : unsigned) 
 			     return unsigned_long;
+   --  k_get_free_pages() returns a 32-bit address, which cannot represent
+   --   a highmem page.
+   --   Returns 0 on failure.
    pragma Import (C, k_Get_Free_Pages, "__get_free_pages");
-   
+
    -- #define __get_free_page(gfp_mask) __get_free_pages((gfp_mask), 0)
-   
+
    function get_zeroed_page (gfp_mask : gfp_t) 
 			    return unsigned_long;
    pragma Import (C, get_zeroed_page, "get_zeroed_page");
-   
-   
+
+
    procedure free_pages (addr : unsigned_long; order : unsigned);
    pragma Import (C, free_pages, "free_pages");
    

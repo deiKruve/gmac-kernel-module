@@ -1,6 +1,8 @@
 #ifndef LINUX_KIF_H
 #define	LINUX_KIF_H
 
+
+void init_mutexes(void);
 void kif_destroy_mutex (struct mutex *lock);
 int kif_is_mutex_locked (struct mutex *lock);
 
@@ -67,6 +69,7 @@ void *kif_kmalloc_atomic (size_t size);
 void *kif_kmalloc_highuser (size_t size);
 void *kif_kmalloc_noio (size_t size);
 void *kif_kmalloc_nofs (size_t size);
-void *kif_kmalloc_nowait (size_t size);
+/* void *kif_kmalloc_nowait (size_t size); */
+void kif_sleepforever(void);
   
 #endif // LINUX_KIF_H

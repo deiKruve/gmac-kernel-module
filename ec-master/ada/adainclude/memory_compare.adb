@@ -1,3 +1,6 @@
+pragma Warnings (Off, "*may call Last_Chance_Handler");
+pragma Warnings (Off, "*(No_Exception_Propagation) in effect");
+
 with Ada.Unchecked_Conversion;
 
 package body Memory_Compare is
@@ -7,6 +10,11 @@ package body Memory_Compare is
    ------------
 
    function memcmp (S1 : Address; S2 : Address; N : size_t) return int is
+      --  procedure Kprintk (S : String);
+      --  pragma import( C, kprintk, "printk" );
+      --  procedure Sleepforever;
+      --  pragma Import (C, Sleepforever, "kif_sleepforever");
+      --  pragma No_Return (Sleepforever);
       subtype mem is char_array (size_t);
       type memptr is access mem;
       function to_memptr is
@@ -22,6 +30,9 @@ package body Memory_Compare is
          end if;
       end loop;
       return 0;
+  --  <<Error>>
+  --  	 Kprintk ("Memory_Compare : Constraint_Error");
+  --  	 Sleepforever;	
    end memcmp;
 
 end Memory_Compare;

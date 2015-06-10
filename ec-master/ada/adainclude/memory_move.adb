@@ -2,6 +2,9 @@
 --  Copyright (C) 2006-2013, AdaCore
 --
 
+pragma Warnings (Off, "*may call Last_Chance_Handler");
+pragma Warnings (Off, "*(No_Exception_Propagation) in effect");
+
 with Ada.Unchecked_Conversion;
 
 package body Memory_Move is

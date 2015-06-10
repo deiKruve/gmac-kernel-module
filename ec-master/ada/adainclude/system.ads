@@ -34,19 +34,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-pragma Restrictions (No_Exception_Propagation);
+--  pragma Restrictions (No_Exception_Propagation);
 --  Only local exception handling is supported in this profile
 
-pragma Restrictions (No_Exception_Registration);
+--  pragma Restrictions (No_Exception_Registration);
 --  Disable exception name registration. This capability is not used because
 --  it is only required by exception stream attributes which are not supported
 --  in this run time.
 
-pragma Restrictions (No_Implicit_Dynamic_Code);
+--  pragma Restrictions (No_Implicit_Dynamic_Code);
 --  Pointers to nested subprograms are not allowed in this run time, in order
 --  to prevent the compiler from building "trampolines".
 
-pragma Restrictions (No_Finalization);
+--  pragma Restrictions (No_Finalization);
 --  Controlled types are not supported in this run time
 package System is
    pragma Pure;
@@ -139,11 +139,11 @@ private
 
    Backend_Divide_Checks     : constant Boolean := False;
    Backend_Overflow_Checks   : constant Boolean := True;
-   Command_Line_Args         : constant Boolean := True;
+   Command_Line_Args         : constant Boolean := False;
    Configurable_Run_Time     : constant Boolean := False;
    Denorm                    : constant Boolean := True;
    Duration_32_Bits          : constant Boolean := False;
-   Exit_Status_Supported     : constant Boolean := True;
+   Exit_Status_Supported     : constant Boolean := False;
    Fractional_Fixed_Ops      : constant Boolean := False;
    Frontend_Layout           : constant Boolean := False;
    Machine_Overflows         : constant Boolean := False;
@@ -151,15 +151,15 @@ private
    Preallocated_Stacks       : constant Boolean := False;
    Signed_Zeros              : constant Boolean := True;
    Stack_Check_Default       : constant Boolean := False;
-   Stack_Check_Probes        : constant Boolean := True;
+   Stack_Check_Probes        : constant Boolean := False;
    Stack_Check_Limits        : constant Boolean := False;
    Support_Aggregates        : constant Boolean := True;
    Support_Atomic_Primitives : constant Boolean := True;
    Support_Composite_Assign  : constant Boolean := True;
    Support_Composite_Compare : constant Boolean := True;
    Support_Long_Shifts       : constant Boolean := True;
-   Always_Compatible_Rep     : constant Boolean := False;
-   Suppress_Standard_Library : constant Boolean := False;
+   Always_Compatible_Rep     : constant Boolean := True;
+   Suppress_Standard_Library : constant Boolean := True;  --
    Use_Ada_Main_Program_Name : constant Boolean := False;
    ZCX_By_Default            : constant Boolean := True;
 

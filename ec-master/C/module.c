@@ -40,6 +40,7 @@
 #include "globals.h"
 #include "master.h"
 #include "device.h"
+#include "niniel_ada.h"
 
 /*****************************************************************************/
 
@@ -154,6 +155,9 @@ int __init ec_init_module(void)
         if (ret)
             goto out_free_masters;
     }
+    
+    adainit();
+    niniel_init();
 
     EC_INFO("%u master%s waiting for devices.\n",
             master_count, (master_count == 1 ? "" : "s"));
@@ -181,6 +185,8 @@ out_return:
 void __exit ec_cleanup_module(void)
 {
     unsigned int i;
+
+    niniel_exit();
 
     for (i = 0; i < master_count; i++) {
         ec_master_clear(&masters[i]);

@@ -28,8 +28,8 @@
 -- Extensive contributions were provided by Ada Core Technologies Inc.      --
 --                                                                          --
 ------------------------------------------------------------------------------
-pragma Warnings (Off, "*may call Last_Chance_Handler");
-pragma Warnings (Off, "*(No_Exception_Propagation) in effect");
+--  pragma Warnings (Off, "*may call Last_Chance_Handler");
+--  pragma Warnings (Off, "*(No_Exception_Propagation) in effect");
 
 pragma Compiler_Unit_Warning;
 
@@ -124,10 +124,9 @@ package body System.Storage_Elements is
          --  we raise CE, and also include the zero case here. Yes, the RM says
          --  PE, but this really is so obviously more like a constraint error.
          --
-         --  no exception for kernel, just return 0;
       else
-         raise Constraint_Error;
-         --  return 0;
+         --  raise Constraint_Error;  crap;
+         return 0;
       end if;
    end "mod";
 

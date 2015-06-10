@@ -46,4 +46,18 @@ package body Ada.Exceptions is
       Last_Chance_Handler (Message'Address, 0);
    end Raise_Exception;
 
+   -----------------------------------
+   --  dummies to keep gnat normal  --
+   -----------------------------------
+
+   procedure Rcheck_CE_Access_Check
+     (File : System.Address; Line : Integer)
+   is
+      procedure Last_Chance_Handler (Msg : System.Address; Line : Integer);
+      pragma Import (C, Last_Chance_Handler, "__gnat_last_chance_handler");
+      pragma No_Return (Last_Chance_Handler);
+   begin
+      Last_Chance_Handler (File, Line);
+   end Rcheck_CE_Access_Check;
+
 end Ada.Exceptions;
