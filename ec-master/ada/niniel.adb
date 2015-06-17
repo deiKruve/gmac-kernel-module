@@ -6,16 +6,7 @@ package body Niniel is
    package Lk  renames Linux_Kernel;
    package Sm  renames System.Memory;
    
-   --------------------------------------------------------------------
-   --  junky variable to check heapspace was delivered and to trigger a 
-   --  page fault if needed, so we get the page into memory.
-   --------------------------------------------------------------------
-   type Junky_Type is record
-      Junk : Integer;
-   end record;
-   type Junky_Access is access all Junky_Type;
    
-   Junky : Junky_Access;
    -----------------------------------------------------
    --  initializes the ada part of the kernel module  --
    -----------------------------------------------------
@@ -40,5 +31,4 @@ package body Niniel is
    
 begin
    Sm.Get_Free_Pages;  -- get some heap space
-   Junky := new Junky_Type;  --  trigger a pagefault
 end Niniel;

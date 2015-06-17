@@ -29,8 +29,9 @@ Project Kernel is
    package Builder is
       Global_Configuration_Pragmas := "gnat.adc";
       for Default_Switches ("ada") use
-        ("-g",
+        ("-g", "-nostdlib",
          "--RTS=" & Project'project_dir);
+      for Executable ("demo.adb") use "demo.x";
    end Builder;
    
    package Binder is
@@ -39,7 +40,7 @@ Project Kernel is
    end Binder;
    
    package Linker is
-      for Default_Switches ("Ada") use ("-r", "-v"); 
+      for Default_Switches ("Ada") use ("-v", "-Xlinker","-r"); 
    end Linker;
    
 end Kernel;

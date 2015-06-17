@@ -71,5 +71,13 @@ void *kif_kmalloc_noio (size_t size);
 void *kif_kmalloc_nofs (size_t size);
 /* void *kif_kmalloc_nowait (size_t size); */
 void kif_sleepforever(void);
+
+unsigned long
+kif_copy_from_user(void *to, const void *from, unsigned long n);
+
+unsigned long
+kif_copy_to_user(void *to, const void *from, unsigned long n)
+
+  
   
 #endif // LINUX_KIF_H

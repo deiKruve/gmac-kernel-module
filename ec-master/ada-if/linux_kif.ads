@@ -22,6 +22,36 @@ package linux_kif is
    pragma Import (C, Sleepforever, "kif_sleepforever");
    
    
+   function copy_to_user (To   : System.Address;
+                          From : System.Address;
+                          N    : Unsigned_Long) return Unsigned_Long;
+   --  copy_to_user — Copy a block of data into user space.
+   --
+   --  to   : Destination address, in user space.
+   --  from : Source address, in kernel space.
+   --  n    : Number of bytes to copy.
+   --
+   --  Returns number of bytes that could not be copied. 
+   --    On success, this will be zero.
+   pragma Import (C, copy_to_user, "kif_copy_to_user");
+   
+   
+   function copy_from_user (to   : System.Address;
+                            from : System.Address;
+                            n    : Unsigned_Long) return Unsigned_Long;
+   --  copy_from_user — Copy a block of data from user space.
+   --
+   --  to   : Destination address, in kernel space.
+   --  from : Source address, in user space.
+   --  n    : Number of bytes to copy.
+   --
+   --  Returns number of bytes that could not be copied. 
+   --    On success, this will be zero.
+   --  If some data could not be copied, this function will pad the copied 
+   --    data to the requested size using zero bytes.
+   pragma Import (C, copy_from_user, "kif_copy_from_user");
+   
+   
    ---------------------------------------------------
    --  this whole section is moved to s-memory.ads  --
    ---------------------------------------------------

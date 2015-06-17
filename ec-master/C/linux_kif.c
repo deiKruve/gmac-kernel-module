@@ -3,6 +3,7 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
+#include <asm/uaccess.h>
 #include "linux_kif.h"
 
 //DEFINE_MUTEX(mname1);
@@ -154,3 +155,14 @@ void kif_sleepforever(void)
   schedule();
 }
 
+unsigned long __must_check
+kif_copy_from_user(void *to, const void __user *from, unsigned long n)
+{
+  return copy_from_user(to, from, n);
+}
+
+unsigned long __must_check
+kif_copy_to_user(void __user *to, const void *from, unsigned long n)
+{
+  return copy_to_user(to, from, n);
+}
