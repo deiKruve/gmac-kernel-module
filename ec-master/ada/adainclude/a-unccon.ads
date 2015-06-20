@@ -20,4 +20,4 @@ generic
 function Ada.Unchecked_Conversion (S : Source) return Target;
 
 pragma Pure (Unchecked_Conversion);
-pragma Import (Intrinsic, Unchecked_Conversion);
+pragma Import (Intrinsic, Unchecked_Conversion, "__unchecked_conversion");

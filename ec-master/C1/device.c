@@ -26,9 +26,7 @@
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
  *****************************************************************************/
-//  keep -- jdk
-//  there is some skbuf crap here that needs to come out most likely.
-// check the  'add Ethernet-II-header' section
+
 /**
    \file
    EtherCAT device methods.

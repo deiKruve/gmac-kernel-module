@@ -1,7 +1,7 @@
 with System;
 with Interfaces.C; use Interfaces.C;
 with Linux_Types;
-with Master;
+with Niniel.Master;
 package Niniel.Ioctl is
    
    subtype Void_Ptr is System.Address;
@@ -20,7 +20,7 @@ package Niniel.Ioctl is
    pragma Convention (C_Pass_By_Copy, ec_ioctl_context_t);
    
    
-   function Gm_Ioctl (This_Master : Master.Ec_Master_T_Ptr; 
+   function Gm_Ioctl (This_Master : Niniel.Master.Ec_Master_T_Ptr; 
 			Ctx  : access  Ec_Ioctl_Context_T; 
 			Cmd  : Unsigned; 
 			Arg  : Void_Ptr) 

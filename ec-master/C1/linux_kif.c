@@ -166,13 +166,3 @@ kif_copy_to_user(void __user *to, const void *from, unsigned long n)
 {
   return copy_to_user(to, from, n);
 }
-
-
-void *
-kif_kthread_run (int (*thread_func)(void *), void *master, char *name)
-{
-  return kthread_run(thread_func, master, name);
-}
-
-
-  

@@ -14,6 +14,8 @@ pragma Restrictions (No_Implicit_Dynamic_Code);
 pragma Restrictions (No_Finalization);
 --  Controlled types are not supported in this run time
 
+with Ada.Unchecked_Conversion; pragma Unreferenced (Ada.Unchecked_Conversion);
+
 with System.Memory;  pragma Unreferenced (System.Memory);
 -- we need to have to have a bit of heap available for gnat, it is implemented
 -- in System.Memory. The exact semantics are not clear yet. At the moment
@@ -32,6 +34,7 @@ with Last_Chance_Handler;  pragma Unreferenced (Last_Chance_Handler);
 
 with Niniel.Ioctl;   pragma Unreferenced (Niniel.Ioctl);
 --  with Niniel;  pragma Unreferenced (Niniel);
+with Niniel.Master;   pragma Unreferenced (Niniel.Master);
 
 procedure Demo
 is

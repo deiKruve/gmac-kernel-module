@@ -2,6 +2,7 @@ pragma Ada_2005;
 pragma Style_Checks (Off);
 
 with Interfaces.C; use Interfaces.C;
+with Interfaces.C.Strings;
 with System;
 with Linux_Types;
 
@@ -50,6 +51,18 @@ package linux_kif is
    --  If some data could not be copied, this function will pad the copied 
    --    data to the requested size using zero bytes.
    pragma Import (C, copy_from_user, "kif_copy_from_user");
+   
+   
+   function kif_kthread_run
+     (thread_func : access function (arg1 : System.Address) return int;
+      master : System.Address;
+      name : Interfaces.C.Strings.chars_ptr) return System.Address;
+   pragma Import (C, kif_kthread_run, "kif_kthread_run");
+   
+   
+   function kthread_stop (k : System.Address) return int;
+   pragma Import (C, kthread_stop, "kthread_stop");
+   
    
    
    ---------------------------------------------------

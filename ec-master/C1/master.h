@@ -49,8 +49,8 @@
 
 #include <linux/version.h>
 
-//#include "device.h"
-//#include "cdev.h"
+#include "device.h"
+#include "cdev.h"
 
 
 //EXTERN "C"{
@@ -123,57 +123,57 @@
 
 /** EtherCAT master phase.
  */
-/* typedef enum { */
-/*     EC_ORPHANED, /\**< Orphaned phase. The master has no Ethernet device */
-/*                    attached. *\/ */
-/*     EC_IDLE, /\**< Idle phase. An Ethernet device is attached, but the master */
-/*                is not in use, yet. *\/ */
-/*     EC_OPERATION /\**< Operation phase. The master was requested by a realtime */
-/*                    application. *\/ */
-/* } ec_master_phase_t; */
+typedef enum {
+    EC_ORPHANED, /**< Orphaned phase. The master has no Ethernet device
+                   attached. */
+    EC_IDLE, /**< Idle phase. An Ethernet device is attached, but the master
+               is not in use, yet. */
+    EC_OPERATION /**< Operation phase. The master was requested by a realtime
+                   application. */
+} ec_master_phase_t;
 
 /*****************************************************************************/
 
  /** Cyclic statistics.
  */
-/* typedef struct { */
-/*     unsigned int timeouts; /\**< datagram timeouts *\/ */
-/*     unsigned int corrupted; /\**< corrupted frames *\/ */
-/*     unsigned int unmatched; /\**< unmatched datagrams (received, but not */
-/*                                queued any longer) *\/ */
-/*     unsigned long output_jiffies; /\**< time of last output *\/ */
-/* } ec_stats_t; */
+typedef struct {
+    unsigned int timeouts; /**< datagram timeouts */
+    unsigned int corrupted; /**< corrupted frames */
+    unsigned int unmatched; /**< unmatched datagrams (received, but not
+                               queued any longer) */
+    unsigned long output_jiffies; /**< time of last output */
+} ec_stats_t;
 
 /*****************************************************************************/
 
 /** Device statistics.
  */
-/* typedef struct { */
-/*     u64 tx_count; /\**< Number of frames sent. *\/ */
-/*     u64 last_tx_count; /\**< Number of frames sent of last statistics cycle. *\/ */
-/*     u64 rx_count; /\**< Number of frames received. *\/ */
-/*     u64 last_rx_count; /\**< Number of frames received of last statistics */
-/*                          cycle. *\/ */
-/*     u64 tx_bytes; /\**< Number of bytes sent. *\/ */
-/*     u64 last_tx_bytes; /\**< Number of bytes sent of last statistics cycle. *\/ */
-/*     u64 rx_bytes; /\**< Number of bytes received. *\/ */
-/*     u64 last_rx_bytes; /\**< Number of bytes received of last statistics cycle. */
-/*                         *\/ */
-/*     u64 last_loss; /\**< Tx/Rx difference of last statistics cycle. *\/ */
-/*     s32 tx_frame_rates[EC_RATE_COUNT]; /\**< Transmit rates in frames/s for */
-/*                                          different statistics cycle periods. */
-/*                                         *\/ */
-/*     s32 rx_frame_rates[EC_RATE_COUNT]; /\**< Receive rates in frames/s for */
-/*                                          different statistics cycle periods. */
-/*                                         *\/ */
-/*     s32 tx_byte_rates[EC_RATE_COUNT]; /\**< Transmit rates in byte/s for */
-/*                                         different statistics cycle periods. *\/ */
-/*     s32 rx_byte_rates[EC_RATE_COUNT]; /\**< Receive rates in byte/s for */
-/*                                         different statistics cycle periods. *\/ */
-/*     s32 loss_rates[EC_RATE_COUNT]; /\**< Frame loss rates for different */
-/*                                      statistics cycle periods. *\/ */
-/*     unsigned long jiffies; /\**< Jiffies of last statistic cycle. *\/ */
-/* } ec_device_stats_t; */
+typedef struct {
+    u64 tx_count; /**< Number of frames sent. */
+    u64 last_tx_count; /**< Number of frames sent of last statistics cycle. */
+    u64 rx_count; /**< Number of frames received. */
+    u64 last_rx_count; /**< Number of frames received of last statistics
+                         cycle. */
+    u64 tx_bytes; /**< Number of bytes sent. */
+    u64 last_tx_bytes; /**< Number of bytes sent of last statistics cycle. */
+    u64 rx_bytes; /**< Number of bytes received. */
+    u64 last_rx_bytes; /**< Number of bytes received of last statistics cycle.
+                        */
+    u64 last_loss; /**< Tx/Rx difference of last statistics cycle. */
+    s32 tx_frame_rates[EC_RATE_COUNT]; /**< Transmit rates in frames/s for
+                                         different statistics cycle periods.
+                                        */
+    s32 rx_frame_rates[EC_RATE_COUNT]; /**< Receive rates in frames/s for
+                                         different statistics cycle periods.
+                                        */
+    s32 tx_byte_rates[EC_RATE_COUNT]; /**< Transmit rates in byte/s for
+                                        different statistics cycle periods. */
+    s32 rx_byte_rates[EC_RATE_COUNT]; /**< Receive rates in byte/s for
+                                        different statistics cycle periods. */
+    s32 loss_rates[EC_RATE_COUNT]; /**< Frame loss rates for different
+                                     statistics cycle periods. */
+    unsigned long jiffies; /**< Jiffies of last statistic cycle. */
+} ec_device_stats_t;
 
 
 /*****************************************************************************/
@@ -248,51 +248,51 @@ struct ec_master {
                                         clock slave config. */
     ec_slave_t *dc_ref_clock; /**< DC reference clock slave. */
 
-    /* unsigned int scan_busy; /\**< Current scan state. *\/ */
-    /* unsigned int allow_scan; /\**< \a True, if slave scanning is allowed. *\/ */
-    /* struct semaphore scan_sem; /\**< Semaphore protecting the \a scan_busy */
-    /*                              variable and the \a allow_scan flag. *\/ */
-    /* wait_queue_head_t scan_queue; /\**< Queue for processes that wait for */
-    /*                                 slave scanning. *\/ */
+    unsigned int scan_busy; /**< Current scan state. */
+    unsigned int allow_scan; /**< \a True, if slave scanning is allowed. */
+    struct semaphore scan_sem; /**< Semaphore protecting the \a scan_busy
+                                 variable and the \a allow_scan flag. */
+    wait_queue_head_t scan_queue; /**< Queue for processes that wait for
+                                    slave scanning. */
 
-    /* unsigned int config_busy; /\**< State of slave configuration. *\/ */
-    /* struct semaphore config_sem; /\**< Semaphore protecting the \a config_busy */
-    /*                                variable and the allow_config flag. *\/ */
-    /* wait_queue_head_t config_queue; /\**< Queue for processes that wait for */
-    /*                                   slave configuration. *\/ */
+    unsigned int config_busy; /**< State of slave configuration. */
+    struct semaphore config_sem; /**< Semaphore protecting the \a config_busy
+                                   variable and the allow_config flag. */
+    wait_queue_head_t config_queue; /**< Queue for processes that wait for
+                                      slave configuration. */
 
-    /* struct list_head datagram_queue; /\**< Datagram queue. *\/ */
-    /* uint8_t datagram_index; /\**< Current datagram index. *\/ */
+    struct list_head datagram_queue; /**< Datagram queue. */
+    uint8_t datagram_index; /**< Current datagram index. */
 
-    /* struct list_head ext_datagram_queue; /\**< Queue for non-application */
-    /*                                        datagrams. *\/ */
-    /* struct semaphore ext_queue_sem; /\**< Semaphore protecting the \a */
-    /*                                   ext_datagram_queue. *\/ */
+    struct list_head ext_datagram_queue; /**< Queue for non-application
+                                           datagrams. */
+    struct semaphore ext_queue_sem; /**< Semaphore protecting the \a
+                                      ext_datagram_queue. */
 
   //jdk//ec_datagram_t ext_datagram_ring[EC_EXT_RING_SIZE];
   /**< External datagram
                                                          ring. */
-    /* unsigned int ext_ring_idx_rt; /\**< Index in external datagram ring for RT */
-    /*                                 side. *\/ */
-    /* unsigned int ext_ring_idx_fsm; /\**< Index in external datagram ring for */
-    /*                                  FSM side. *\/ */
+    unsigned int ext_ring_idx_rt; /**< Index in external datagram ring for RT
+                                    side. */
+    unsigned int ext_ring_idx_fsm; /**< Index in external datagram ring for
+                                     FSM side. */
     unsigned int send_interval; /**< Interval between two calls to
                                   ecrt_master_send(). */
-    /* size_t max_queue_size; /\**< Maximum size of datagram queue *\/ */
+    size_t max_queue_size; /**< Maximum size of datagram queue */
 
-    /* ec_slave_t *fsm_slave; /\**< Slave that is queried next for FSM exec. *\/ */
-    /* struct list_head fsm_exec_list; /\**< Slave FSM execution list. *\/ */
-    /* unsigned int fsm_exec_count; /\**< Number of entries in execution list. *\/ */
+    ec_slave_t *fsm_slave; /**< Slave that is queried next for FSM exec. */
+    struct list_head fsm_exec_list; /**< Slave FSM execution list. */
+    unsigned int fsm_exec_count; /**< Number of entries in execution list. */
 
     unsigned int debug_level; /**< Master debug level. */
     ec_stats_t stats; /**< Cyclic statistics. */
 
     struct task_struct *thread; /**< Master thread. */
 
-/* #ifdef EC_EOE */
-/*     struct task_struct *eoe_thread; /\**< EoE thread. *\/ */
-/*     struct list_head eoe_handlers; /\**< Ethernet over EtherCAT handlers. *\/ */
-/* #endif */
+#ifdef EC_EOE
+    struct task_struct *eoe_thread; /**< EoE thread. */
+    struct list_head eoe_handlers; /**< Ethernet over EtherCAT handlers. */
+#endif
 
     struct semaphore io_sem; /**< Semaphore used in \a IDLE phase. */
 
@@ -309,19 +309,19 @@ struct ec_master {
     struct list_head emerg_reg_requests; /**< Emergency register access
                                            requests. */
 
-    /* wait_queue_head_t request_queue; /\**< Wait queue for external requests */
-    /*                                    from user space. *\/ */
+    wait_queue_head_t request_queue; /**< Wait queue for external requests
+                                       from user space. */
 };
 
 /*****************************************************************************/
 
 // static funtions
-/* void ec_master_init_static(void); */
+void ec_master_init_static(void);
 
 // master creation/deletion
-/* int ec_master_init(ec_master_t *, unsigned int, const uint8_t *, */
-/*         const uint8_t *, dev_t, struct class *, unsigned int); */
-/* void ec_master_clear(ec_master_t *); */
+int ec_master_init(ec_master_t *, unsigned int, const uint8_t *,
+        const uint8_t *, dev_t, struct class *, unsigned int);
+void ec_master_clear(ec_master_t *);
 
 /** Number of Ethernet devices.
  */
@@ -333,23 +333,23 @@ struct ec_master {
 
 
 // phase transitions
-/* int ec_master_enter_idle_phase(ec_master_t *); */
-/* void ec_master_leave_idle_phase(ec_master_t *); */
-/* int ec_master_enter_operation_phase(ec_master_t *); */
-/* void ec_master_leave_operation_phase(ec_master_t *); */
+int ec_master_enter_idle_phase(ec_master_t *);
+void ec_master_leave_idle_phase(ec_master_t *);
+int ec_master_enter_operation_phase(ec_master_t *);
+void ec_master_leave_operation_phase(ec_master_t *);
 
 // datagram IO
-/* void ec_master_receive_datagrams(ec_master_t *, ec_device_t *, */
-/*         const uint8_t *, size_t); */
+void ec_master_receive_datagrams(ec_master_t *, ec_device_t *,
+        const uint8_t *, size_t);
 //jdk//void ec_master_queue_datagram(ec_master_t *, ec_datagram_t *);
 //jdk//void ec_master_queue_datagram_ext(ec_master_t *, ec_datagram_t *);
 
 // misc.
-/* void ec_master_set_send_interval(ec_master_t *, unsigned int); */
+void ec_master_set_send_interval(ec_master_t *, unsigned int);
 
-/* int ec_master_debug_level(ec_master_t *, unsigned int); */
+int ec_master_debug_level(ec_master_t *, unsigned int);
 
- /* extern const unsigned int rate_intervals[EC_RATE_COUNT]; // see master.c */
+ extern const unsigned int rate_intervals[EC_RATE_COUNT]; // see master.c
 
 /*****************************************************************************/
 

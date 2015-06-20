@@ -1,0 +1,29 @@
+
+
+Hallo,
+
+First the good news: I was able to load and unload a mixed C and Ada kernel module last night for the first time.
+
+But I think I found a subtle problem in the compiler (gnat-gcc 4.7.4) while doing my Linux kernel module.
+
+I have been struggling for a while already with undefined random symbols turning up in the symbol list of the partial Ada compile. And these then progress to the module into the final build and link. (with the kernel module build machinery, this is why I do a partial link of the Ada stuff).
+
+So last night they had all disappeared, but this morning after adding a totally irrelevant module (sort of a little "hallo world" thing) one of them was back.
+
+They are all related to the Exception machinery and refer to about 4 or 5 symbols in "Ada.Exeptions" in the standard "x86 Linux" runtime.
+They are caused by any construct where the compiler suspects that there might be a runtime error under certain conditions. And they have to do with exception propagation I suspect, from looking at a disassembly.
+Now in an zfp runtime, any standard runtime references should be switched off in the compiler, or else an alternative should be supplied in the custom runtime. But both ravenscar and zfp (ex Adacore) do not cater for this eventuality.
+
+Needless to say that I have been through all exception related pragmas and restrictions. And I did make a 'gnat.adc' file that is duly noted in the project file. So that any pragmas are global.
+
+Other than that I have been through all the target parameters in the private part of the System package in the runtime.
+By the way the documentation for those things is in "targparm.ads" in the gcc source.
+
+The bottom line is that, no-matter what I all switch off, the compiler sometimes emits random subroutine calls in its error detection section. Normally they dont bite you, because you would almost never hit them in a well constructed program. But a kernel module with those simply will not load; end.
+
+The only vague reference to such a scenario might be in the "-gnatp" description in the gnat_ug.
+
+So if any of the compiler theologians has any light on this: please feel welcome to comment.
+
+Besides that, I think I must just construct some dummy procedures for those symbols, that put the  module into eternal sleep, with a message of course.
+

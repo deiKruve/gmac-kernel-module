@@ -76,10 +76,8 @@ unsigned long
 kif_copy_from_user(void *to, const void *from, unsigned long n);
 
 unsigned long
-kif_copy_to_user(void *to, const void *from, unsigned long n);
+kif_copy_to_user(void *to, const void *from, unsigned long n)
 
-void *
-  kif_kthread_run (int (*thread_func)(void *), void *master, char *name);
-
-extern int kthread_stop(void *k);
+  
+  
 #endif // LINUX_KIF_H
