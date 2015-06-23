@@ -53,11 +53,11 @@ package linux_kif is
    pragma Import (C, copy_from_user, "kif_copy_from_user");
    
    
-   function kif_kthread_run
+   function kthread_run
      (thread_func : access function (arg1 : System.Address) return int;
       master : System.Address;
       name : Interfaces.C.Strings.chars_ptr) return System.Address;
-   pragma Import (C, kif_kthread_run, "kif_kthread_run");
+   pragma Import (C, kthread_run, "kif_kthread_run");
    
    
    function kthread_stop (k : System.Address) return int;

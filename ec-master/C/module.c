@@ -136,6 +136,11 @@ int __init ec_init_module(void)
         }
     }
 
+    // ada part initialization
+    adainit();
+    niniel_init();
+    
+
     // initialize static master variables
     ec_master_init_static();
 
@@ -156,8 +161,6 @@ int __init ec_init_module(void)
             goto out_free_masters;
     }
     
-    adainit();
-    niniel_init();
 
     EC_INFO("%u master%s waiting for devices.\n",
             master_count, (master_count == 1 ? "" : "s"));

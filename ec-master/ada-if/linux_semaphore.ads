@@ -16,7 +16,9 @@ package linux_semaphore is
    pragma Convention (C_Pass_By_Copy, semaphore);
 
    -- sema_init  is inline (all done in master.c, lucky)
-
+   procedure sema_init (sem : access semaphore; val : int);
+   pragma Import (C, sema_init, "kif_sema_init");
+   
    procedure down (sem : access semaphore);
    pragma Import (C, down, "down");
 

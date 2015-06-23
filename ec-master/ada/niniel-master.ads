@@ -5,13 +5,16 @@ with Interfaces.C; use Interfaces.C;
 with System;
 
 with Cdev;
+with Device;
 with Linux_Types;
 with Linux_Semaphore;
+with Linux_Device;
 
 
 package Niniel.Master is
-   package L renames Linux_Types;
-
+   package L   renames Linux_Types;
+   package Ld  renames Linux_Device;
+   
    ------------------
    --  data types  --
    ------------------
@@ -84,15 +87,22 @@ package Niniel.Master is
    -- access linux_device_h.device;
    
    subtype Task_Struct_Ptr is System.Address; -- access linux_sched_h.task_struct;
+   
    --type ec_master_devices_array is array (0 .. 0) of aliased ecdev.ec_device_t;
-   type ec_master_macs_array is array (0 .. 0) of access L.u8;
+   --subtype Ec_Device_Ptr is System.Address;
+   type ec_master_devices_array is array (0 .. 0) of Device.Ec_Device_Ptr;
+   
+--   type ec_master_macs_array is array (0 .. 0) of access L.u8;
+   subtype Mac_Addr_Ptr is System.Address;
+   type ec_master_macs_array is array (0 .. 0) of Mac_Addr_Ptr;
+   
    type ec_master is record
       index : aliased unsigned;  --  *
       reserved : aliased unsigned;
       chdev : aliased cdev.ec_cdev_t;
       class_device : Linux_Device_Device_Ptr; -- access linux_device_h.device;
       master_sem : aliased linux_semaphore.Semaphore;
-      Devices : Linux_Device_Device_Ptr;  --  *
+      Devices : Device.Ec_Device_Ptr;  --  *
       macs : aliased ec_master_macs_array;
       device_sem : aliased linux_semaphore.Semaphore;  --  *
       device_stats : aliased ec_device_stats_t;  --  *
@@ -147,9 +157,11 @@ package Niniel.Master is
    end record;
    pragma Convention (C_Pass_By_Copy, ec_master);
    
+   type Ec_Master_A_Type is access all Ec_Master;
    subtype Ec_Master_T_Ptr is System.Address;
    
    subtype Ec_Device_T_Ptr is System.Address;
+   
 
    ---------------
    --  methods  --
@@ -181,7 +193,14 @@ package Niniel.Master is
    -- static funtions
    pragma Export (C, Ec_Master_Init_Static, "ec_master_init_static");
 
-   function Ec_Master_Init return int;
+   function Ec_Master_Init (Master_P      : Ec_Master_T_Ptr;
+                            Index         : Unsigned;
+                            Main_Mac      : Mac_Addr_Ptr;
+                            Backup_Mac    : Mac_Addr_Ptr;
+                            Device_Number : L.Dev_T;
+                            Class         : Linux_Device.Class_Ptr;
+                            Debug_Level   : Unsigned)
+                           return Int;
    -- master creation/deletion
    pragma Export (C, Ec_Master_Init, "ec_master_init");
 
@@ -191,7 +210,7 @@ package Niniel.Master is
 
    -- phase transitions
 
-   function ec_master_enter_idle_phase (Master : access Ec_Master) return int;
+   function ec_master_enter_idle_phase (Master_P : System.Address) return int;
    --  pragma Import (C, ec_master_enter_idle_phase, "ec_master_enter_idle_phase");
 
    procedure ec_master_leave_idle_phase (Master : access Ec_Master);

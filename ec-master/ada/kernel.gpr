@@ -22,7 +22,7 @@ Project Kernel is
          "-fstack-protector", "-Wno-unused-but-set-variable", 
          "-fno-var-tracking-assignments", "-g",
          "-fno-strict-overflow", "-fconserve-stack", "-Werror=implicit-int", 
-         "-Werror=strict-prototypes", "-c"); --  , "-S"); 
+         "-Werror=strict-prototypes", "-c", "-S"); 
       --   "-pg", is for tracing.
    end Compiler;
    
