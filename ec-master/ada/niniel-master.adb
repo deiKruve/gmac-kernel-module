@@ -303,7 +303,7 @@ package body Niniel.Master is
    end Ec_Master_Init_Static;
    
    
-   function ec_master_init (Master_P      : Ec_Master_T_Ptr;
+   function ec_master_init (Master_P      : Master.Ec_Master_T_Ptr;
                             Index         : Ic.Unsigned;
                             Main_Mac      : Mac_Addr_Ptr;
                             Backup_Mac    : Mac_Addr_Ptr;

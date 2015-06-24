@@ -45,6 +45,7 @@
 //#include "ethernet.h"
 #include "ioctl.h"
 #include "specials.h"
+#include "niniel_ada.h"
 
 /** Set to 1 to enable device operations debugging.
  */

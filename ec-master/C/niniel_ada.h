@@ -2,6 +2,8 @@
 #ifndef __NINIEL_ADA_H__
 #define __NINIEL_ADA_H__
 
+#include "ioctl.h"
+
 extern const unsigned int rate_intervals[EC_RATE_COUNT]; // see master.ads
 
 extern void adainit (void);
