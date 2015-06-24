@@ -43,6 +43,7 @@
 
 #include "device.h"
 #include "master.h"
+#include "niniel_ada.h"
 
 #ifdef EC_DEBUG_RING
 #define timersub(a, b, result) \

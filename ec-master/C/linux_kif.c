@@ -1,8 +1,9 @@
 
-
+#include <linux/semaphore.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
+#include <linux/kthread.h>
 #include <asm/uaccess.h>
 #include "linux_kif.h"
 
@@ -54,6 +55,11 @@ int kif_is_mutex_locked (struct mutex *lock)
 /*   mutex_lock_killable_nested(lock, 0); */
 /* } */
 
+
+void kif_sema_init(struct semaphore *sem, int val)
+{
+  sema_init(sem, val);
+}
 
 
 /*  Kernel Memory . . . . 

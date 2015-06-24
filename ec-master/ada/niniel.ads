@@ -1,6 +1,7 @@
 
 package Niniel is
    
+   EC_RATE_COUNT : constant Integer := 2;
    
    procedure Init;
    pragma Export (C, Init, "niniel_init");

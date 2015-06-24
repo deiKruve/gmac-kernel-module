@@ -19,11 +19,13 @@ Project Kernel is
          "-fno-asynchronous-unwind-tables", "-mno-sse", 
          "-mno-mmx", "-mno-sse2", "-mno-3dnow", "-mno-avx", 
          "-fno-delete-null-pointer-checks", "-O2", "-Wframe-larger-than=2048", 
-         "-fstack-protector", "-Wno-unused-but-set-variable", 
+         "-Wno-unused-but-set-variable", 
          "-fno-var-tracking-assignments", "-g",
          "-fno-strict-overflow", "-fconserve-stack", "-Werror=implicit-int", 
-         "-Werror=strict-prototypes", "-c", "-S"); 
+         "-Werror=strict-prototypes", "-c");--, "-S"); 
       --   "-pg", is for tracing.
+      --   "-fstack-protector",  is for stack protection, but its a pain with
+      --                         no Clib
    end Compiler;
    
    package Builder is

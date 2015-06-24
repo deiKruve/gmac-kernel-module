@@ -9,7 +9,8 @@ with System;
 package linux_timer is
    package L renames Linux_Types;
 
-   HZ : constant unsigned := 100; -- on most systems these days.
+   -- HZ : constant unsigned := 100; -- on most systems these days.
+   -- in linux_sched.ads
 
    subtype timer_list_start_comm_array is Interfaces.C.char_array (0 .. 15);
    type timer_list is record

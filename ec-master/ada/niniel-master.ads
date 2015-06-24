@@ -34,7 +34,8 @@ package Niniel.Master is
         --                   application.
    );
    pragma Convention (C, ec_master_phase_t);
-
+   
+  
    type ec_stats_t is record
       -- Cyclic statistics.
       timeouts : aliased unsigned;
@@ -78,8 +79,8 @@ package Niniel.Master is
    end record;
    pragma Convention (C_Pass_By_Copy, ec_device_stats_t);
 
-   rate_intervals : aliased array (0 .. 2) of aliased unsigned;
-   pragma Import (C, rate_intervals, "rate_intervals");
+   rate_intervals : aliased array (0 .. 2) of aliased Unsigned := (1, 10, 60);
+   pragma Export (C, rate_intervals, "rate_intervals");
 
    
    -- lets try to makew a master
@@ -182,7 +183,7 @@ package Niniel.Master is
    --     ec_master_clear_device_stats,
    --     "ec_master_clear_device_stats");
 
-   procedure ec_master_update_device_stats (arg1 : access Ec_Master);
+   procedure ec_master_update_device_stats (Master : access Ec_Master);
    -- Updates the common device statistics.
    --  pragma Import
    --    (C,
@@ -210,11 +211,11 @@ package Niniel.Master is
 
    -- phase transitions
 
-   function ec_master_enter_idle_phase (Master_P : System.Address) return int;
-   --  pragma Import (C, ec_master_enter_idle_phase, "ec_master_enter_idle_phase");
+   function ec_master_enter_idle_phase (Master_P : Ec_Master_T_Ptr) return int;
+   pragma Export (C, ec_master_enter_idle_phase, "ec_master_enter_idle_phase");
 
-   procedure ec_master_leave_idle_phase (Master : access Ec_Master);
-   --  pragma Import (C, ec_master_leave_idle_phase, "ec_master_leave_idle_phase");
+   procedure ec_master_leave_idle_phase (Master_P : Ec_Master_T_Ptr);
+   pragma Export (C, ec_master_leave_idle_phase, "ec_master_leave_idle_phase");
 
    function Ec_Master_Enter_Operation_Phase
      (arg1 : Ec_Master_T_Ptr) return int;
@@ -236,10 +237,10 @@ package Niniel.Master is
       arg2 : Ec_Device_T_Ptr;
       arg3 : access L.u8;
       arg4 : L.size_t);
-   --  pragma Import
-   --    (C,
-   --     Ec_Master_Receive_Datagrams,
-   --     "ec_master_receive_datagrams");
+   pragma Export
+     (C,
+      Ec_Master_Receive_Datagrams,
+      "ec_master_receive_datagrams");
 
    procedure ec_master_set_send_interval
      (arg1 : Ec_Master_T_Ptr;

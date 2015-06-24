@@ -1,12 +1,13 @@
 #ifndef LINUX_KIF_H
 #define	LINUX_KIF_H
 
+#include <linux/sched.h>
 
 void init_mutexes(void);
 void kif_destroy_mutex (struct mutex *lock);
 int kif_is_mutex_locked (struct mutex *lock);
 
-
+void kif_sema_init(struct semaphore *sem, int val);
 
 
 /**
@@ -81,5 +82,6 @@ kif_copy_to_user(void *to, const void *from, unsigned long n);
 void *
   kif_kthread_run (int (*thread_func)(void *), void *master, char *name);
 
-extern int kthread_stop(void *k);
+//struct task_struct;
+extern int kthread_stop(struct task_struct  *k);
 #endif // LINUX_KIF_H

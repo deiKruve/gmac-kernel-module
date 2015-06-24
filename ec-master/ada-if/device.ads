@@ -26,5 +26,8 @@ package device is
    
    procedure ec_device_clear (arg1 : Ec_Device_Ptr);
    pragma Import (C, ec_device_clear, "ec_device_clear");
+   
+   procedure ec_device_update_stats (arg1 : Ec_Device_Ptr);
+   pragma Import (C, ec_device_update_stats, "ec_device_update_stats");
 
 end device;

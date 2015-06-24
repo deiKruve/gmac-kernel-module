@@ -49,8 +49,8 @@
 
 #include <linux/version.h>
 
-//#include "device.h"
-//#include "cdev.h"
+#include "device.h"
+#include "cdev.h"
 
 
 //EXTERN "C"{
@@ -121,59 +121,57 @@
 
 /*****************************************************************************/
 
-/** EtherCAT master phase.
- */
-/* typedef enum { */
-/*     EC_ORPHANED, /\**< Orphaned phase. The master has no Ethernet device */
-/*                    attached. *\/ */
-/*     EC_IDLE, /\**< Idle phase. An Ethernet device is attached, but the master */
-/*                is not in use, yet. *\/ */
-/*     EC_OPERATION /\**< Operation phase. The master was requested by a realtime */
-/*                    application. *\/ */
-/* } ec_master_phase_t; */
+/* EtherCAT master phase. */
+typedef enum {
+    EC_ORPHANED, /**< Orphaned phase. The master has no Ethernet device
+                   attached. */
+    EC_IDLE, /**< Idle phase. An Ethernet device is attached, but the master
+               is not in use, yet. */
+    EC_OPERATION /**< Operation phase. The master was requested by a realtime
+                   application. */
+} ec_master_phase_t;
 
 /*****************************************************************************/
 
- /** Cyclic statistics.
- */
-/* typedef struct { */
-/*     unsigned int timeouts; /\**< datagram timeouts *\/ */
-/*     unsigned int corrupted; /\**< corrupted frames *\/ */
-/*     unsigned int unmatched; /\**< unmatched datagrams (received, but not */
-/*                                queued any longer) *\/ */
-/*     unsigned long output_jiffies; /\**< time of last output *\/ */
-/* } ec_stats_t; */
+ /* Cyclic statistics. */
+typedef struct {
+    unsigned int timeouts; /**< datagram timeouts */
+    unsigned int corrupted; /**< corrupted frames */
+    unsigned int unmatched; /**< unmatched datagrams (received, but not
+                               queued any longer) */
+    unsigned long output_jiffies; /**< time of last output */
+} ec_stats_t;
 
 /*****************************************************************************/
 
 /** Device statistics.
  */
-/* typedef struct { */
-/*     u64 tx_count; /\**< Number of frames sent. *\/ */
-/*     u64 last_tx_count; /\**< Number of frames sent of last statistics cycle. *\/ */
-/*     u64 rx_count; /\**< Number of frames received. *\/ */
-/*     u64 last_rx_count; /\**< Number of frames received of last statistics */
-/*                          cycle. *\/ */
-/*     u64 tx_bytes; /\**< Number of bytes sent. *\/ */
-/*     u64 last_tx_bytes; /\**< Number of bytes sent of last statistics cycle. *\/ */
-/*     u64 rx_bytes; /\**< Number of bytes received. *\/ */
-/*     u64 last_rx_bytes; /\**< Number of bytes received of last statistics cycle. */
-/*                         *\/ */
-/*     u64 last_loss; /\**< Tx/Rx difference of last statistics cycle. *\/ */
-/*     s32 tx_frame_rates[EC_RATE_COUNT]; /\**< Transmit rates in frames/s for */
-/*                                          different statistics cycle periods. */
-/*                                         *\/ */
-/*     s32 rx_frame_rates[EC_RATE_COUNT]; /\**< Receive rates in frames/s for */
-/*                                          different statistics cycle periods. */
-/*                                         *\/ */
-/*     s32 tx_byte_rates[EC_RATE_COUNT]; /\**< Transmit rates in byte/s for */
-/*                                         different statistics cycle periods. *\/ */
-/*     s32 rx_byte_rates[EC_RATE_COUNT]; /\**< Receive rates in byte/s for */
-/*                                         different statistics cycle periods. *\/ */
-/*     s32 loss_rates[EC_RATE_COUNT]; /\**< Frame loss rates for different */
-/*                                      statistics cycle periods. *\/ */
-/*     unsigned long jiffies; /\**< Jiffies of last statistic cycle. *\/ */
-/* } ec_device_stats_t; */
+typedef struct {
+    u64 tx_count; /**< Number of frames sent. */
+    u64 last_tx_count; /**< Number of frames sent of last statistics cycle. */
+    u64 rx_count; /**< Number of frames received. */
+    u64 last_rx_count; /**< Number of frames received of last statistics
+                         cycle. */
+    u64 tx_bytes; /**< Number of bytes sent. */
+    u64 last_tx_bytes; /**< Number of bytes sent of last statistics cycle. */
+    u64 rx_bytes; /**< Number of bytes received. */
+    u64 last_rx_bytes; /**< Number of bytes received of last statistics cycle.
+                        */
+    u64 last_loss; /**< Tx/Rx difference of last statistics cycle. */
+    s32 tx_frame_rates[EC_RATE_COUNT]; /**< Transmit rates in frames/s for
+                                         different statistics cycle periods.
+                                        */
+    s32 rx_frame_rates[EC_RATE_COUNT]; /**< Receive rates in frames/s for
+                                         different statistics cycle periods.
+                                        */
+    s32 tx_byte_rates[EC_RATE_COUNT]; /**< Transmit rates in byte/s for
+                                        different statistics cycle periods. */
+    s32 rx_byte_rates[EC_RATE_COUNT]; /**< Receive rates in byte/s for
+                                        different statistics cycle periods. */
+    s32 loss_rates[EC_RATE_COUNT]; /**< Frame loss rates for different
+                                     statistics cycle periods. */
+    unsigned long jiffies; /**< Jiffies of last statistic cycle. */
+} ec_device_stats_t;
 
 
 /*****************************************************************************/

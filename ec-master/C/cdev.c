@@ -40,10 +40,11 @@
 
 #include "cdev.h"
 #include "master.h"
-#include "slave_config.h"
-#include "voe_handler.h"
-#include "ethernet.h"
+//#include "slave_config.h"
+//#include "voe_handler.h"
+//#include "ethernet.h"
 #include "ioctl.h"
+#include "specials.h"
 
 /** Set to 1 to enable device operations debugging.
  */

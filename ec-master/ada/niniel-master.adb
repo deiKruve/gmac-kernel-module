@@ -1,6 +1,7 @@
 
 with Linux_Kernel;
 with Linux_Sched;
+with Linux_Jiffies;
 with Linux_Kif;
 
 --  with Jan.Img_Uns;
@@ -18,6 +19,7 @@ package body Niniel.Master is
    package Lkf renames Linux_Kif;
    package Ls  renames Linux_Sched;
    package Lsm renames Linux_Semaphore;
+   package Lj  renames Linux_Jiffies;
    --package Ld  renames Linux_Device;
    
    --package Iu  renames jan.Img_Uns;
@@ -161,8 +163,8 @@ package body Niniel.Master is
       --Namest : 
    begin
       
-      Lk.Printk (Lk.KERN_INFO & "Starting thread " & "junk" & 
-                   ASCII.LF & ASCII.NUL);
+      --Lk.Printk (Lk.KERN_INFO & "Starting thread " & "junk" & 
+      --             ASCII.LF & ASCII.NUL);
       
       Addr := Lkf.Kthread_Run (thread_func => Thrd_Func, 
                                Master      => Master.all'address, 
@@ -173,7 +175,7 @@ package body Niniel.Master is
          return -1;
          
       else
-         Copy (Name, Master.Name);
+         --Copy (Name, Master.Name);
          Master.Thread := Addr;
          return Toi (Addr);
       end if;
@@ -183,7 +185,7 @@ package body Niniel.Master is
    --------------------------------------
    --  stop the present master thread  --
    --------------------------------------
-   procedure Ec_Master_Thread_Stop (Master    : access Ec_Master)
+   procedure Ec_Master_Thread_Stop (Master : not null access Ec_Master)
    is
       use type System.Address;
       Sleep_Jiffies : Ic.Long;
@@ -239,10 +241,58 @@ package body Niniel.Master is
    end Ec_Master_Clear_Device_Stats;
    
    
-   procedure ec_master_update_device_stats (arg1 : access Ec_Master)
+   procedure Ec_Master_Update_Device_Stats (Master : access Ec_Master)
    is
+      use type Ice.Unsigned_Long_Long;
+      S      : constant access Ec_Device_Stats_T := Master.Device_Stats'access;
+      tx_frame_rate, 
+      rx_frame_rate, 
+      tx_byte_rate,
+      rx_byte_rate, 
+      Loss_Rate,
+      N             : L.S32;
+      Loss          : L.U64;
    begin
-      null;
+      
+      if Ic.Long (Lj.jiffies - S.Jiffies) < Ls.HZ then
+         return;
+      end if;
+      
+      tx_frame_rate := L.S32 (S.tx_count - S.last_tx_count) * 1000;
+      rx_frame_rate := L.S32 (S.rx_count - S.last_rx_count) * 1000;
+      tx_byte_rate  := L.S32 (S.tx_bytes - S.Last_Tx_Bytes);
+      rx_byte_rate  := L.S32 (S.rx_bytes - S.Last_Rx_Bytes);
+      loss          := S.tx_count - S.rx_count;
+      loss_rate     := L.S32 (loss - S.last_loss) * 1000;
+      --
+      --        Low-pass filter:
+      --        Y_n = y_(n - 1) + T / tau * (x - y_(n - 1))   | T = 1
+      --     -> Y_n += (x - y_(n - 1)) / tau
+      --
+      for I in 0 .. EC_RATE_COUNT loop
+         n := L.S32 (Rate_Intervals (I));
+         s.tx_frame_rates (i) := 
+           s.tx_frame_rates (i) + (tx_frame_rate - s.tx_frame_rates (i)) / n;
+         s.rx_frame_rates (i) := 
+           s.rx_frame_rates (i) + (rx_frame_rate - s.rx_frame_rates (i)) / n;
+         s.tx_byte_rates (i)  := 
+           s.tx_byte_rates (i) + (tx_byte_rate - s.tx_byte_rates (i)) / n;
+         s.rx_byte_rates (i)  := 
+           s.rx_byte_rates (i) + (rx_byte_rate - s.rx_byte_rates (i)) / n;
+         s.loss_rates (i)     := 
+           s.loss_rates (i) + (loss_rate - s.loss_rates (i)) / n;
+      end loop;
+      
+      s.last_tx_count := s.tx_count;
+      s.last_rx_count := s.rx_count;
+      s.last_tx_bytes := s.tx_bytes;
+      s.last_rx_bytes := s.rx_bytes;
+      s.last_loss     := loss;
+      
+      Device.Ec_Device_Update_Stats (Master.Devices);
+      
+      S.jiffies := Lj.jiffies;
+      
    end Ec_Master_Update_Device_Stats;
    
    
@@ -376,15 +426,16 @@ package body Niniel.Master is
    
    
    
-   function ec_master_enter_idle_phase (Master_P : System.address) return Int
+   function ec_master_enter_idle_phase (Master_P : Ec_Master_T_Ptr) return Int
    is
-      function Toa is new Ada.Unchecked_Conversion (Source => System.Address,
+      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_T_Ptr,
                                                     Target => Ec_Master_A_Type);
       function Tocp is new Ada.Unchecked_Conversion (Source => System.Address,
                                                     Target => Ics.Chars_Ptr);
       Ret    : Ic.Int           := 0;
       Master : constant access Ec_Master := Toa (Master_P);
-      S      : String (1 .. 12)          := "Niniel-IDLE" & Ascii.nul;
+      ss     : constant String (1 .. 11) := "Niniel-IDLE";
+      S      : constant String (1 .. 12) := Ss & Ascii.nul;
    begin
       Lk.Printk (Lk.KERN_DEBUG & "ORPHANED -> IDLE." &
                    ASCII.LF & ASCII.NUL);
@@ -399,16 +450,26 @@ package body Niniel.Master is
       --  reset number of responding slaves to trigger scanning
       
       Master_Fsm_State := Idle;
+      Lk.Printk (Lk.KERN_INFO & "Starting thread " & Ss & 
+                   ASCII.LF & ASCII.NUL);
       ret := Ec_Master_Thread_Start (master, Master_Fsm'Access, 
-                                     Tocp (S'address));
-      if Ret /= 0 then Master.Phase := EC_ORPHANED; end if;
+                                     Tocp (S (S'First)'address));
+      if Ret /= 0 then 
+         Master.Phase := EC_ORPHANED;
+      else
+         Copy (S, Master.Name);
+         null;
+      end if;
       
       return ret;
    end Ec_Master_Enter_Idle_Phase;
    
    
-   procedure ec_master_leave_idle_phase (Master : access Ec_Master)---
+   procedure ec_master_leave_idle_phase (Master_P : Ec_Master_T_Ptr)---
    is
+      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_T_Ptr,
+                                                    Target => Ec_Master_A_Type);
+      Master : constant access Ec_Master := Toa (Master_P);
    begin
       Lk.Printk (Lk.KERN_DEBUG & "IDLE -> ORPHANED." &
                    ASCII.LF & ASCII.NUL);
@@ -458,6 +519,7 @@ package body Niniel.Master is
       null;
    end Ec_Master_Set_Send_Interval;
    
+      
    --------------------------------------------
    -- set debug level
    -- 

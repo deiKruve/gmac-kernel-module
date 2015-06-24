@@ -66,6 +66,44 @@ package Ada.Exceptions is
    pragma Export (C, Rcheck_CE_Access_Check,
                   "__gnat_rcheck_CE_Access_Check");
 
+   procedure Rcheck_CE_Index_Check
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_CE_Index_Check);
+   pragma Export (C, Rcheck_CE_Index_Check,
+                  "__gnat_rcheck_CE_Index_Check");
+
+   procedure Rcheck_CE_Invalid_Data
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_CE_Invalid_Data);
+   pragma Export (C, Rcheck_CE_Invalid_Data,
+                  "__gnat_rcheck_CE_Invalid_Data");
+
+   procedure Rcheck_CE_Range_Check
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_CE_Range_Check);
+   pragma Export (C, Rcheck_CE_Range_Check,
+                  "__gnat_rcheck_CE_Range_Check");
+
+   procedure Rcheck_PE_Unchecked_Union_Restriction
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_PE_Unchecked_Union_Restriction);
+   pragma Export (C, Rcheck_PE_Unchecked_Union_Restriction,
+                  "__gnat_rcheck_PE_Unchecked_Union_Restriction");
+
+   procedure Rcheck_CE_Divide_By_Zero
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_CE_Divide_By_Zero);
+   pragma Export (C, Rcheck_CE_Divide_By_Zero,
+                  "__gnat_rcheck_CE_Divide_By_Zero");
+
+   procedure Personality_V0
+     (File : System.Address; Line : Integer);
+   --  the arguments are wrong here,
+   --  dont know if it matters.
+   pragma No_Return (Personality_V0);
+   pragma Export (C, Personality_V0,
+                  "__gnat_personality_v0");
+
 private
 
    ------------------
