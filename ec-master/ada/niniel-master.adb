@@ -333,7 +333,7 @@ package body Niniel.Master is
       Master.Index := Index;
       Master.Reserved := 0;
       
-      Lsm.Sema_Init (Master.Master_Sem'Access, 1);
+      Lsm.Sema_Init (Master.Master_Sem'Address, 1);
       
       Master.Macs (Master.Macs'First) := Main_Mac;
       Ec_Master_Clear_Device_Stats (Master); -------------------implement!!

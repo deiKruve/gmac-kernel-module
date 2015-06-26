@@ -3,12 +3,22 @@ with System;
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Extensions;
 with Linux_Types;
+with Asm_Ioctl;
 
 with Niniel.Master;
 
 package Niniel.Ioctl is
    package L   renames Linux_Types;
+   package Ioc renames Asm_Ioctl;
    package Ice renames Interfaces.C.Extensions;
+   
+   
+   type ec_ioctl_module_t is record
+      ioctl_version_magic : aliased L.uint32_t;
+      master_count        : aliased L.uint32_t;
+   end record;
+   pragma Convention (C_Pass_By_Copy, ec_ioctl_module_t);
+   
    
    type ec_ioctl_context_t is record
       -- Context data structure for file handles.
@@ -25,21 +35,31 @@ package Niniel.Ioctl is
    
    type Ec_Ioctl_Context_A_Type is access all Ec_Ioctl_Context_T;
    subtype Ec_Ioctl_Context_Ptr is System.Address;
-
+   
+   
+   
+   ---------------------------
+   --  io control commands  --
+   ---------------------------
+   EC_IOCTL_TYPE   : constant Ice.Unsigned_8 := 16#a4#;
+   
+   EC_IOCTL_MODULE : constant Ioc.Ioctl_Cmd  := 
+     (0, EC_IOCTL_TYPE, Ec_Ioctl_Module_T'Size, Ioc.IOC_READ);
+   -- lowest first
 
    function ec_ioctl
      (Master_P : Master.Ec_Master_T_Ptr;
       Ctx_P    : Ec_Ioctl_Context_Ptr;
-      cmd      : unsigned;
+      cmd      : Ioc.Ioctl_Cmd; --  was unsigned;
       arg      : Ice.Void_Ptr) return long;
    pragma Export (C, ec_ioctl, "ec_ioctl");
    
    
-   function Gm_Ioctl (This_Master : Master.Ec_Master_T_Ptr; 
-			Ctx  : access  Ec_Ioctl_Context_T; 
-			Cmd  : Unsigned; 
-			Arg  : Ice.Void_Ptr) 
-		     return Interfaces.C.Long;
+   --  function Gm_Ioctl (This_Master : Master.Ec_Master_T_Ptr; 
+   --       		Ctx  : access  Ec_Ioctl_Context_T; 
+   --       		Cmd  : Unsigned; 
+   --       		Arg  : Ice.Void_Ptr) 
+   --       	     return Interfaces.C.Long;
    
    
 end Niniel.Ioctl;

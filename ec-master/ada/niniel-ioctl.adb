@@ -9,7 +9,7 @@ package body Niniel.Ioctl is
    function ec_ioctl
      (Master_P : Mr.Ec_Master_T_Ptr;
       Ctx_P    : Ec_Ioctl_Context_Ptr;
-      cmd      : unsigned;
+      cmd      : Ioc.Ioctl_Cmd; --  was unsigned;
       arg      : Ice.Void_Ptr) return Long
    is
       function Toa is new 
@@ -21,21 +21,23 @@ package body Niniel.Ioctl is
       Master    : access Mr.Ec_Master := Toa (Master_P);
       Ctx       : access Ec_Ioctl_Context_T := Toca (Ctx_P);
    begin
+      
+      case 
       return 0;
    end Ec_Ioctl;
    
    
-   function Gm_Ioctl (This_Master : Mr.Ec_Master_T_Ptr; 
-			Ctx  : access  Ec_Ioctl_Context_T; 
-			Cmd  : Ic.Unsigned; 
-			Arg  : Ice.Void_Ptr) 
-		     return Ic.Long
-   is
+   --  function Gm_Ioctl (This_Master : Mr.Ec_Master_T_Ptr; 
+   --       		Ctx  : access  Ec_Ioctl_Context_T; 
+   --       		Cmd  : Ic.Unsigned; 
+   --       		Arg  : Ice.Void_Ptr) 
+   --       	     return Ic.Long
+   --  is
        
-   begin
+   --  begin
       
-      return 0;
-   end Gm_Ioctl;
+   --     return 0;
+   --  end Gm_Ioctl;
    
    
 end Niniel.Ioctl;
