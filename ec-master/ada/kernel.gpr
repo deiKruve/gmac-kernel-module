@@ -3,7 +3,7 @@ Project Kernel is
    for Languages use ("Ada");
    
    for Main use ("demo.adb");
-   for Source_Dirs use (".", "../ada-if", "adainclude");
+   for Source_Dirs use (".", "../ada-if", "adainclude", "../../../programs-appl/hw-defs"); --, "../../../programs-STM/finrod/src");
    for Object_Dir use "../obj";
    
    package Compiler is

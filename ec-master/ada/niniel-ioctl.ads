@@ -13,9 +13,13 @@ package Niniel.Ioctl is
    package Ice renames Interfaces.C.Extensions;
    
    
+   EC_IOCTL_VERSION_MAGIC : constant L.U32 := 28;
+   --  needs to change when the interface presented to userspace is 
+   --  not consistent anymore.
+   
    type ec_ioctl_module_t is record
-      ioctl_version_magic : aliased L.uint32_t;
-      master_count        : aliased L.uint32_t;
+      ioctl_version_magic : aliased L.u32;
+      master_count        : aliased L.u32;
    end record;
    pragma Convention (C_Pass_By_Copy, ec_ioctl_module_t);
    
@@ -41,10 +45,10 @@ package Niniel.Ioctl is
    ---------------------------
    --  io control commands  --
    ---------------------------
-   EC_IOCTL_TYPE   : constant Ice.Unsigned_8 := 16#a4#;
+   NINR_IOCTL_TYPE   : constant Ice.Unsigned_8 := 16#a4#;
    
-   EC_IOCTL_MODULE : constant Ioc.Ioctl_Cmd  := 
-     (0, EC_IOCTL_TYPE, Ec_Ioctl_Module_T'Size, Ioc.IOC_READ);
+   NINR_IOCTL_MODULE : constant Ioc.Ioctl_Cmd  := 
+     (0, NINR_IOCTL_TYPE, Ec_Ioctl_Module_T'Size, Ioc.IOC_READ);
    -- lowest first
 
    function ec_ioctl
@@ -52,6 +56,9 @@ package Niniel.Ioctl is
       Ctx_P    : Ec_Ioctl_Context_Ptr;
       cmd      : Ioc.Ioctl_Cmd; --  was unsigned;
       arg      : Ice.Void_Ptr) return long;
+   --  Called when an ioctl() command is issued.   --
+   --                                              --
+   --  return ioctl() return code.                 --
    pragma Export (C, ec_ioctl, "ec_ioctl");
    
    

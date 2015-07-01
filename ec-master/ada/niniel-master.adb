@@ -1,4 +1,5 @@
 
+with Errno_Base;
 with Linux_Kernel;
 with Linux_Sched;
 with Linux_Jiffies;
@@ -11,6 +12,8 @@ with Interfaces.C.Extensions;
 with Interfaces.C.Strings;
 
 package body Niniel.Master is
+   
+   package E   renames Errno_Base;
    package Ic  renames Interfaces.C;
    package Ice renames Interfaces.C.Extensions;
    package Ics renames Interfaces.C.Strings;
@@ -535,7 +538,7 @@ package body Niniel.Master is
    begin
       if Level > 2 then
          Lk.Printk (Lk.KERN_ERR & "niniel.master : invalid debug level");
-         return -22;  -- -EINVAL
+         return -E.EINVAL;
          
       elsif Level /= Master.Debug_Level then
          Master.Debug_Level := Level;
