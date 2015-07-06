@@ -2,13 +2,15 @@
 with System;
 with Interfaces.C.Extensions;
 with Hw_Types;
+with Linux_Types;
 
 package Niniel is
-   
+   package L   renames Linux_Types;
    package Ice renames Interfaces.C.Extensions;
    package Hwt renames Hw_Types;
    
    EC_RATE_COUNT : constant Integer := 2;
+   EC_FRAME_HEADER_SIZE : constant L.Size_T := 14;
    
    procedure Init;
    pragma Export (C, Init, "niniel_init");

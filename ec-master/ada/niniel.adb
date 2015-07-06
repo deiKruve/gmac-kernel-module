@@ -29,6 +29,7 @@ package body Niniel is
       Lk.Printk ("Niniel_Ada has passed on");
    end N_Exit;
    
+    
 begin
    Sm.Get_Free_Pages;  -- get some heap space
 end Niniel;

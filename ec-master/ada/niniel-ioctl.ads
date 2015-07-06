@@ -52,7 +52,7 @@ package Niniel.Ioctl is
    -- lowest first
 
    function ec_ioctl
-     (Master_P : Master.Ec_Master_T_Ptr;
+     (Master_P : Master.Ec_Master_Ptr;
       Ctx_P    : Ec_Ioctl_Context_Ptr;
       cmd      : Ioc.Ioctl_Cmd; --  was unsigned;
       arg      : Ice.Void_Ptr) return long;

@@ -11,6 +11,8 @@ with Ada.Unchecked_Conversion;
 with Interfaces.C.Extensions;
 with Interfaces.C.Strings;
 
+with Niniel.Discover;
+
 package body Niniel.Master is
    
    package E   renames Errno_Base;
@@ -55,6 +57,23 @@ package body Niniel.Master is
       --  end if;
       null;
    end Copy;
+   
+     
+   ------------------------------------
+   --  debug printer for all niniel  --
+   --  kernel modules                --
+   ------------------------------------
+   procedure Niniel_Debug (Master : access Ec_Master; 
+                           Level  : Unsigned; 
+                           S      : String)
+   is
+   begin
+      if (Master.debug_level >= level) then
+         Lk.Printk (Lk.KERN_DEBUG & "niniel master " & S);
+      end if;
+   end Niniel_Debug;
+   
+
    
    
    -------------------------------------------------------------------------
@@ -306,7 +325,11 @@ package body Niniel.Master is
    end Ec_Master_Init_Static;
    
    
-   function ec_master_init (Master_P      : Master.Ec_Master_T_Ptr;
+   ---------------------------------------------
+   --  Master constructor.                    --
+   --  return 0 in case of success, else < 0  --
+   ---------------------------------------------
+   function ec_master_init (Master_P      : Ec_Master_Ptr;
                             Index         : Ic.Unsigned;
                             Main_Mac      : Mac_Addr_Ptr;
                             Backup_Mac    : Mac_Addr_Ptr;
@@ -421,17 +444,21 @@ package body Niniel.Master is
    end ec_master_init;
    
    
-   procedure ec_master_clear (arg1 : Ec_Master_T_Ptr)
+   procedure ec_master_clear (arg1 : Ec_Master_Ptr)
    is
    begin
       null;
    end Ec_Master_Clear;
    
    
-   
-   function ec_master_enter_idle_phase (Master_P : Ec_Master_T_Ptr) return Int
+   ----------------------------------------------------------------
+   --  Transition function from ORPHANED to IDLE phase.          --
+   --                                                            --
+   --  return Zero on success, otherwise a negative error code.  --
+   ----------------------------------------------------------------
+   function ec_master_enter_idle_phase (Master_P : Ec_Master_Ptr) return Int
    is
-      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_T_Ptr,
+      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
                                                     Target => Ec_Master_A_Type);
       function Tocp is new Ada.Unchecked_Conversion (Source => System.Address,
                                                     Target => Ics.Chars_Ptr);
@@ -468,9 +495,12 @@ package body Niniel.Master is
    end Ec_Master_Enter_Idle_Phase;
    
    
-   procedure ec_master_leave_idle_phase (Master_P : Ec_Master_T_Ptr)---
+   --------------------------------------------------------
+   --  Transition function from IDLE to ORPHANED phase.  --
+   --------------------------------------------------------
+   procedure ec_master_leave_idle_phase (Master_P : Ec_Master_Ptr)
    is
-      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_T_Ptr,
+      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
                                                     Target => Ec_Master_A_Type);
       Master : constant access Ec_Master := Toa (Master_P);
    begin
@@ -488,7 +518,7 @@ package body Niniel.Master is
    
    
    function ec_master_enter_operation_phase
-     (arg1 : Ec_Master_T_Ptr) 
+     (arg1 : Ec_Master_Ptr) 
      return Int
    is
    begin
@@ -496,26 +526,52 @@ package body Niniel.Master is
    end Ec_Master_Enter_Operation_Phase;
    
    
-   procedure ec_master_leave_operation_phase (arg1 : Ec_Master_T_Ptr)
+   procedure ec_master_leave_operation_phase (arg1 : Ec_Master_Ptr)
    is
    begin
       null;
    end Ec_Master_Leave_Operation_Phase;
    
    
+   -----------------------------------------------------
+   --  Processes a received frame.                    --
+   --                                                 --
+   --  This function is called by the network driver  --
+   --  for every received frame.                      --
+   -----------------------------------------------------
    procedure Ec_Master_Receive_Datagrams
-     (arg1 : Ec_Master_T_Ptr;
-      arg2 : Ec_Device_T_Ptr;
-      arg3 : access L.u8;
-      arg4 : L.size_t)
+     (Master_P     : Ec_Master_Ptr;
+      Device_P     : Device.Ec_Device_Ptr;
+      Frame_Date_P : System.Address;
+      Size         : L.size_t)
    is
+      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
+                                                    Target => Ec_Master_A_Type);
+      function Toda is 
+         new Ada.Unchecked_Conversion (Source => Device.Ec_Device_Ptr,
+                                       Target => Device.Ec_Device_A_Type);
+      Master_A : constant Ec_Master_A_Type        := Toa (Master_P);
+      Device_A : constant Device.Ec_Device_A_Type := Toda (Device_P);
    begin
-      null;
+      loop
+         if size < EC_FRAME_HEADER_SIZE then
+            Niniel_Debug (Master_A, 0, "corrupted frame, size < 14");
+            Master_A.Stats.Corrupted := Master_A.Stats.Corrupted + 1;
+            exit;
+            
+         elsif Discover.Handle_Recd (Master_A, Device_A) then
+            exit;
+         
+         else 
+            Niniel_Debug (Master_A, 0, "error frame.");
+            exit;
+         end if;
+      end loop;
    end Ec_Master_Receive_Datagrams;
    
    
    procedure ec_master_set_send_interval
-     (arg1 : Ec_Master_T_Ptr;
+     (arg1 : Ec_Master_Ptr;
       arg2 : unsigned)
    is
    begin

@@ -40,14 +40,14 @@ package body Niniel.Ioctl is
    --  return ioctl() return code.                 --
    --------------------------------------------------
    function ec_ioctl
-     (Master_P : Mr.Ec_Master_T_Ptr;
+     (Master_P : Mr.Ec_Master_Ptr;
       Ctx_P    : Ec_Ioctl_Context_Ptr;
       cmd      : Ioc.Ioctl_Cmd; --  was unsigned;
       arg      : Ice.Void_Ptr) return Long
    is
       use type Ioc.Ioctl_Cmd;
       function Toa is new 
-        Ada.Unchecked_Conversion (Source => Mr.Ec_Master_T_Ptr,
+        Ada.Unchecked_Conversion (Source => Mr.Ec_Master_Ptr,
                                   Target => Mr.Ec_Master_A_Type);
       function Toca is new 
         Ada.Unchecked_Conversion (Source => Ec_Ioctl_Context_Ptr,
@@ -69,7 +69,7 @@ package body Niniel.Ioctl is
    
    
    
-   --  function Gm_Ioctl (This_Master : Mr.Ec_Master_T_Ptr; 
+   --  function Gm_Ioctl (This_Master : Mr.Ec_Master_Ptr; 
    --       		Ctx  : access  Ec_Ioctl_Context_T; 
    --       		Cmd  : Ic.Unsigned; 
    --       		Arg  : Ice.Void_Ptr) 
