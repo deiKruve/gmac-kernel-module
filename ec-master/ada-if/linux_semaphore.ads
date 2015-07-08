@@ -18,7 +18,7 @@ package linux_semaphore is
    pragma Convention (C_Pass_By_Copy, semaphore);
    subtype Semaphore_Ptr is System.Address;
 
-   -- sema_init  is inline (all done in master.c, lucky)
+   -- sema_init  is inline 
    procedure sema_init (sem : Semaphore_Ptr; val : int);
    pragma Import (C, sema_init, "kif_sema_init");
    

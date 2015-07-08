@@ -163,11 +163,38 @@ package Niniel.Master is
    type Ec_Master_A_Type is access all Ec_Master;
    subtype Ec_Master_Ptr is System.Address;
    
+      
+   ---------------
+   --  globals  --
+   ---------------
+   
+   -- Packet_Recd : Boolean := False;
+   -- received packet flag.
+   -- write protected by Master_A.Master_Sem
+   
+   --Fsm_Step,
+   
+   type Master_Fsm_State_Type is (Orphaned,
+                                  Idle,
+                                  Send_Discovery,
+                                  Wait_Return,
+                                  Pre_Operational,
+                                  Disco_Hung,
+                                  Operational,
+                                  Done);
+   Master_Fsm_State : Master_Fsm_State_Type;
+   --  after start-up when the master is orphaned  --
+   --  this state machine is run                   --
    
 
    ---------------
    --  methods  --
    ---------------
+   
+   
+   procedure Niniel_Debug (Master : access Ec_Master; 
+                           Level  : Unsigned; 
+                           S      : String);
 
    -- stats  --
 
@@ -245,8 +272,9 @@ package Niniel.Master is
       "ec_master_leave_operation_phase");
    
    
-   -- datagram IO
-   
+   -------------------
+   --  datagram IO  --
+   -------------------
    
    procedure Ec_Master_Receive_Datagrams
      (Master_P     : Ec_Master_Ptr;

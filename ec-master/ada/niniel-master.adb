@@ -31,6 +31,7 @@ package body Niniel.Master is
    package Ii  renames Jan.Img_Int;
   -- package Toa renames Address_To_Access_Conversions;
    
+   
    -------------------------
    --  internal routines  --
    -------------------------
@@ -69,7 +70,7 @@ package body Niniel.Master is
    is
    begin
       if (Master.debug_level >= level) then
-         Lk.Printk (Lk.KERN_DEBUG & "niniel master " & S);
+         Lk.Printk (Lk.KERN_DEBUG & "niniel." & S);
       end if;
    end Niniel_Debug;
    
@@ -136,30 +137,51 @@ package body Niniel.Master is
    --  after start-up when the master is orphaned  --
    --  this state machine is run                   --
    --------------------------------------------------
-   type Master_Fsm_State_Type is (Orphaned,
-                                  Idle,
-                                  Send_Discovery,
-                                  Wait_Return,
-                                  Recv_Return,
-                                  Done);
-   Master_Fsm_State : Master_Fsm_State_Type;
    
-   function Master_Fsm (Arg1 : System.Address) return int
+   
+   function Master_Fsm (Master_P : System.Address) return int
    is
+      function Toa is new Ada.Unchecked_Conversion (Source => System.Address,
+                                                    Target => Ec_Master_A_Type);
+      use type System.Address;
+      Ret       : Int;
+      --Addr      : System.Address   := System.Null_Address;
+      Master_A    : access Ec_Master := Toa (Master_P);
+      State : Master_Fsm_State_Type := Orphaned;
    begin
       loop
          case Master_Fsm_State is
-            when Orphaned       =>
+            when Orphaned        =>
+               Master_A.Reserved := 0; -- reset the discovery error counter.
                null;
-            when Idle           =>
+            when Idle            =>
                null;
-            when Send_Discovery =>
+            when Send_Discovery  =>
+               Discover.Send_Discovery (Master_A);
+               Master_Fsm_State := Wait_Return;
+            when Wait_Return     =>
+               declare 
+                  Sleep_Jiffies : Ic.Long := Ls.HZ / 10; 
+                  -- 100 ms, but at least 1 jiffy
+                  Dummy : Ic.Long := Ls.Schedule_Timeout (sleep_jiffies);
+               begin null; end;
+               Master_A.Reserved := Master_A.Reserved + 1;
+               if Master_A.Reserved > 30 then
+                  Master_Fsm_State := Disco_Hung;
+               elsif Master_A.Reserved > 4 then
+                  Master_Fsm_State := Send_Discovery;
+               end if;
+               
+            when Pre_Operational =>
+               
                null;
-            when Wait_Return    =>
+            when Disco_Hung      =>
+               
                null;
-            when Recv_Return    =>
+            when Operational     =>
+               
                null;
-            when Done           =>
+            when Done            =>
                null;
          end case;
       end loop;
@@ -545,25 +567,34 @@ package body Niniel.Master is
       Frame_Date_P : System.Address;
       Size         : L.size_t)
    is
+      use type Hwt.Bits_16;
       function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
                                                     Target => Ec_Master_A_Type);
       function Toda is 
          new Ada.Unchecked_Conversion (Source => Device.Ec_Device_Ptr,
                                        Target => Device.Ec_Device_A_Type);
+      function Topa is 
+         new Ada.Unchecked_Conversion (Source => System.Address,
+                                       Target => Frame_A_Type);
       Master_A : constant Ec_Master_A_Type        := Toa (Master_P);
       Device_A : constant Device.Ec_Device_A_Type := Toda (Device_P);
+      Frame_A  : constant Frame_A_Type            := Topa (Frame_Date_P);
    begin
       loop
          if size < EC_FRAME_HEADER_SIZE then
-            Niniel_Debug (Master_A, 0, "corrupted frame, size < 14");
+            Niniel_Debug (Master_A, 0, "master: corrupted frame, size < 14");
             Master_A.Stats.Corrupted := Master_A.Stats.Corrupted + 1;
             exit;
             
-         elsif Discover.Handle_Recd (Master_A, Device_A) then
+         elsif Frame_A.Typ = Discover.Frame_Typ then
+            Discover.Handle_Recd (Master_A, Device_A, Frame_Date_P, size);
+            exit;
+            
+         elsif False  then
             exit;
          
          else 
-            Niniel_Debug (Master_A, 0, "error frame.");
+            Niniel_Debug (Master_A, 0, "master: error frame.");
             exit;
          end if;
       end loop;
