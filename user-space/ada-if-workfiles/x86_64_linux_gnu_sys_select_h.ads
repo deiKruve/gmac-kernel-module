@@ -10,13 +10,13 @@ package x86_64_linux_gnu_sys_select_h is
 
    --  unsupported macro: FD_SETSIZE __FD_SETSIZE
    --  unsupported macro: NFDBITS __NFDBITS
-   --  arg-macro: procedure FD_SET (fd, fdsetp)
+   --  arg-macro: procedure FD_SET __FD_SET (fd, fdsetp)
    --    __FD_SET (fd, fdsetp)
-   --  arg-macro: procedure FD_CLR (fd, fdsetp)
+   --  arg-macro: procedure FD_CLR __FD_CLR (fd, fdsetp)
    --    __FD_CLR (fd, fdsetp)
-   --  arg-macro: procedure FD_ISSET (fd, fdsetp)
+   --  arg-macro: procedure FD_ISSET __FD_ISSET (fd, fdsetp)
    --    __FD_ISSET (fd, fdsetp)
-   --  arg-macro: procedure FD_ZERO (fdsetp)
+   --  arg-macro: procedure FD_ZERO __FD_ZERO (fdsetp)
    --    __FD_ZERO (fdsetp)
   -- `fd_set' type and related macros, and `select'/`pselect' declarations.
   --   Copyright (C) 1996-2014 Free Software Foundation, Inc.
@@ -55,7 +55,7 @@ package x86_64_linux_gnu_sys_select_h is
    end record;
    pragma Convention (C_Pass_By_Copy, fd_set);  -- /usr/include/x86_64-linux-gnu/sys/select.h:75
 
-   --  skipped anonymous struct anon_8
+   --  skipped anonymous struct anon_2
 
   -- Maximum number of file descriptors in `fd_set'.   
   -- Sometimes the fd_set member is assumed to have this type.   

@@ -72,20 +72,23 @@ package body Niniel.Discover is
          Master.Niniel_Debug 
            (Master_A, 0, "discover: corrupted frame, size not right");
          Master_A.Stats.Corrupted := Master_A.Stats.Corrupted + 1;
+         Master_A.Reserved := Master_A.Reserved + 1;         
+         Lsm.Down (Master_A.Master_Sem'address);
+         -- this will take care of the retry needed, if no good packet arrives
+         Master.Master_Fsm_State := Master.Wait_Return;
+         Lsm.Up (Master_A.Master_Sem'address);
          
       elsif Frame_A.Stamp /= Stamp then
          Master.Niniel_Debug 
            (Master_A, 0, "discover: rec'd frame out of sequence");
          Master_A.Stats.Corrupted := Master_A.Stats.Corrupted + 1;
+         Master_A.Reserved := Master_A.Reserved + 1;         
+         Lsm.Down (Master_A.Master_Sem'address);
+         -- this will take care of the retry needed, if no good packet arrives
+         Master.Master_Fsm_State := Master.Wait_Return;
+         Lsm.Up (Master_A.Master_Sem'address);
          
       else -- valid frame
-         
-         -- but this must of necessity happen in userspace
-         -- kernel does not know about field or?
-         
-           -- need to filter the response
-           -- signal to the masterthread that we have a lift off
-           -- copy the flags to userspace.
          declare
             use type Hwt.Bits_1;
             Node_Ptr : System.Address         := Frame_A.Field_Status'Address;
@@ -125,8 +128,11 @@ package body Niniel.Discover is
                Master.Master_Fsm_State := Master.Send_Discovery;
                Master_A.Reserved := Master_A.Reserved + 1;
                Lsm.Up (Master_A.Master_Sem'address);
-               
             end if;
+            -- send the packet here to userspace:
+            -- there will only be a packet every 100 msec or so
+            -- and normally after 2 or 3 tries the system is up
+            -- when not, also the max tries are limited in the kernel.
          end;
          null;
       end if;

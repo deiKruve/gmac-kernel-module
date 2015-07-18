@@ -6,11 +6,11 @@ with Interfaces.C.Extensions;
 
 package x86_64_linux_gnu_sys_sysmacros_h is
 
-   --  arg-macro: procedure major (dev)
+   --  arg-macro: procedure major gnu_dev_major (dev)
    --    gnu_dev_major (dev)
-   --  arg-macro: procedure minor (dev)
+   --  arg-macro: procedure minor gnu_dev_minor (dev)
    --    gnu_dev_minor (dev)
-   --  arg-macro: procedure makedev (maj, min)
+   --  arg-macro: procedure makedev gnu_dev_makedev (maj, min)
    --    gnu_dev_makedev (maj, min)
   -- Definitions of macros to access `dev_t' values.
   --   Copyright (C) 1996-2014 Free Software Foundation, Inc.

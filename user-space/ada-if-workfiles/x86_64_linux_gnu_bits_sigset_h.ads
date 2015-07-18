@@ -29,7 +29,7 @@ package x86_64_linux_gnu_bits_sigset_h is
    end record;
    pragma Convention (C_Pass_By_Copy, uu_sigset_t);  -- /usr/include/x86_64-linux-gnu/bits/sigset.h:30
 
-   --  skipped anonymous struct anon_7
+   --  skipped anonymous struct anon_1
 
   -- We only want to define these functions if <signal.h> was actually
   --   included; otherwise we were included just to define the types.  Since we

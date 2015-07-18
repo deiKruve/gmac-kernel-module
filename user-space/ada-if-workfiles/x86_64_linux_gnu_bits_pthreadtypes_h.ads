@@ -78,7 +78,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_mutex_t);
    pragma Unchecked_Union (pthread_mutex_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:127
 
-   --  skipped anonymous struct anon_9
+   --  skipped anonymous struct anon_3
 
    subtype pthread_mutexattr_t_uu_size_array is Interfaces.C.char_array (0 .. 3);
    type pthread_mutexattr_t (discr : unsigned := 0) is record
@@ -92,14 +92,14 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_mutexattr_t);
    pragma Unchecked_Union (pthread_mutexattr_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:133
 
-   --  skipped anonymous struct anon_10
+   --  skipped anonymous struct anon_4
 
   -- Data structure for conditional variable handling.  The structure of
   --   the attribute type is not exposed on purpose.   
 
    subtype pthread_cond_t_uu_size_array is Interfaces.C.char_array (0 .. 47);
    type pthread_cond_t;
-   type anon_12 is record
+   type anon_6 is record
       uu_lock : aliased int;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:142
       uu_futex : aliased unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:143
       uu_total_seq : aliased Extensions.unsigned_long_long;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:144
@@ -109,11 +109,11 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
       uu_nwaiters : aliased unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:148
       uu_broadcast_seq : aliased unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:149
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_12);
+   pragma Convention (C_Pass_By_Copy, anon_6);
    type pthread_cond_t (discr : unsigned := 0) is record
       case discr is
          when 0 =>
-            uu_data : aliased anon_12;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:150
+            uu_data : aliased anon_6;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:150
          when 1 =>
             uu_size : aliased pthread_cond_t_uu_size_array;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:151
          when others =>
@@ -123,7 +123,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_cond_t);
    pragma Unchecked_Union (pthread_cond_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:153
 
-   --  skipped anonymous struct anon_11
+   --  skipped anonymous struct anon_5
 
    subtype pthread_condattr_t_uu_size_array is Interfaces.C.char_array (0 .. 3);
    type pthread_condattr_t (discr : unsigned := 0) is record
@@ -137,7 +137,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_condattr_t);
    pragma Unchecked_Union (pthread_condattr_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:159
 
-   --  skipped anonymous struct anon_13
+   --  skipped anonymous struct anon_7
 
   -- Keys for thread-specific data  
    subtype pthread_key_t is unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:163
@@ -153,7 +153,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
 
    subtype pthread_rwlock_t_uu_size_array is Interfaces.C.char_array (0 .. 55);
    type pthread_rwlock_t;
-   type anon_15 is record
+   type anon_9 is record
       uu_lock : aliased int;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:178
       uu_nr_readers : aliased unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:179
       uu_readers_wakeup : aliased unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:180
@@ -166,11 +166,11 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
       uu_pad2 : aliased unsigned_long;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:187
       uu_flags : aliased unsigned;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:190
    end record;
-   pragma Convention (C_Pass_By_Copy, anon_15);
+   pragma Convention (C_Pass_By_Copy, anon_9);
    type pthread_rwlock_t (discr : unsigned := 0) is record
       case discr is
          when 0 =>
-            uu_data : aliased anon_15;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:192
+            uu_data : aliased anon_9;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:192
          when 1 =>
             uu_size : aliased pthread_rwlock_t_uu_size_array;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:211
          when others =>
@@ -180,7 +180,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_rwlock_t);
    pragma Unchecked_Union (pthread_rwlock_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:213
 
-   --  skipped anonymous struct anon_14
+   --  skipped anonymous struct anon_8
 
   -- FLAGS must stay at this position in the structure to maintain
   --       binary compatibility.   
@@ -197,7 +197,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_rwlockattr_t);
    pragma Unchecked_Union (pthread_rwlockattr_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:219
 
-   --  skipped anonymous struct anon_16
+   --  skipped anonymous struct anon_10
 
   -- POSIX spinlock data type.   
    subtype pthread_spinlock_t is int;  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:225
@@ -217,7 +217,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_barrier_t);
    pragma Unchecked_Union (pthread_barrier_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:234
 
-   --  skipped anonymous struct anon_17
+   --  skipped anonymous struct anon_11
 
    subtype pthread_barrierattr_t_uu_size_array is Interfaces.C.char_array (0 .. 3);
    type pthread_barrierattr_t (discr : unsigned := 0) is record
@@ -231,7 +231,7 @@ package x86_64_linux_gnu_bits_pthreadtypes_h is
    pragma Convention (C_Pass_By_Copy, pthread_barrierattr_t);
    pragma Unchecked_Union (pthread_barrierattr_t);  -- /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:240
 
-   --  skipped anonymous struct anon_18
+   --  skipped anonymous struct anon_12
 
   -- Extra attributes for the cleanup functions.   
 end x86_64_linux_gnu_bits_pthreadtypes_h;

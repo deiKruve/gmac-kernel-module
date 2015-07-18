@@ -1,6 +1,9 @@
 
 with Ada.Unchecked_Conversion;
 with Errno_Base;
+with Errno;
+
+with N_Ioctl;
 with Globals;
 with Linux_Kif;
 
@@ -11,6 +14,7 @@ package body Niniel.Ioctl is
    package Mr  renames Master;
    package Gl  renames Globals;
    package Lkf renames Linux_Kif;
+   package Nioc renames N_Ioctl;
    
       
    ----------------------------------------------------------------
@@ -32,6 +36,33 @@ package body Niniel.Ioctl is
       else return 0;
       end if;
    end Ec_Ioctl_Module;
+   
+   
+
+   
+   ------------------------------------------
+   --  Request the master from userspace.  --
+   --                                      --
+   --  return Zero on success,             --
+   --   otherwise a negative error code.   --
+   ------------------------------------------
+   function Ec_Ioctl_Request 
+     (Master_P : Mr.Ec_Master_Ptr;     --  master.
+      arg      : Ice.Void_Ptr;         --  ioctl() argument.
+      Ctx_P    : Ec_Ioctl_Context_Ptr) -- Private data structure of file handle.
+     return Int
+   is
+      M_P : Mr.Ec_Master_Ptr := Gl.Ecrt_Request_Master_Err (Master_P.Index);
+      Ret : Int := 0;
+   begin
+      if Long (M.P) < 0 then
+         Ret := Int (M.P);
+      else
+         Ctx_P.Requested = 1;
+      end if;
+      return Ret;
+   end Ec_Ioctl_Request ;
+   
    
    
    --------------------------------------------------
@@ -57,12 +88,18 @@ package body Niniel.Ioctl is
       Ret : Ic.Long := -1;
    begin
       
-      if Cmd = NINR_IOCTL_MODULE then
+      if Cmd = Nioc.NINR_IOCTL_MODULE then
          ret := Ic.Long (ec_ioctl_module(arg));
          null;
-         --elsif Cmd = 
+         
+      elsif Cmd = Nioc.NINR_IOCTL_REQUEST then
+         if not Ctx_P.Writable then
+            Ret := -E.EPERM;
+         else
+            ret := Ec_Ioctl_Request (master, arg, ctx);
+         end if;
          --
-         else return -E.ENOTTY;
+      else return -E.ENOTTY;
       end if;
       return Ret;
    end Ec_Ioctl;

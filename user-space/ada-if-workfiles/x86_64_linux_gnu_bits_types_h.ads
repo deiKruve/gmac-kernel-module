@@ -124,7 +124,7 @@ package x86_64_linux_gnu_bits_types_h is
    end record;
    pragma Convention (C_Pass_By_Copy, uu_fsid_t);  -- /usr/include/x86_64-linux-gnu/bits/types.h:134
 
-   --  skipped anonymous struct anon_1
+   --  skipped anonymous struct anon_0
 
   -- Type of CPU usage counts.   
    subtype uu_clock_t is long;  -- /usr/include/x86_64-linux-gnu/bits/types.h:135

@@ -5,9 +5,7 @@ with Interfaces.C; use Interfaces.C;
 
 package stddef_h is
 
-   --  unsupported macro: NULL __null
-  -- Copyright (C) 1989, 1997, 1998, 1999, 2000, 2002, 2004, 2009, 2011
-  --   Free Software Foundation, Inc.
+  -- Copyright (C) 1989-2014 Free Software Foundation, Inc.
   --This file is part of GCC.
   --GCC is free software; you can redistribute it and/or modify
   --it under the terms of the GNU General Public License as published by
@@ -33,7 +31,6 @@ package stddef_h is
   --   the symbols that indicate this file's entire job has been done.   
 
   -- snaroff@next.com says the NeXT needs this.   
-  -- Irix 5.1 needs this.   
   -- This avoids lossage on SunOS but only if stdtypes.h comes first.
   --   There's no way to win with the other order!  Sun lossage.   
 
@@ -76,7 +73,8 @@ package stddef_h is
   --   or if we want this type in particular.   
 
   -- __size_t is a typedef on FreeBSD 5, must not trash it.  
-   subtype size_t is unsigned_long;  -- /usr/gnat/lib/gcc/x86_64-pc-linux-gnu/4.7.4/include/stddef.h:213
+  -- __size_t is also a typedef on VMS.   
+   subtype size_t is unsigned_long;  -- /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h:212
 
   -- Wide character type.
   --   Locale-writers should change this as necessary to

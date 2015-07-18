@@ -4,7 +4,7 @@ with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Extensions;
 with Linux_Types;
 with Asm_Ioctl;
-
+with N_Ioctl;
 with Niniel.Master;
 
 package Niniel.Ioctl is
@@ -41,16 +41,6 @@ package Niniel.Ioctl is
    subtype Ec_Ioctl_Context_Ptr is System.Address;
    
    
-   
-   ---------------------------
-   --  io control commands  --
-   ---------------------------
-   NINR_IOCTL_TYPE   : constant Ice.Unsigned_8 := 16#a4#;
-   
-   NINR_IOCTL_MODULE : constant Ioc.Ioctl_Cmd  := 
-     (0, NINR_IOCTL_TYPE, Ec_Ioctl_Module_T'Size, Ioc.IOC_READ);
-   -- lowest first
-
    function ec_ioctl
      (Master_P : Master.Ec_Master_Ptr;
       Ctx_P    : Ec_Ioctl_Context_Ptr;
