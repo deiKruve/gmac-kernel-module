@@ -13,7 +13,7 @@ package Niniel.Ioctl is
    package Ice renames Interfaces.C.Extensions;
    
    
-   EC_IOCTL_VERSION_MAGIC : constant L.U32 := 28;
+   EC_IOCTL_VERSION_MAGIC : constant L.U32 := 01;
    --  needs to change when the interface presented to userspace is 
    --  not consistent anymore.
    

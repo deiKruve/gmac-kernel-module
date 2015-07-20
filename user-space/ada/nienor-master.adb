@@ -1,6 +1,8 @@
 
 with Interfaces.C; use Interfaces.C;
 --with System.Img_Uns;
+with GNATCOLL.Traces;
+with Text_Io;
 
 with Unistd;
 
@@ -10,11 +12,38 @@ with Sys_Mman;
 with Fcntl;
 with Errno;
 
+with Hw_Definition.Main;
+
 package body Nienor.Master is
+   
    --package Iuns renames System.Img_Uns;
+   package Tio  renames Text_Io;
+   package Gct  renames GNATCOLL.Traces;
    package Nioc renames N_Ioctl;
    package Sioc renames Sys_Ioctl;
    package Mm   renames Sys_Mman;
+   package Hwd  renames Hw_Definition.Main;
+   
+   -- logging
+   Stream1 : constant Gct.Trace_Handle := Gct.Create ("NIENOR");
+   Stream2 : constant Gct.Trace_Handle := 
+     Gct.Create ("NIENOR.EXCEPTIONS");
+   Debug_Str : constant Gct.Trace_Handle := Gct.Create ("NIENOR.DEBUG");
+   
+   
+   -------------------
+   -- handle errors --
+   -------------------
+   Error_Reported : Boolean := False;
+   
+   procedure Err_Msg (Err_Str : String);
+   is
+   begin
+      Tio.Put_Line (Err_Str)
+      -- M_Report_Error (Err_Str);
+      Gct.Trace (Stream1, Err_Str);
+      Error_Reported := True;
+   end Err_Msg;
    
    
    ----------------------
@@ -55,6 +84,47 @@ package body Nienor.Master is
    --  interface  --
    -----------------
    
+   -- int ecrt_master_activate(ec_master_t *master)
+   
+   function Ecrt_Master_Activate (Master_A : Ec_Master_A) return Int
+   is
+      hw_Status   : Hwd.Field_Status_Image_Type;
+      Ret         : Int;
+   begin
+      Ret := Sioc.Ioctl
+        (Master_A.Fd, Nioc.NINR_DISCOVERY_REQUEST, System.Null_Address);
+      if Ret < 0 then
+         Err_Msg ("Failed to start discovery cycle -- " & 
+                    Errno.Error_Str (Errno.Errno));
+         return -Errno.Errno;
+         
+      else
+         loop
+            Ret := Sioc.Ioctl
+              (Master_A.Fd, Nioc.NINR_DISCOVERY_POLL, System.Null_Address);
+            
+            if Ret = 0 then
+               exit;
+               
+            elsif Ret = -E.DISCO_HUNG then
+               Ret := Sioc.Ioctl (Master_A.Fd, 
+                                  Nioc.NINR_DISCOVERY_STAT_REQUEST, 
+                                  Hw_Status'Address);
+               Hwd.Print_Field_Status_Image (Hw_Status);
+               Ret := -E.DISCO_HUNG;
+               exit;
+               
+            elsif Ret = E.DISCO_WORKING then
+               delay 0.1;
+            end if;
+         end loop;
+         
+         return Ret;
+      end if;
+   end Ecrt_Master_Activate;
+   
+                                    
+   
    function Ecrt_Open_Master (Master_Idx : Unsigned) return Ec_Master_A
    is
       procedure Free is
@@ -62,6 +132,7 @@ package body Nienor.Master is
       Master      : Ec_Master_A := new Ec_Master;
       Path        : String      := "/dev/nienor1";
       Module_Data : Ec_Ioctl_Module;
+      Ret         : Int;
    begin
       Master.fd = Fcntl.Open (Path, Fcntl.O_RDWR);
       if Master.Fd < 0 then

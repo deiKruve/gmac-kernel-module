@@ -7,14 +7,17 @@ with N_Ioctl;
 with Globals;
 with Linux_Kif;
 
+with Niniel.Discover;
+
 package body Niniel.Ioctl is
    
-   package E   renames Errno_Base;
-   package Ic  renames Interfaces.C;
-   package Mr  renames Master;
-   package Gl  renames Globals;
-   package Lkf renames Linux_Kif;
+   package E    renames Errno_Base;
+   package Ic   renames Interfaces.C;
+   package Mr   renames Master;
+   package Gl   renames Globals;
+   package Lkf  renames Linux_Kif;
    package Nioc renames N_Ioctl;
+   package Nd   renames Niniel.Discover;
    
       
    ----------------------------------------------------------------
@@ -98,6 +101,41 @@ package body Niniel.Ioctl is
          else
             ret := Ec_Ioctl_Request (master, arg, ctx);
          end if;
+         
+      elsif Cmd = Nioc.NINR_DISCOVERY_REQUEST then
+         if not Ctx_P.Writable then
+            Ret := -E.EPERM;
+         else
+            Master_Fsm_State := Send_Discovery;
+            ret := 0;
+         end if;
+         
+      elsif Cmd = Nioc.NINR_DISCOVERY_POLL then
+         if not Ctx_P.Writable then
+            Ret := -E.EPERM;
+         else
+            if Master_Fsm_State = Pre_Operational then
+               Ret := 0;
+            elsif Master_Fsm_State = Disco_Hung then
+               Ret := -E.DISCO_HUNG;
+            else
+               Ret := E.DISCO_WORKING;
+            end if;
+         end if;
+         
+      elsif Cmd = Nioc.NINR_DISCOVERY_STAT_REQUEST then
+         if not Ctx_P.Writable then
+            Ret := -E.EPERM;
+         else
+            declare 
+               hw_Status : Hwd.Field_Status_Image_Type;
+               for Hw_Status'Address use Arg;
+            begin
+               Hw_Status := Niniel.Discover.Field_Status;
+            end;
+            return 0;
+         end if;
+               
          --
       else return -E.ENOTTY;
       end if;

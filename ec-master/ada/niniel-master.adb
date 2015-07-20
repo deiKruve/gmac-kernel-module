@@ -2,6 +2,7 @@
 with Errno_Base;
 with Linux_Kernel;
 with Linux_Sched;
+with Linux_Semaphore;
 with Linux_Jiffies;
 with Linux_Kif;
 

@@ -25,6 +25,8 @@ package Nienor.Master is
    
    function Ecrt_Open_Master (Master_Idx : Unsigned) return Ec_Master_A;
    
-   
+   --  -- so we can report errors to the real time thread.
+   --  type Error_Reporter_Type is access procedure (Err_Str : String);
+   --  M_Report_Error : Error_Reporter_Type;
    
 end Nienor.Master;

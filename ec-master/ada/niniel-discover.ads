@@ -24,6 +24,11 @@ package Niniel.Discover is
    Frame_Typ : constant Hwt.Bits_16 := 16#ff_ff#;
    
    
+   Field_Status : Hwd.Field_Status_Image_Type;
+   --  master field status image
+   --  for use any where
+   
+   
    
    procedure Send_Discovery (Master_a : access Master.Ec_Master);
    --  send a discovery packet  --

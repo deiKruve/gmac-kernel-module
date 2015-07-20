@@ -11,6 +11,15 @@ package body Niniel.Discover is
    package L   renames Linux_Types;
    package Lsm renames Linux_Semaphore;
    package Hwd renames Hw_Definition;
+   package Lsm renames Linux_Semaphore;
+   
+   ---------------------------------
+   --  discovery reply semaphore  --
+   -- for interlocking the ioctl  --
+   --  response                   --
+   ---------------------------------
+   Disc_Sem : Lsm.Semaphore;
+   Lsm.Sema_Init (
    
    -------------------------------
    --  send a discovery packet  --
@@ -89,6 +98,9 @@ package body Niniel.Discover is
          Lsm.Up (Master_A.Master_Sem'address);
          
       else -- valid frame
+         Lsm.Down (Disc_Sem'address);
+         Field_Status := Frame_A.Field_Status;
+         Lsm.Up (Disc_Sem'address);
          declare
             use type Hwt.Bits_1;
             Node_Ptr : System.Address         := Frame_A.Field_Status'Address;
@@ -139,5 +151,6 @@ package body Niniel.Discover is
    end Handle_Recd;
    
                         
-   
+begin
+   Lsm.Sema_Init (Disc_Sem'Address, 1);
 end Niniel.Discover;
