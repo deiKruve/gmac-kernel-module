@@ -2,7 +2,7 @@
 pragma Ada_2005;
 pragma Style_Checks (Off);
 
-with Interfaces.C; use Interfaces.C;
+-- with Interfaces.C; use Interfaces.C;
 with linux_types;
 
 package Linux_Osq_Lock is

@@ -1,11 +1,12 @@
 
 with Ada.Unchecked_Conversion;
 with Errno_Base;
-with Errno;
 
-with N_Ioctl;
 with Globals;
 with Linux_Kif;
+with Linux_Semaphore;
+
+with Hw_Definition.Main;
 
 with Niniel.Discover;
 
@@ -16,9 +17,9 @@ package body Niniel.Ioctl is
    package Mr   renames Master;
    package Gl   renames Globals;
    package Lkf  renames Linux_Kif;
-   package Nioc renames N_Ioctl;
+   package Lsm renames Linux_Semaphore;
    package Nd   renames Niniel.Discover;
-   
+   package Hwdm renames Hw_Definition.Main;
       
    ----------------------------------------------------------------
    --  Get module information.                                   --
@@ -42,7 +43,6 @@ package body Niniel.Ioctl is
    
    
 
-   
    ------------------------------------------
    --  Request the master from userspace.  --
    --                                      --
@@ -50,18 +50,23 @@ package body Niniel.Ioctl is
    --   otherwise a negative error code.   --
    ------------------------------------------
    function Ec_Ioctl_Request 
-     (Master_P : Mr.Ec_Master_Ptr;     --  master.
+     (Master_A : access Mr.Ec_Master;     --  master.
       arg      : Ice.Void_Ptr;         --  ioctl() argument.
-      Ctx_P    : Ec_Ioctl_Context_Ptr) -- Private data structure of file handle.
+      Ctx_A    : Ec_Ioctl_Context_A_type) -- Private data structure of file handle.
      return Int
    is
-      M_P : Mr.Ec_Master_Ptr := Gl.Ecrt_Request_Master_Err (Master_P.Index);
+      pragma Unreferenced (Arg);
+      function Tol is new 
+        Ada.Unchecked_Conversion (Source => Mr.Ec_Master_Ptr,
+                                  Target => Long);
+      M_P : constant Mr.Ec_Master_Ptr := 
+        Gl.Ecrt_Request_Master_Err (Master_A.Index);
       Ret : Int := 0;
    begin
-      if Long (M.P) < 0 then
-         Ret := Int (M.P);
+      if Tol (M_P) < 0 then
+         Ret := Int (Tol (M_P));
       else
-         Ctx_P.Requested = 1;
+         Ctx_A.Requested := 1;
       end if;
       return Ret;
    end Ec_Ioctl_Request ;
@@ -77,46 +82,51 @@ package body Niniel.Ioctl is
      (Master_P : Mr.Ec_Master_Ptr;
       Ctx_P    : Ec_Ioctl_Context_Ptr;
       cmd      : Ioc.Ioctl_Cmd; --  was unsigned;
-      arg      : Ice.Void_Ptr) return Long
+      arg      : Ice.Void_Ptr) 
+     return Long
    is
       use type Ioc.Ioctl_Cmd;
+      use type Master.Master_Fsm_State_Type;
       function Toa is new 
         Ada.Unchecked_Conversion (Source => Mr.Ec_Master_Ptr,
                                   Target => Mr.Ec_Master_A_Type);
       function Toca is new 
         Ada.Unchecked_Conversion (Source => Ec_Ioctl_Context_Ptr,
                                   Target => Ec_Ioctl_Context_A_Type);
-      Master    : access Mr.Ec_Master := Toa (Master_P);
-      Ctx       : access Ec_Ioctl_Context_T := Toca (Ctx_P);
-      Ret : Ic.Long := -1;
+      function Toxa is new 
+        Ada.Unchecked_Conversion (Source => Ec_Ioctl_Context_Ptr,
+                                  Target => Ec_Ioctl_Context_A_Type);
+      Ctx_A : constant Ec_Ioctl_Context_A_Type := Toxa (Ctx_P);
+      Master_A  : constant access Mr.Ec_Master := Toa (Master_P);
+      Ret : Ic.Int := -1;
    begin
       
       if Cmd = Nioc.NINR_IOCTL_MODULE then
-         ret := Ic.Long (ec_ioctl_module(arg));
+         ret := ec_ioctl_module(arg);
          null;
          
       elsif Cmd = Nioc.NINR_IOCTL_REQUEST then
-         if not Ctx_P.Writable then
+         if Ctx_A.Writable = 0 then
             Ret := -E.EPERM;
          else
-            ret := Ec_Ioctl_Request (master, arg, ctx);
+            ret := Ec_Ioctl_Request (Master_A, arg, Ctx_A);
          end if;
          
       elsif Cmd = Nioc.NINR_DISCOVERY_REQUEST then
-         if not Ctx_P.Writable then
+         if Ctx_A.Writable = 0 then
             Ret := -E.EPERM;
          else
-            Master_Fsm_State := Send_Discovery;
+            Master.Master_Fsm_State := Master.Send_Discovery;
             ret := 0;
          end if;
          
       elsif Cmd = Nioc.NINR_DISCOVERY_POLL then
-         if not Ctx_P.Writable then
+         if Ctx_A.Writable = 0 then
             Ret := -E.EPERM;
          else
-            if Master_Fsm_State = Pre_Operational then
+            if Master.Master_Fsm_State = Master.Pre_Operational then
                Ret := 0;
-            elsif Master_Fsm_State = Disco_Hung then
+            elsif Master.Master_Fsm_State = Master.Disco_Hung then
                Ret := -E.DISCO_HUNG;
             else
                Ret := E.DISCO_WORKING;
@@ -124,22 +134,31 @@ package body Niniel.Ioctl is
          end if;
          
       elsif Cmd = Nioc.NINR_DISCOVERY_STAT_REQUEST then
-         if not Ctx_P.Writable then
+         if Ctx_A.Writable = 0 then
             Ret := -E.EPERM;
+            
          else
-            declare 
-               hw_Status : Hwd.Field_Status_Image_Type;
-               for Hw_Status'Address use Arg;
-            begin
-               Hw_Status := Niniel.Discover.Field_Status;
-            end;
-            return 0;
+            if (Lsm.Down_Interruptible(Nd.Disc_Sem'address) /= 0) then
+               -- should not happen anyway.
+               Master.Niniel_Debug 
+                 (Master_A, 0, "ioctl: interrupted disc_sem semaphore");
+            end if;
+            
+            if Lkf.Copy_To_User (Arg, Nd.Field_Status'Address, 
+                                 Hwdm.Field_Status_Image_Type'Size) /= 0 then
+               Ret := -E.EFAULT;
+            else
+               Ret := 0;
+            end if;
+            
+            Lsm.Up (Nd.Disc_Sem'Address);
+
          end if;
-               
+         
          --
-      else return -E.ENOTTY;
+      else Ret := -E.ENOTTY;
       end if;
-      return Ret;
+      return Ic.Long (Ret);
    end Ec_Ioctl;
    
    

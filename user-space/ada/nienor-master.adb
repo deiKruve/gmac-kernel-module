@@ -23,6 +23,7 @@ package body Nienor.Master is
    package Sioc renames Sys_Ioctl;
    package Mm   renames Sys_Mman;
    package Hwd  renames Hw_Definition.Main;
+   package Hwu  renames Hw_Definition.Node_Utils;
    
    -- logging
    Stream1 : constant Gct.Trace_Handle := Gct.Create ("NIENOR");
@@ -110,7 +111,7 @@ package body Nienor.Master is
                Ret := Sioc.Ioctl (Master_A.Fd, 
                                   Nioc.NINR_DISCOVERY_STAT_REQUEST, 
                                   Hw_Status'Address);
-               Hwd.Print_Field_Status_Image (Hw_Status);
+               Hwu.Print_Field_Status_Image (Hw_Status);
                Ret := -E.DISCO_HUNG;
                exit;
                

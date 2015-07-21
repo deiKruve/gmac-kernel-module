@@ -8,20 +8,23 @@ with N_Ioctl;
 with Niniel.Master;
 
 package Niniel.Ioctl is
-   package L   renames Linux_Types;
-   package Ioc renames Asm_Ioctl;
-   package Ice renames Interfaces.C.Extensions;
+   package L    renames Linux_Types;
+   package Ioc  renames Asm_Ioctl;
+   package Nioc renames N_Ioctl;
+   package Ice  renames Interfaces.C.Extensions;
    
    
    EC_IOCTL_VERSION_MAGIC : constant L.U32 := 01;
    --  needs to change when the interface presented to userspace is 
    --  not consistent anymore.
    
-   type ec_ioctl_module_t is record
-      ioctl_version_magic : aliased L.u32;
-      master_count        : aliased L.u32;
-   end record;
-   pragma Convention (C_Pass_By_Copy, ec_ioctl_module_t);
+
+   subtype Ec_Ioctl_Module_T is Nioc.Ec_Ioctl_Module_T;
+   --  type ec_ioctl_module_t is record
+   --     ioctl_version_magic : aliased L.u32;
+   --     master_count        : aliased L.u32;
+   --  end record;
+   --  pragma Convention (C_Pass_By_Copy, ec_ioctl_module_t);
    
    
    type ec_ioctl_context_t is record

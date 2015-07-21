@@ -2,24 +2,13 @@
 with System.Storage_Elements;
 with Ada.Unchecked_Conversion;
 with Linux_Types;
-with Linux_Semaphore;
 
 with Interfaces.C;
 
 package body Niniel.Discover is
    
    package L   renames Linux_Types;
-   package Lsm renames Linux_Semaphore;
-   package Hwd renames Hw_Definition;
-   package Lsm renames Linux_Semaphore;
-   
-   ---------------------------------
-   --  discovery reply semaphore  --
-   -- for interlocking the ioctl  --
-   --  response                   --
-   ---------------------------------
-   Disc_Sem : Lsm.Semaphore;
-   Lsm.Sema_Init (
+
    
    -------------------------------
    --  send a discovery packet  --
@@ -62,9 +51,11 @@ package body Niniel.Discover is
                          Frame_Date_P : System.Address;
                          Size         : L.size_t)
    is
+      pragma Unreferenced (Device_A);
       use System.Storage_Elements;
       use type L.Size_T;
       use type Interfaces.C.Unsigned;
+      use type Interfaces.C.Int;
       use type Hwt.Bits_32;
       function Topa is 
          new Ada.Unchecked_Conversion (Source => System.Address,
@@ -98,7 +89,11 @@ package body Niniel.Discover is
          Lsm.Up (Master_A.Master_Sem'address);
          
       else -- valid frame
-         Lsm.Down (Disc_Sem'address);
+         if (Lsm.Down_Interruptible(Disc_Sem'address) /= 0) then
+            Master.Niniel_Debug 
+           (Master_A, 0, "discover: interrupted disc_sem semaphore");
+         end if;
+         -- Lsm.Down (Disc_Sem'address);
          Field_Status := Frame_A.Field_Status;
          Lsm.Up (Disc_Sem'address);
          declare

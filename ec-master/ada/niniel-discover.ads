@@ -5,7 +5,8 @@
 -- with out problem.
 -- the master may progress to preparing for full operation.
 
---with System.Storage_Elements;
+
+with Linux_Semaphore;
 
 with Hw_Types;
 with Hw_Definition.Main;
@@ -15,18 +16,24 @@ with Niniel.Master;
 
 package Niniel.Discover is
    
-   --package Sse renames System.Storage_Elements;
+   package Lsm renames Linux_Semaphore;
    package Hwt renames Hw_Types;
-   --package Hwd  renames Hw_Definition;
+   package Hwd  renames Hw_Definition;
    package Hwdm renames Hw_Definition.Main;
    
    -- the frame type for a disco packet
    Frame_Typ : constant Hwt.Bits_16 := 16#ff_ff#;
    
    
-   Field_Status : Hwd.Field_Status_Image_Type;
+   Field_Status : Hwdm.Field_Status_Image_Type;
    --  master field status image
    --  for use any where
+   
+      
+   Disc_Sem : Lsm.Semaphore;
+   --  discovery reply semaphore
+   -- for interlocking the ioctl
+   --  response
    
    
    

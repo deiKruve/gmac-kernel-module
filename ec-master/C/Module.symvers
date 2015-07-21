@@ -5,6 +5,7 @@
 0x9da327bc	ecdev_open	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL
 0xd3d2abae	ecdev_close	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL
 0x27aa6e8d	ecrt_request_master	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL
+0xd2edde4d	ecrt_request_master_err	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL
 0x8afacb2f	ecdev_get_link	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL
 0xb662c9cc	ecdev_withdraw	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL
 0x06e0ff3e	ecdev_receive	/home/jan/MMS/programs-KERNEL/ec-master/C/junk	EXPORT_SYMBOL

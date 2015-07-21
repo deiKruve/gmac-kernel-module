@@ -2,7 +2,7 @@
 with Errno_Base;
 with Linux_Kernel;
 with Linux_Sched;
-with Linux_Semaphore;
+-- with Linux_Semaphore;
 with Linux_Jiffies;
 with Linux_Kif;
 
@@ -48,17 +48,18 @@ package body Niniel.Master is
       end if;
    end Copy;
    
-   procedure Copy (I : in Ics.Chars_Ptr; O : out String)
-   is
-   begin
-      --  if O'Length > I'Length then
-      --     O := (O'Range => ' ');
-      --     O (O'First .. O'First + I'Length - 1) := I;
-      --  else
-      --     O := I (I'First .. I'First + O'Length - 1);
-      --  end if;
-      null;
-   end Copy;
+   
+   --  procedure Copy (I : in Ics.Chars_Ptr; O : out String)
+   --  is
+   --  begin
+   --     --  if O'Length > I'Length then
+   --     --     O := (O'Range => ' ');
+   --     --     O (O'First .. O'First + I'Length - 1) := I;
+   --     --  else
+   --     --     O := I (I'First .. I'First + O'Length - 1);
+   --     --  end if;
+   --     null;
+   --  end Copy;
    
      
    ------------------------------------
@@ -125,6 +126,7 @@ package body Niniel.Master is
    begin
       null;
    end Idle_Send_Cb;
+   pragma Unreferenced (Idle_Send_Cb);
    
    
    procedure Idle_Receive_Cb (Arg1 : System.Address)
@@ -132,6 +134,7 @@ package body Niniel.Master is
    begin
       null;
    end Idle_Receive_Cb;
+   pragma Unreferenced (Idle_Receive_Cb);
    
    
    --------------------------------------------------
@@ -145,10 +148,9 @@ package body Niniel.Master is
       function Toa is new Ada.Unchecked_Conversion (Source => System.Address,
                                                     Target => Ec_Master_A_Type);
       use type System.Address;
-      Ret       : Int;
+      --Ret       : Int;
       --Addr      : System.Address   := System.Null_Address;
-      Master_A    : access Ec_Master := Toa (Master_P);
-      State : Master_Fsm_State_Type := Orphaned;
+      Master_A    : constant access Ec_Master := Toa (Master_P);
    begin
       loop
          case Master_Fsm_State is
@@ -162,7 +164,7 @@ package body Niniel.Master is
                Master_Fsm_State := Wait_Return;
             when Wait_Return     =>
                declare 
-                  Sleep_Jiffies : Ic.Long := Ls.HZ / 10; 
+                  Sleep_Jiffies : constant Ic.Long := Ls.HZ / 10; 
                   -- 100 ms, but at least 1 jiffy
                   Dummy : Ic.Long := Ls.Schedule_Timeout (sleep_jiffies);
                begin null; end;
@@ -263,13 +265,13 @@ package body Niniel.Master is
    --  interface  --
    -----------------
    
-   procedure Start_Discovery  -- in response to an ioctl pulse
-   is
-   begin
-      if Master_Fsm_State = Idle then
-         Master_Fsm_State := Send_Discovery;
-      end if;
-   end  Start_Discovery;
+   --  procedure Start_Discovery  -- in response to an ioctl pulse
+   --  is
+   --  begin
+   --     if Master_Fsm_State = Idle then
+   --        Master_Fsm_State := Send_Discovery;
+   --     end if;
+   --  end  Start_Discovery;
    
    
    procedure ec_master_output_stats (arg1 : access Ec_Master)
@@ -361,6 +363,7 @@ package body Niniel.Master is
                             Debug_Level   : Ic.Unsigned)
                            return Int
    is
+      pragma Unreferenced (Backup_Mac);
       function Mk_Dev (Major : Unsigned; Minor : Unsigned) 
                       return Unsigned with Inline 
       is
@@ -544,6 +547,7 @@ package body Niniel.Master is
      (arg1 : Ec_Master_Ptr) 
      return Int
    is
+      pragma Unreferenced (Arg1);
    begin
       return 0;
    end Ec_Master_Enter_Operation_Phase;

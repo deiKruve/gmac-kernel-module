@@ -1,4 +1,5 @@
 
+with System;
 with Interfaces.C; use Interfaces.C;
 
 package Globals is

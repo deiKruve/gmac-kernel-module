@@ -96,6 +96,12 @@ package Ada.Exceptions is
    pragma Export (C, Rcheck_CE_Divide_By_Zero,
                   "__gnat_rcheck_CE_Divide_By_Zero");
 
+   procedure Rcheck_PE_Misaligned_Address_Value
+     (File : System.Address; Line : Integer);
+   pragma No_Return (Rcheck_PE_Misaligned_Address_Value);
+   pragma Export (C, Rcheck_PE_Misaligned_Address_Value,
+                  "__gnat_rcheck_PE_Misaligned_Address_Value");
+
    procedure Personality_V0
      (File : System.Address; Line : Integer);
    --  the arguments are wrong here,

@@ -4,6 +4,7 @@ Project Kernel is
    
    for Main use ("demo.adb");
    for Source_Dirs use (".", "../ada-if", "adainclude", "../../common", "../../../programs-appl/hw-defs"); --, "../../../programs-STM/finrod/src");
+   for Excluded_Source_Files use ("hw_definition-node_utils.ads", "hw_definition-node_utils.adb");
    for Object_Dir use "../obj";
    
    package Compiler is
