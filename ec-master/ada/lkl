@@ -1,0 +1,11 @@
+#!/bin/sh
+
+export PATH=/usr/gnat/bin:$PATH;
+cd /home/jan/MMS/programs-KERNEL/ec-master/ada
+
+echo $PATH
+pwd
+LL='gnatmake -l -Pkernel.gpr'
+exec $LL;
+echo 'linking done';
+exit 0;

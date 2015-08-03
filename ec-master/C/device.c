@@ -25,13 +25,22 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 //  keep -- jdk
 //  there is some skbuf crap here that needs to come out most likely.
 // check the  'add Ethernet-II-header' section
 /**
    \file
-   EtherCAT device methods.
+   Niniel device methods.
 */
 
 /*****************************************************************************/
@@ -64,7 +73,7 @@
  * \return 0 in case of success, else < 0
  */
 int ec_device_init(
-        ec_device_t *device, /**< EtherCAT device */
+        ec_device_t *device, /**< Niniel device */
         ec_master_t *master /**< master owning the device */
         )
 {
@@ -163,7 +172,7 @@ out_return:
 /** Destructor.
  */
 void ec_device_clear(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     unsigned int i;
@@ -183,7 +192,7 @@ void ec_device_clear(
 /** Associate with net_device.
  */
 void ec_device_attach(
-        ec_device_t *device, /**< EtherCAT device */
+        ec_device_t *device, /**< Niniel device */
         struct net_device *net_dev, /**< net_device structure */
         ec_pollfunc_t poll, /**< pointer to device's poll function */
         struct module *module /**< the device's module */
@@ -214,7 +223,7 @@ void ec_device_attach(
 /** Disconnect from net_device.
  */
 void ec_device_detach(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     unsigned int i;
@@ -238,12 +247,12 @@ void ec_device_detach(
 
 /*****************************************************************************/
 
-/** Opens the EtherCAT device.
+/** Opens the Niniel device.
  *
  * \return 0 in case of success, else < 0
  */
 int ec_device_open(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     int ret;
@@ -275,12 +284,12 @@ int ec_device_open(
 
 /*****************************************************************************/
 
-/** Stops the EtherCAT device.
+/** Stops the Niniel device.
  *
  * \return 0 in case of success, else < 0
  */
 int ec_device_close(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     int ret;
@@ -313,7 +322,7 @@ int ec_device_close(
  * \return pointer to the TX socket buffer
  */
 uint8_t *ec_device_tx_data(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     /* cycle through socket buffers, because otherwise there is a race
@@ -332,7 +341,7 @@ uint8_t *ec_device_tx_data(
  * start_xmit() function of the assigned net_device.
  */
 void ec_device_send(
-        ec_device_t *device, /**< EtherCAT device */
+        ec_device_t *device, /**< Niniel device */
         size_t size /**< number of bytes to send */
         )
 {
@@ -375,7 +384,7 @@ void ec_device_send(
 /** Clears the frame statistics.
  */
 void ec_device_clear_stats(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     unsigned int i;
@@ -405,7 +414,7 @@ void ec_device_clear_stats(
 /** Appends frame data to the debug ring.
  */
 void ec_device_debug_ring_append(
-        ec_device_t *device, /**< EtherCAT device */
+        ec_device_t *device, /**< Niniel device */
         ec_debug_frame_dir_t dir, /**< direction */
         const void *data, /**< frame data */
         size_t size /**< data size */
@@ -434,7 +443,7 @@ void ec_device_debug_ring_append(
 /** Outputs the debug ring.
  */
 void ec_device_debug_ring_print(
-        const ec_device_t *device /**< EtherCAT device */
+        const ec_device_t *device /**< Niniel device */
         )
 {
     int i;
@@ -479,7 +488,7 @@ void ec_device_debug_ring_print(
  * done by the master calling the ISR "manually".
  */
 void ec_device_poll(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
 #ifdef EC_HAVE_CYCLES
@@ -497,7 +506,7 @@ void ec_device_poll(
 /** Update device statistics.
  */
 void ec_device_update_stats(
-        ec_device_t *device /**< EtherCAT device */
+        ec_device_t *device /**< Niniel device */
         )
 {
     unsigned int i;
@@ -533,7 +542,7 @@ void ec_device_update_stats(
  *  Device interface
  *****************************************************************************/
 
-/** Withdraws an EtherCAT device from the master.
+/** Withdraws an Niniel device from the master.
  *
  * The device is disconnected from the master and all device ressources
  * are freed.
@@ -543,7 +552,7 @@ void ec_device_update_stats(
  *            any more.
  * \ingroup DeviceInterface
  */
-void ecdev_withdraw(ec_device_t *device /**< EtherCAT device */)
+void ecdev_withdraw(ec_device_t *device /**< Niniel device */)
 {
     ec_master_t *master = device->master;
     char dev_str[20], mac_str[20];
@@ -574,7 +583,7 @@ void ecdev_withdraw(ec_device_t *device /**< EtherCAT device */)
  * \return 0 on success, else < 0
  * \ingroup DeviceInterface
  */
-int ecdev_open(ec_device_t *device /**< EtherCAT device */)
+int ecdev_open(ec_device_t *device /**< Niniel device */)
 {
     int ret;
     ec_master_t *master = device->master;
@@ -612,7 +621,7 @@ int ecdev_open(ec_device_t *device /**< EtherCAT device */)
  * \return 0 on success, else < 0
  * \ingroup DeviceInterface
  */
-void ecdev_close(ec_device_t *device /**< EtherCAT device */)
+void ecdev_close(ec_device_t *device /**< Niniel device */)
 {
     ec_master_t *master = device->master;
 
@@ -635,7 +644,7 @@ void ecdev_close(ec_device_t *device /**< EtherCAT device */)
  * \ingroup DeviceInterface
  */
 void ecdev_receive(
-        ec_device_t *device, /**< EtherCAT device */
+        ec_device_t *device, /**< Niniel device */
         const void *data, /**< pointer to received data */
         size_t size /**< number of bytes received */
         )
@@ -679,7 +688,7 @@ void ecdev_receive(
  * \ingroup DeviceInterface
  */
 void ecdev_set_link(
-        ec_device_t *device, /**< EtherCAT device */
+        ec_device_t *device, /**< Niniel device */
         uint8_t state /**< new link state */
         )
 {
@@ -705,7 +714,7 @@ void ecdev_set_link(
  * \return Link state.
  */
 uint8_t ecdev_get_link(
-        const ec_device_t *device /**< EtherCAT device */
+        const ec_device_t *device /**< Niniel device */
         )
 {
     if (unlikely(!device)) {

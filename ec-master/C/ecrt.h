@@ -1,3 +1,41 @@
+/******************************************************************************
+ *
+ *  $Id$
+ *
+ *  Copyright (C) 2006-2008  Florian Pose, Ingenieurgemeinschaft IgH
+ *
+ *  This file is part of the IgH EtherCAT Master.
+ *
+ *  The IgH EtherCAT Master is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License version 2, as
+ *  published by the Free Software Foundation.
+ *
+ *  The IgH EtherCAT Master is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+ *  Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with the IgH EtherCAT Master; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ *  ---
+ *
+ *  The license mentioned above concerns the source code only. Using the
+ *  EtherCAT technology and brand is only permitted in compliance with the
+ *  industrial property and similar rights of Beckhoff Automation GmbH.
+ *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
+ *****************************************************************************/
+
 #ifndef __ECRT_H__
 #define __ECRT_H__
 
@@ -15,19 +53,19 @@
  * Global definitions
  *****************************************************************************/
 
-/** EtherCAT realtime interface major version number.
+/** Niniel realtime interface major version number.
  */
 #define ECRT_VER_MAJOR 1
 
-/** EtherCAT realtime interface minor version number.
+/** Niniel realtime interface minor version number.
  */
 #define ECRT_VER_MINOR 5
 
-/** EtherCAT realtime interface version word generator.
+/** Niniel realtime interface version word generator.
  */
 #define ECRT_VERSION(a, b) (((a) << 8) + (b))
 
-/** EtherCAT realtime interface version word.
+/** Niniel realtime interface version word.
  */
 #define ECRT_VERSION_MAGIC ECRT_VERSION(ECRT_VER_MAJOR, ECRT_VER_MINOR)
 
@@ -76,16 +114,16 @@ typedef enum {
  * Bitwise read/write macros
  *****************************************************************************/
 
-/** Read a certain bit of an EtherCAT data byte.
+/** Read a certain bit of an Niniel data byte.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param POS bit position
  */
 #define EC_READ_BIT(DATA, POS) ((*((uint8_t *) (DATA)) >> (POS)) & 0x01)
 
-/** Write a certain bit of an EtherCAT data byte.
+/** Write a certain bit of an Niniel data byte.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param POS bit position
  * \param VAL new bit value
  */
@@ -154,65 +192,65 @@ typedef enum {
  * Read macros
  *****************************************************************************/
 
-/** Read an 8-bit unsigned value from EtherCAT data.
+/** Read an 8-bit unsigned value from Niniel data.
  *
- * \return EtherCAT data value
+ * \return Niniel data value
  */
 #define EC_READ_U8(DATA) \
     ((uint8_t) *((uint8_t *) (DATA)))
 
-/** Read an 8-bit signed value from EtherCAT data.
+/** Read an 8-bit signed value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_S8(DATA) \
      ((int8_t) *((uint8_t *) (DATA)))
 
-/** Read a 16-bit unsigned value from EtherCAT data.
+/** Read a 16-bit unsigned value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_U16(DATA) \
      ((uint16_t) le16_to_cpup((void *) (DATA)))
 
-/** Read a 16-bit signed value from EtherCAT data.
+/** Read a 16-bit signed value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_S16(DATA) \
      ((int16_t) le16_to_cpup((void *) (DATA)))
 
-/** Read a 32-bit unsigned value from EtherCAT data.
+/** Read a 32-bit unsigned value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_U32(DATA) \
      ((uint32_t) le32_to_cpup((void *) (DATA)))
 
-/** Read a 32-bit signed value from EtherCAT data.
+/** Read a 32-bit signed value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_S32(DATA) \
      ((int32_t) le32_to_cpup((void *) (DATA)))
 
-/** Read a 64-bit unsigned value from EtherCAT data.
+/** Read a 64-bit unsigned value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_U64(DATA) \
      ((uint64_t) le64_to_cpup((void *) (DATA)))
 
-/** Read a 64-bit signed value from EtherCAT data.
+/** Read a 64-bit signed value from Niniel data.
  *
- * \param DATA EtherCAT data pointer
- * \return EtherCAT data value
+ * \param DATA Niniel data pointer
+ * \return Niniel data value
  */
 #define EC_READ_S64(DATA) \
      ((int64_t) le64_to_cpup((void *) (DATA)))
@@ -221,9 +259,9 @@ typedef enum {
  * Write macros
  *****************************************************************************/
 
-/** Write an 8-bit unsigned value to EtherCAT data.
+/** Write an 8-bit unsigned value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_U8(DATA, VAL) \
@@ -231,16 +269,16 @@ typedef enum {
         *((uint8_t *)(DATA)) = ((uint8_t) (VAL)); \
     } while (0)
 
-/** Write an 8-bit signed value to EtherCAT data.
+/** Write an 8-bit signed value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_S8(DATA, VAL) EC_WRITE_U8(DATA, VAL)
 
-/** Write a 16-bit unsigned value to EtherCAT data.
+/** Write a 16-bit unsigned value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_U16(DATA, VAL) \
@@ -248,16 +286,16 @@ typedef enum {
         *((uint16_t *) (DATA)) = cpu_to_le16((uint16_t) (VAL)); \
     } while (0)
 
-/** Write a 16-bit signed value to EtherCAT data.
+/** Write a 16-bit signed value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_S16(DATA, VAL) EC_WRITE_U16(DATA, VAL)
 
-/** Write a 32-bit unsigned value to EtherCAT data.
+/** Write a 32-bit unsigned value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_U32(DATA, VAL) \
@@ -265,16 +303,16 @@ typedef enum {
         *((uint32_t *) (DATA)) = cpu_to_le32((uint32_t) (VAL)); \
     } while (0)
 
-/** Write a 32-bit signed value to EtherCAT data.
+/** Write a 32-bit signed value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_S32(DATA, VAL) EC_WRITE_U32(DATA, VAL)
 
-/** Write a 64-bit unsigned value to EtherCAT data.
+/** Write a 64-bit unsigned value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_U64(DATA, VAL) \
@@ -282,9 +320,9 @@ typedef enum {
         *((uint64_t *) (DATA)) = cpu_to_le64((uint64_t) (VAL)); \
     } while (0)
 
-/** Write a 64-bit signed value to EtherCAT data.
+/** Write a 64-bit signed value to Niniel data.
  *
- * \param DATA EtherCAT data pointer
+ * \param DATA Niniel data pointer
  * \param VAL new value
  */
 #define EC_WRITE_S64(DATA, VAL) EC_WRITE_U64(DATA, VAL)

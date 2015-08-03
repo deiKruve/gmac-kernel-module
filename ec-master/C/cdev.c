@@ -25,11 +25,20 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /**
    \file
-   EtherCAT master character device.
+   Niniel master character device.
 */
 
 /*****************************************************************************/
@@ -72,7 +81,7 @@ static struct page *eccdev_vma_nopage(
 
 /*****************************************************************************/
 
-/** File operation callbacks for the EtherCAT character device.
+/** File operation callbacks for the Niniel character device.
  */
 static struct file_operations eccdev_fops = {
     .owner          = THIS_MODULE,
@@ -108,7 +117,7 @@ typedef struct {
  * \return 0 in case of success, else < 0
  */
 int ec_cdev_init(
-        ec_cdev_t *cdev, /**< EtherCAT master character device. */
+        ec_cdev_t *cdev, /**< Niniel master character device. */
         ec_master_t *master, /**< Parent master. */
         dev_t dev_num /**< Device number. */
         )
@@ -136,7 +145,7 @@ int ec_cdev_init(
 
 /** Destructor.
  */
-void ec_cdev_clear(ec_cdev_t *cdev /**< EtherCAT XML device */)
+void ec_cdev_clear(ec_cdev_t *cdev /**< Niniel XML device */)
 {
     cdev_del(&cdev->cdev);
 }
@@ -226,7 +235,7 @@ long eccdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 #define VM_DONTDUMP VM_RESERVED
 #endif
 
-/** Memory-map callback for the EtherCAT character device.
+/** Memory-map callback for the Niniel character device.
  *
  * The actual mapping will be done in the eccdev_vma_nopage() callback of the
  * virtual memory area.

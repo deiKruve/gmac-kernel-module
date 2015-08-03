@@ -25,11 +25,22 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
+
+// mostly not used, for reference only.
 
 /**
    \file
-   EtherCAT master character device IOCTL commands.
+   Niniel master character device IOCTL commands.
 */
 
 /*****************************************************************************/
@@ -52,7 +63,7 @@
 #define EC_IOW(nr, type)   _IOW(EC_IOCTL_TYPE, nr, type)
 #define EC_IOWR(nr, type) _IOWR(EC_IOCTL_TYPE, nr, type)
 
-/** EtherCAT master ioctl() version magic.
+/** Niniel master ioctl() version magic.
  *
  * Increment this when changing the ioctl interface!
  */

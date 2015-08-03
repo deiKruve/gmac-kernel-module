@@ -1,0 +1,12 @@
+#!/bin/sh
+
+export PATH=/usr/gnat/bin:$PATH;
+cd /home/jan/MMS/programs-KERNEL/ec-master/ada
+
+echo $PATH
+pwd
+CC='gnatmake -f -u -c -b -a -Pkernel.gpr'
+CCC='gnatmake -f -u -c -b -Pkernel.gpr'
+exec $CC; 
+echo 'compiling done';
+exit 0;

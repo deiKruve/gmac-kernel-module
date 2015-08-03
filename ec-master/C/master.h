@@ -31,11 +31,20 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /**
    \file
-   EtherCAT master structure.
+   Niniel master structure.
 */
 
 /*****************************************************************************/
@@ -59,46 +68,46 @@
 
 /** Convenience macro for printing master-specific information to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * This will print the message in \a fmt with a prefixed "Niniel <INDEX>: ",
  * where INDEX is the master index.
  *
- * \param master EtherCAT master
+ * \param master Niniel master
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_MASTER_INFO(master, fmt, args...) \
-    printk(KERN_INFO "EtherCAT %u: " fmt, master->index, ##args)
+    printk(KERN_INFO "Niniel %u: " fmt, master->index, ##args)
 
 /** Convenience macro for printing master-specific errors to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * This will print the message in \a fmt with a prefixed "Niniel <INDEX>: ",
  * where INDEX is the master index.
  *
- * \param master EtherCAT master
+ * \param master Niniel master
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_MASTER_ERR(master, fmt, args...) \
-    printk(KERN_ERR "EtherCAT ERROR %u: " fmt, master->index, ##args)
+    printk(KERN_ERR "Niniel ERROR %u: " fmt, master->index, ##args)
 
 /** Convenience macro for printing master-specific warnings to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * This will print the message in \a fmt with a prefixed "Niniel <INDEX>: ",
  * where INDEX is the master index.
  *
- * \param master EtherCAT master
+ * \param master Niniel master
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_MASTER_WARN(master, fmt, args...) \
-    printk(KERN_WARNING "EtherCAT WARNING %u: " fmt, master->index, ##args)
+    printk(KERN_WARNING "Niniel WARNING %u: " fmt, master->index, ##args)
 
 /** Convenience macro for printing master-specific debug messages to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT <INDEX>: ",
+ * This will print the message in \a fmt with a prefixed "Niniel <INDEX>: ",
  * where INDEX is the master index.
  *
- * \param master EtherCAT master
+ * \param master Niniel master
  * \param level Debug level. Master's debug level must be >= \a level for
  * output.
  * \param fmt format string (like in printf())
@@ -107,7 +116,7 @@
 #define EC_MASTER_DBG(master, level, fmt, args...) \
     do { \
         if (master->debug_level >= level) { \
-            printk(KERN_DEBUG "EtherCAT DEBUG %u: " fmt, \
+            printk(KERN_DEBUG "Niniel DEBUG %u: " fmt, \
                     master->index, ##args); \
         } \
     } while (0)
@@ -121,7 +130,7 @@
 
 /*****************************************************************************/
 
-/* EtherCAT master phase. */
+/* Niniel master phase. */
 typedef enum {
     EC_ORPHANED, /**< Orphaned phase. The master has no Ethernet device
                    attached. */
@@ -182,7 +191,7 @@ typedef struct {
 
 /*****************************************************************************/
 
-/** EtherCAT master.
+/** Niniel master.
  *
  * Manages slaves, domains and IO.
  */
@@ -203,7 +212,7 @@ struct ec_master {
 
     struct semaphore master_sem; /**< Master semaphore. */
 
-    ec_device_t devices[EC_MAX_NUM_DEVICES]; /**< EtherCAT devices. */
+    ec_device_t devices[EC_MAX_NUM_DEVICES]; /**< Niniel devices. */
     const uint8_t *macs[EC_MAX_NUM_DEVICES]; /**< Device MAC addresses. */
 #if EC_MAX_NUM_DEVICES > 1
     unsigned int num_devices; /**< Number of devices. Access this always via
@@ -289,7 +298,7 @@ struct ec_master {
 
 /* #ifdef EC_EOE */
 /*     struct task_struct *eoe_thread; /\**< EoE thread. *\/ */
-/*     struct list_head eoe_handlers; /\**< Ethernet over EtherCAT handlers. *\/ */
+/*     struct list_head eoe_handlers; /\**< Ethernet over Niniel handlers. *\/ */
 /* #endif */
 
     struct semaphore io_sem; /**< Semaphore used in \a IDLE phase. */

@@ -25,16 +25,25 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /** \file
  *
- * EtherCAT interface for EtherCAT device drivers.
+ * Niniel interface for Niniel device drivers.
  *
- * \defgroup DeviceInterface EtherCAT Device Interface
+ * \defgroup DeviceInterface Niniel Device Interface
  *
- * Master interface for EtherCAT-capable network device drivers. Through the
- * EtherCAT device interface, EtherCAT-capable network device drivers are able
+ * Master interface for Niniel-capable network device drivers. Through the
+ * Niniel device interface, Niniel-capable network device drivers are able
  * to connect their device(s) to the master, pass received frames and notify
  * the master about status changes. The master on his part, can send his
  * frames through connected devices.

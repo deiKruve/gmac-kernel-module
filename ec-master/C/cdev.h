@@ -25,11 +25,20 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /**
    \file
-   EtherCAT master character device.
+   Niniel master character device.
 */
 
 /*****************************************************************************/
@@ -44,7 +53,7 @@
 
 /*****************************************************************************/
 
-/** EtherCAT master character device.
+/** Niniel master character device.
 */
 typedef struct {
     ec_master_t *master; /**< Master owning the device. */

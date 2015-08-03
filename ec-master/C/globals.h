@@ -25,6 +25,15 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /** \file
@@ -40,7 +49,7 @@
 #include "ecrt.h"
 
 /******************************************************************************
- * EtherCAT master
+ * Niniel master
  *****************************************************************************/
 
 /** Datagram timeout in microseconds. */
@@ -72,19 +81,19 @@
 #define EC_RATE_COUNT 3
 
 /******************************************************************************
- * EtherCAT protocol
+ * Niniel protocol
  *****************************************************************************/
 
-/** Size of an EtherCAT frame header. */
+/** Size of an Niniel frame header. */
 #define EC_FRAME_HEADER_SIZE 2
 
-/** Size of an EtherCAT datagram header. */
+/** Size of an Niniel datagram header. */
 #define EC_DATAGRAM_HEADER_SIZE 10
 
-/** Size of an EtherCAT datagram footer. */
+/** Size of an Niniel datagram footer. */
 #define EC_DATAGRAM_FOOTER_SIZE 2
 
-/** Size of the EtherCAT address field. */
+/** Size of the Niniel address field. */
 #define EC_ADDR_LEN 4
 
 /** Resulting maximum data size of a single datagram in a frame. */
@@ -122,7 +131,7 @@
  */
 #define EC_SLAVE_STATE_MASK 0x0F
 
-/** State of an EtherCAT slave.
+/** State of an Niniel slave.
  */
 typedef enum {
     EC_SLAVE_STATE_UNKNOWN = 0x00,
@@ -144,15 +153,15 @@ typedef enum {
 /** Supported mailbox protocols.
  */
 enum {
-    EC_MBOX_AOE = 0x01, /**< ADS over EtherCAT */
-    EC_MBOX_EOE = 0x02, /**< Ethernet over EtherCAT */
-    EC_MBOX_COE = 0x04, /**< CANopen over EtherCAT */
-    EC_MBOX_FOE = 0x08, /**< File-Access over EtherCAT */
-    EC_MBOX_SOE = 0x10, /**< Servo-Profile over EtherCAT */
+    EC_MBOX_AOE = 0x01, /**< ADS over Niniel */
+    EC_MBOX_EOE = 0x02, /**< Ethernet over Niniel */
+    EC_MBOX_COE = 0x04, /**< CANopen over Niniel */
+    EC_MBOX_FOE = 0x08, /**< File-Access over Niniel */
+    EC_MBOX_SOE = 0x10, /**< Servo-Profile over Niniel */
     EC_MBOX_VOE = 0x20  /**< Vendor specific */
 };
 
-/** Slave information interface CANopen over EtherCAT details flags.
+/** Slave information interface CANopen over Niniel details flags.
  */
 typedef struct {
     uint8_t enable_sdo : 1; /**< Enable SDO access. */
@@ -170,7 +179,7 @@ typedef struct {
     uint8_t enable_not_lrw : 1; /**< Slave does not support LRW. */
 } ec_sii_general_flags_t;
 
-/** EtherCAT slave distributed clocks range.
+/** Niniel slave distributed clocks range.
  */
 typedef enum {
     EC_DC_32, /**< 32 bit. */
@@ -178,7 +187,7 @@ typedef enum {
                port 0 receive time. */
 } ec_slave_dc_range_t;
 
-/** EtherCAT slave sync signal configuration.
+/** Niniel slave sync signal configuration.
  */
 typedef struct {
     uint32_t cycle_time; /**< Cycle time [ns]. */
@@ -207,45 +216,45 @@ extern const char *ec_device_names[2]; // only main and backup!
 
 /*****************************************************************************/
 
-/** Convenience macro for printing EtherCAT-specific information to syslog.
+/** Convenience macro for printing Niniel-specific information to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT: ".
+ * This will print the message in \a fmt with a prefixed "Niniel: ".
  *
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_INFO(fmt, args...) \
-    printk(KERN_INFO "EtherCAT: " fmt, ##args)
+    printk(KERN_INFO "Niniel: " fmt, ##args)
 
-/** Convenience macro for printing EtherCAT-specific errors to syslog.
+/** Convenience macro for printing Niniel-specific errors to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT ERROR: ".
+ * This will print the message in \a fmt with a prefixed "Niniel ERROR: ".
  *
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_ERR(fmt, args...) \
-    printk(KERN_ERR "EtherCAT ERROR: " fmt, ##args)
+    printk(KERN_ERR "Niniel ERROR: " fmt, ##args)
 
-/** Convenience macro for printing EtherCAT-specific warnings to syslog.
+/** Convenience macro for printing Niniel-specific warnings to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT WARNING: ".
+ * This will print the message in \a fmt with a prefixed "Niniel WARNING: ".
  *
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_WARN(fmt, args...) \
-    printk(KERN_WARNING "EtherCAT WARNING: " fmt, ##args)
+    printk(KERN_WARNING "Niniel WARNING: " fmt, ##args)
 
-/** Convenience macro for printing EtherCAT debug messages to syslog.
+/** Convenience macro for printing Niniel debug messages to syslog.
  *
- * This will print the message in \a fmt with a prefixed "EtherCAT DEBUG: ".
+ * This will print the message in \a fmt with a prefixed "Niniel DEBUG: ".
  *
  * \param fmt format string (like in printf())
  * \param args arguments (optional)
  */
 #define EC_DBG(fmt, args...) \
-    printk(KERN_DEBUG "EtherCAT DEBUG: " fmt, ##args)
+    printk(KERN_DEBUG "Niniel DEBUG: " fmt, ##args)
 
 /*****************************************************************************/
 
@@ -272,7 +281,7 @@ ec_master_t *ecrt_request_master_err(unsigned int);
 
 /** Code/Message pair.
  *
- * Some EtherCAT datagrams support reading a status code to display a certain
+ * Some Niniel datagrams support reading a status code to display a certain
  * message. This type allows to map a code to a message string.
  */
 typedef struct {

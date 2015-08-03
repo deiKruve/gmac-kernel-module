@@ -25,11 +25,20 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /**
    \file
-   EtherCAT device structure.
+   Niniel device structure.
 */
 
 /*****************************************************************************/
@@ -74,14 +83,14 @@ typedef struct {
 /*****************************************************************************/
 
 /**
-   EtherCAT device.
-   An EtherCAT device is a network interface card, that is owned by an
-   EtherCAT master to send and receive EtherCAT frames with.
+   Niniel device.
+   An Niniel device is a network interface card, that is owned by an
+   Niniel master to send and receive Niniel frames with.
 */
 
 struct ec_device
 {
-    ec_master_t *master; /**< EtherCAT master */
+    ec_master_t *master; /**< Niniel master */
     struct net_device *dev; /**< pointer to the assigned net_device */
     ec_pollfunc_t poll; /**< pointer to the device's poll function */
     struct module *module; /**< pointer to the device's owning module */

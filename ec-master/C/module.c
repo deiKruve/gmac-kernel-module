@@ -25,10 +25,19 @@
  *  EtherCAT technology and brand is only permitted in compliance with the
  *  industrial property and similar rights of Beckhoff Automation GmbH.
  *
+ *
+ *  -------------------
+ * 
+ *  I have used and modified this source to suit my version of a fast 
+ *  Ethernet communication package.
+ *  To my knowledge this file contains no EtherCAT technology specific software.
+ *  
+ *  modifications: Copyright (C) 2015, Jan de Kruyf
+ *
  *****************************************************************************/
 
 /** \file
- * EtherCAT master driver module.
+ * Niniel master driver module.
  */
 
 /*****************************************************************************/
@@ -80,7 +89,7 @@ char *ec_master_version_str = EC_MASTER_VERSION; /**< Version string. */
 /** \cond */
 
 MODULE_AUTHOR("Florian Pose <fp@igh-essen.com>");
-MODULE_DESCRIPTION("EtherCAT master driver module");
+MODULE_DESCRIPTION("Niniel master driver module");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(EC_MASTER_VERSION);
 
@@ -110,14 +119,14 @@ int __init ec_init_module(void)
 
     if (master_count) {
         if (alloc_chrdev_region(&device_number,
-                    0, master_count, "EtherCAT")) {
+                    0, master_count, "Niniel")) {
             EC_ERR("Failed to obtain device number(s)!\n");
             ret = -EBUSY;
             goto out_return;
         }
     }
 
-    class = class_create(THIS_MODULE, "EtherCAT");
+    class = class_create(THIS_MODULE, "Niniel");
     if (IS_ERR(class)) {
         EC_ERR("Failed to create device class.\n");
         ret = PTR_ERR(class);
@@ -152,7 +161,7 @@ int __init ec_init_module(void)
         if (!(masters = kmalloc(sizeof(ec_master_t) * master_count,
                         GFP_KERNEL))) {
             EC_ERR("Failed to allocate memory"
-                    " for EtherCAT masters.\n");
+                    " for Niniel masters.\n");
             ret = -ENOMEM;
             goto out_class;
         }
@@ -474,12 +483,12 @@ const char *ec_device_names[2] = {
     "backup"
 };
 
-/** Offers an EtherCAT device to a certain master.
+/** Offers an Niniel device to a certain master.
  *
- * The master decides, if it wants to use the device for EtherCAT operation,
+ * The master decides, if it wants to use the device for Niniel operation,
  * or not. It is important, that the offered net_device is not used by the
  * kernel IP stack. If the master, accepted the offer, the address of the
- * newly created EtherCAT device is returned, else \a NULL is returned.
+ * newly created Niniel device is returned, else \a NULL is returned.
  *
  * \return Pointer to device, if accepted, or NULL if declined.
  * \ingroup DeviceInterface
