@@ -49,7 +49,7 @@
 
 /** Set to 1 to enable device operations debugging.
  */
-#define DEBUG 0
+#define DEBUG 1 // jdk testing
 
 /*****************************************************************************/
 
@@ -125,7 +125,10 @@ int ec_cdev_init(
     if (ret) {
         EC_MASTER_ERR(master, "Failed to add character device!\n");
     }
-
+    printk ("cdev inited");/////////////////////////////////////////////
+#if DEBUG
+    EC_MASTER_DBG(cdev->master, 0, "cdev inited.\n");
+#endif
     return ret;
 }
 
@@ -149,6 +152,7 @@ int eccdev_open(struct inode *inode, struct file *filp)
     ec_cdev_t *cdev = container_of(inode->i_cdev, ec_cdev_t, cdev);
     ec_cdev_priv_t *priv;
 
+    printk ("ec_cdev open");/////////////////////////////////////////////
     priv = kmalloc(sizeof(ec_cdev_priv_t), GFP_KERNEL);
     if (!priv) {
         EC_MASTER_ERR(cdev->master,
@@ -178,7 +182,7 @@ int eccdev_release(struct inode *inode, struct file *filp)
 {
     ec_cdev_priv_t *priv = (ec_cdev_priv_t *) filp->private_data;
     ec_master_t *master = priv->cdev->master;
-
+    printk ("ec_cdev release");/////////////////////////////////////////////
     if (priv->ctx.requested) {
         ecrt_release_master(master);
     }
@@ -199,9 +203,11 @@ int eccdev_release(struct inode *inode, struct file *filp)
 
 /** Called when an ioctl() command is issued.
  */
+//    long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
 long eccdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
     ec_cdev_priv_t *priv = (ec_cdev_priv_t *) filp->private_data;
+    printk ("ec_cdev ioctl");/////////////////////////////////////////////
 
 #if DEBUG
     EC_MASTER_DBG(priv->cdev->master, 0,
@@ -233,6 +239,7 @@ int eccdev_mmap(
         )
 {
     ec_cdev_priv_t *priv = (ec_cdev_priv_t *) filp->private_data;
+    printk ("ec_cdev mmap");/////////////////////////////////////////////
 
     EC_MASTER_DBG(priv->cdev->master, 1, "mmap()\n");
 
@@ -262,6 +269,8 @@ static int eccdev_vma_fault(
     unsigned long offset = vmf->pgoff << PAGE_SHIFT;
     ec_cdev_priv_t *priv = (ec_cdev_priv_t *) vma->vm_private_data;
     struct page *page;
+
+    printk ("ec_cdev vma-fault");/////////////////////////////////////////////
 
     if (offset >= priv->ctx.process_data_size) {
         return VM_FAULT_SIGBUS;
@@ -295,6 +304,7 @@ struct page *eccdev_vma_nopage(
         int *type /**< Type output parameter. */
         )
 {
+  printk ("ec_cdev vma-nopage");/////////////////////////////////////////////
     unsigned long offset;
     struct page *page = NOPAGE_SIGBUS;
     ec_cdev_priv_t *priv = (ec_cdev_priv_t *) vma->vm_private_data;

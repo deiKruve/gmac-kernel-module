@@ -34,7 +34,22 @@ package Linux_Device is
                            S       : String)
                           return Device_Ptr;
    pragma Import (C, Device_Create, "device_create");
+   
+   
+   procedure Device_Unregister (Dev : Device_Ptr);
+   pragma Import (C, Device_Unregister, "device_unregister");
+   
+   
+   procedure Device_Destroy (Cls     : Class_Ptr;
+                             Devt    : L.Dev_T);
+   pragma Import (C, Device_Destroy, "device_destroy");
+   
+   
    --  struct class *cls, struct device *parent,
    --       		     dev_t devt, void *drvdata,
    --       		     const char *fmt, ...);
+   
+   -- extern void device_unregister(struct device *dev);
+   
+   -- extern void device_destroy(struct class *cls, dev_t devt);
 end Linux_Device;

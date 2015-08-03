@@ -57,4 +57,14 @@ package body Linux_Kernel is
       Kprintk (S & ASCII.LF & ASCII.NUL);
    end Printk;
    
+   
+   procedure Printkp (S: String; P : System.Address)
+   is
+      procedure Kprintkp (S : String; Ptr : System.Address);
+      pragma Import (C, Kprintkp, "printkp");
+   begin
+      Kprintkp (S & " : %p." & ASCII.LF & ASCII.NUL, P);
+   end Printkp;
+   
+   
 end Linux_Kernel;

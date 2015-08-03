@@ -85,3 +85,8 @@ void *
 //struct task_struct;
 extern int kthread_stop(struct task_struct  *k);
 #endif // LINUX_KIF_H
+
+
+void
+printkp (char *string, void *pointer);
+// to facilitate printing of a pointer from Ada.

@@ -98,6 +98,8 @@ package Niniel.Master is
    type Mac_Addr_A_Type is access all Mac_Addr_Type;
    subtype Mac_Addr_Ptr is System.Address;
    type ec_master_macs_array is array (0 .. 0) of Mac_Addr_Ptr;
+   pragma Convention (C, Ec_Master_Macs_Array);
+   for Ec_Master_Macs_Array'Size use 64; --------------------------
    
    type ec_master is record
       index : aliased unsigned;  --  *
@@ -105,8 +107,10 @@ package Niniel.Master is
       chdev : aliased cdev.ec_cdev_t;
       class_device : Linux_Device_Device_Ptr; -- access linux_device_h.device;
       master_sem : aliased linux_semaphore.Semaphore;
-      Devices : Device.Ec_Device_Ptr;  --  *
+      --Devices : Device.Ec_Device_Ptr;  --  *
+      Devices : aliased Device.Ec_Device;
       macs : aliased ec_master_macs_array;
+      --  Num_Devices : aliased unsigned; -- only if more than one device
       device_sem : aliased linux_semaphore.Semaphore;  --  *
       device_stats : aliased ec_device_stats_t;  --  *
       phase : aliased ec_master_phase_t;  --  *
@@ -237,7 +241,7 @@ package Niniel.Master is
    pragma Export (C, Ec_Master_Init, "ec_master_init");
    
    
-   procedure Ec_Master_Clear (arg1 : Ec_Master_Ptr);
+   procedure Ec_Master_Clear (Master_P : Ec_Master_Ptr);
    -- master deletion
    pragma Export (C, Ec_Master_Clear, "ec_master_clear");
 

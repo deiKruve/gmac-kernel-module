@@ -1,4 +1,6 @@
 
+
+with System.Address_To_Access_Conversions;
 with Errno_Base;
 with Linux_Kernel;
 with Linux_Sched;
@@ -7,8 +9,9 @@ with Linux_Jiffies;
 with Linux_Kif;
 
 --  with Jan.Img_Uns;
-with Jan.Img_Int;--with System.Address_To_Access_Conversions;
+with Jan.Img_Int;
 with Ada.Unchecked_Conversion;
+
 with Interfaces.C.Extensions;
 with Interfaces.C.Strings;
 
@@ -145,12 +148,12 @@ package body Niniel.Master is
    
    function Master_Fsm (Master_P : System.Address) return int
    is
-      function Toa is new Ada.Unchecked_Conversion (Source => System.Address,
-                                                    Target => Ec_Master_A_Type);
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Ec_Master);
       use type System.Address;
       --Ret       : Int;
       --Addr      : System.Address   := System.Null_Address;
-      Master_A    : constant access Ec_Master := Toa (Master_P);
+      Master_A  : constant access Ec_Master := Ecmas.To_Pointer (Master_P);
    begin
       loop
          case Master_Fsm_State is
@@ -336,7 +339,7 @@ package body Niniel.Master is
       s.last_rx_bytes := s.rx_bytes;
       s.last_loss     := loss;
       
-      Device.Ec_Device_Update_Stats (Master.Devices);
+      Device.Ec_Device_Update_Stats (Master.Devices'address);
       
       S.jiffies := Lj.jiffies;
       
@@ -373,14 +376,23 @@ package body Niniel.Master is
          return Ret;
       end Mk_Dev;
       
-      function Toa is new Ada.Unchecked_Conversion (Source => System.Address,
-                                                    Target => Ec_Master_A_Type);
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Ec_Master);
+      package Ecdev is new 
+        System.Address_To_Access_Conversions (Object => Device.Ec_Device);
+
       use type System.Address;
       Ret       : Int;
-      Addr      : System.Address   := System.Null_Address;
-      Master    : access Ec_Master := Toa (Master_P);
+      Addr      : System.Address          := System.Null_Address;
+      Master    : access Ec_Master        := Ecmas.To_Pointer (Master_P);
+      Device_A  : constant access Device.Ec_Device := new Device.Ec_Device;
+      
+      --function Tou is new Ada.Unchecked_Conversion (Source => System.Address,
+      --                                              Target => Ice.Unsigned_64);
+      --Im : Ice.Unsigned_64;---------------------------------
       
    begin
+      Lk.Printk ("entered master.ec_master_init");
       --  Master := Toa (Master_P);
       Master.Index := Index;
       Master.Reserved := 0;
@@ -390,8 +402,14 @@ package body Niniel.Master is
       Master.Macs (Master.Macs'First) := Main_Mac;
       Ec_Master_Clear_Device_Stats (Master); -------------------implement!!
       
-      --  sema_init(&master->device_sem, 1); -- do we need this ?????????
-      
+      --  Im := tou (Master.Device_Sem'Address);
+      --  Lk.Printk ("Master.Device_Sem'Address : " & Ice.Unsigned_64'Image (im));
+      Lk.Printkp ("Master.index'Address : ", Master.Index'Address);
+      Lk.Printkp ("Master.master_semaf'Address : ", Master.master_Sem'Address);
+      Lk.Printkp ("Master.Devices'Address : ", Master.Devices'Address);
+      Lk.Printkp ("Master.macs'Address : ", Master.macs'Address);
+      Lk.Printkp ("Master.Device_Semaf'Address : ", Master.Device_Sem'Address);
+      Lsm.Sema_Init (Master.Device_Sem'Address, 1);
       Master.phase := EC_ORPHANED;
       
       Master.active := 0;
@@ -426,12 +444,14 @@ package body Niniel.Master is
       
       -- init devices
       --ret = ec_device_init(&master->devices[dev_idx], master);
-      Ret := Device.Ec_Device_Init (Master.Devices, Master_P);
+
+      --Master.Devices := Ecdev.To_Address (Ecdev.Object_Pointer (Device_A));
+      Master.Devices := Device_A.all;
+      Ret := Device.Ec_Device_Init (Master.Devices'address, Master_P);----------------
       if Ret < 0 then
          Lk.Printk (Lk.KERN_ERR & "niniel.master : device did not initialize.");
          goto Out_Clear_Devices;
       end if;
-      
       -- // init state machine datagram
       -- // create state machine object
       -- // alloc external datagram ring
@@ -442,7 +462,10 @@ package body Niniel.Master is
       -- init character device
       Ret := Cdev.Ec_Cdev_Init (Master.Chdev'Access, Master_P, Device_Number);
       if Ret < 0 then
+         Lk.Printk (Lk.KERN_ERR & "niniel.master : cdev not initialized.");
          goto Out_Clear_devices;
+      else
+         Lk.Printk (Lk.KERN_ERR & "niniel.master : cdev initialized.");
       end if;
       
       Master.Class_Device := System.Null_Address;
@@ -464,15 +487,33 @@ package body Niniel.Master is
       Cdev.Ec_Cdev_Clear (Master.Chdev'Access);
       
   <<out_clear_devices>>
-      Device.Ec_Device_Clear (Master.Devices);
-      
+      Device.Ec_Device_Clear (Master.Devices'address);
+      --Free (Device_A); -- dont worry it will disappear at unloading.
       return Ret;
    end ec_master_init;
    
    
-   procedure ec_master_clear (arg1 : Ec_Master_Ptr)
+   ---------------------------------------------
+   --  Master destructor.                     --
+   ---------------------------------------------
+   procedure ec_master_clear (Master_P      : Ec_Master_Ptr)
    is
+
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Ec_Master);
+      
+      Master_A  : constant access Ec_Master := Ecmas.To_Pointer (Master_P);
+      
    begin
+      -- device_unregister(master->class_device);
+      Ld.Device_Unregister (Master_A.Class_Device);
+      -- ec_cdev_clear(&master->cdev);
+      Cdev.Ec_Cdev_Clear (Master_A.Chdev'Access);
+      
+      -- clear domains slaves datagrams fsm
+      
+      -- ec_device_clear(&master->devices[dev_idx]);
+      Device.Ec_Device_Clear (Master_A.Devices'address);
       null;
    end Ec_Master_Clear;
    
@@ -484,12 +525,12 @@ package body Niniel.Master is
    ----------------------------------------------------------------
    function ec_master_enter_idle_phase (Master_P : Ec_Master_Ptr) return Int
    is
-      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
-                                                    Target => Ec_Master_A_Type);
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Ec_Master);
       function Tocp is new Ada.Unchecked_Conversion (Source => System.Address,
                                                     Target => Ics.Chars_Ptr);
       Ret    : Ic.Int           := 0;
-      Master : constant access Ec_Master := Toa (Master_P);
+      Master_A : constant access Ec_Master := Ecmas.To_Pointer (Master_P);
       ss     : constant String (1 .. 11) := "Niniel-IDLE";
       S      : constant String (1 .. 12) := Ss & Ascii.nul;
    begin
@@ -500,7 +541,7 @@ package body Niniel.Master is
       --  Master.Receive_Cb := Idle_Receive_Cb'Access;  -- prob not needed
       --  Master.Cb_Data    := Master'Address;  -- prob not needed
       
-      Master.Phase := EC_IDLE;
+      Master_A.Phase := EC_IDLE;
       
       -- in the original:
       --  reset number of responding slaves to trigger scanning
@@ -508,12 +549,12 @@ package body Niniel.Master is
       Master_Fsm_State := Idle;
       Lk.Printk (Lk.KERN_INFO & "Starting thread " & Ss & 
                    ASCII.LF & ASCII.NUL);
-      ret := Ec_Master_Thread_Start (master, Master_Fsm'Access, 
+      ret := Ec_Master_Thread_Start (Master_A, Master_Fsm'Access, 
                                      Tocp (S (S'First)'address));
       if Ret /= 0 then 
-         Master.Phase := EC_ORPHANED;
+         Master_A.Phase := EC_ORPHANED;
       else
-         Copy (S, Master.Name);
+         Copy (S, Master_A.Name);
          null;
       end if;
       
@@ -526,15 +567,15 @@ package body Niniel.Master is
    --------------------------------------------------------
    procedure ec_master_leave_idle_phase (Master_P : Ec_Master_Ptr)
    is
-      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
-                                                    Target => Ec_Master_A_Type);
-      Master : constant access Ec_Master := Toa (Master_P);
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Ec_Master);
+      Master_A  : constant access Ec_Master := Ecmas.To_Pointer (Master_P);
    begin
       Lk.Printk (Lk.KERN_DEBUG & "IDLE -> ORPHANED." &
                    ASCII.LF & ASCII.NUL);
       
-      Master.phase := EC_ORPHANED;
-      Ec_Master_Thread_Stop (Master);
+      Master_A.phase := EC_ORPHANED;
+      Ec_Master_Thread_Stop (Master_A);
       
       -- in original: clear slaves
       
@@ -573,17 +614,20 @@ package body Niniel.Master is
       Size         : L.size_t)
    is
       use type Hwt.Bits_16;
-      function Toa is new Ada.Unchecked_Conversion (Source => Ec_Master_Ptr,
-                                                    Target => Ec_Master_A_Type);
-      function Toda is 
-         new Ada.Unchecked_Conversion (Source => Device.Ec_Device_Ptr,
-                                       Target => Device.Ec_Device_A_Type);
-      function Topa is 
-         new Ada.Unchecked_Conversion (Source => System.Address,
-                                       Target => Frame_A_Type);
-      Master_A : constant Ec_Master_A_Type        := Toa (Master_P);
-      Device_A : constant Device.Ec_Device_A_Type := Toda (Device_P);
-      Frame_A  : constant Frame_A_Type            := Topa (Frame_Date_P);
+
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Ec_Master);
+      package Ecdev is new 
+        System.Address_To_Access_Conversions (Object => Device.Ec_Device);
+      package Fram is new 
+        System.Address_To_Access_Conversions (Object => Frame_Type);
+
+      Master_A : constant access Ec_Master        := 
+        Ecmas.To_Pointer (Master_P);
+      Device_A : constant access Device.Ec_Device := 
+        Ecdev.To_Pointer (Device_P);
+      Frame_A  : constant access Frame_Type       :=
+        Fram.To_Pointer (Frame_Date_P);
    begin
       loop
          if size < EC_FRAME_HEADER_SIZE then

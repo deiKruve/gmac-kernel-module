@@ -1,0 +1,59 @@
+Project User_Space is
+   
+   for Languages use ("Ada");
+   
+   for Main use ("demo.adb");
+   for Source_Dirs use (".", "../ada-if", "../../common", "../../../programs-appl/hw-defs", "../../../programs-PC/gnatcoll"); --, "../../../programs-STM/finrod/src");
+   -- for Excluded_Source_Files use ("hw_definition-node_utils.ads", "hw_definition-node_utils.adb");
+   for Object_Dir use "../obj";
+   
+   package Compiler is
+      Local_Configuration_Pragmas := ("gnat.adc");
+      for Default_Switches ("ada") use 
+        ("-g", "-O1", "-gnatafo", "-fdata-sections", "-ffunction-sections");--, "-S"); 
+      --   "-pg", is for tracing.
+      --   "-fstack-protector",  is for stack protection, but its a pain with
+      --                         no Clib
+   end Compiler;
+   
+   package Binder is
+      --for Default_Switches ("Ada") use ("-E", "-n", "-z");
+      for Default_Switches ("Ada") use ("-E");
+   end Binder;
+   
+   package Linker is
+      for Default_Switches ("Ada") use ("/home/jan/MMS/programs-PC/obj/gnatcoll_support.o", "-Wl,--gc-sections"); 
+   end Linker;
+   
+end User_Space;
+
+-- the Default compiler switches are mostly taken from a 
+-- verbal kernel module build session (make V=1). Any small module will do. 
+-- The specific C stuff can go off course, lucky the compiler will complain 
+-- when something is forgotten. 
+-- I did add some gnat stuff for good measure. 
+-- (not all of it is logical, I struggle a bit at times)
+
+--  Here is to build a sub'Ada'-section of a module
+
+-- gnat compile -a -Pkernel.gpr  (this project file)
+-- gnat make -c -b -Pkernel.gpr
+-- fix up b~demo.adb, most variables can go i think, but not the E... type. 
+-- They are used for the init cycle. The loading of the handler can go 
+-- it is meant for stack control. 
+-- The main module building should take care of that.
+
+--   gnat make -v -Pkernel.gpr  (to compile it)
+-- change to the object directory and
+-- then Run ld with the commandline options of the mishappen gcc link stage
+--  without  -lgnat -static-libgcc
+--   but add '-r -m elf_x86_64' and have a reasonable name for the outputfile 
+--  (after -o) it will look something like this:
+  
+
+
+
+-- ld -r -m elf_x86_64 /home/jan/MMS/programs-KERNEL/ec-master/obj/b~demo.o /home/jan/MMS/programs-KERNEL/ec-master/obj/interfac.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-c.o /home/jan/MMS/programs-KERNEL/ec-master/obj/system.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cexten.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-parame.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cstrin.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stalib.o /home/jan/MMS/programs-KERNEL/ec-master/obj/last_chance_handler.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_types.o /home/jan/MMS/programs-KERNEL/ec-master/obj/cdev.o /home/jan/MMS/programs-KERNEL/ec-master/obj/master.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ioctl.o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.o -g -r -o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.x -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/adalib/
+
+
+-- ld -r -m elf_x86_64 b~demo.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ada.o /home/jan/MMS/programs-KERNEL/ec-master/obj/interfac.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-c.o /home/jan/MMS/programs-KERNEL/ec-master/obj/system.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cexten.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-parame.o /home/jan/MMS/programs-KERNEL/ec-master/obj/i-cstrin.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stoele.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-secsta.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-stalib.o /home/jan/MMS/programs-KERNEL/ec-master/obj/last_chance_handler.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_gfp.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_kernel.o /home/jan/MMS/programs-KERNEL/ec-master/obj/s-memory.o /home/jan/MMS/programs-KERNEL/ec-master/obj/linux_types.o /home/jan/MMS/programs-KERNEL/ec-master/obj/cdev.o /home/jan/MMS/programs-KERNEL/ec-master/obj/master.o /home/jan/MMS/programs-KERNEL/ec-master/obj/ioctl.o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.o -g -r -o /home/jan/MMS/programs-KERNEL/ec-master/obj/demo.x -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/obj/ -L/home/jan/MMS/programs-KERNEL/ec-master/ada/adalib/

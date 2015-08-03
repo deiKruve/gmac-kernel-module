@@ -25,7 +25,7 @@ package body Niniel.Discover is
                                        Target => Disco_Packet_A_Type);
       
       Frame_Data      : constant System.Address      := 
-        Device.ec_device_tx_data (Master_a.Devices);
+        Device.ec_device_tx_data (Master_a.Devices'address);
       Disco_Packet    : constant Disco_Packet_A_Type := Topa (Frame_Data);
       First_Addressee : Hwt.Bits_48;
       for First_Addressee'Address use Disco_Packet.Mac_Addr_Ary'Address;
@@ -39,7 +39,7 @@ package body Niniel.Discover is
       Stamp := Stamp + 1;
       Disco_Packet.Stamp     := Stamp;
       
-      Device.ec_device_send (Master_a.Devices, L.Size_T (Disco_Packet.Proto));
+      Device.ec_device_send (Master_a.Devices'address, L.Size_T (Disco_Packet.Proto));
    end Send_Discovery;
    
    

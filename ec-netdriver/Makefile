@@ -1,5 +1,17 @@
 modname := ec_e1000e
 obj-m := $(modname).o
+$(modname)-y := 82571-3.16-ethercat.o \
+		ethtool-3.16-ethercat.o \
+		ich8lan-3.16-ethercat.o \
+		netdev-3.16-ethercat.o \
+		param-3.16-ethercat.o \
+		phy-3.16-ethercat.o \
+		80003es2lan-3.16-ethercat.o \
+		mac-3.16-ethercat.o \
+		manage-3.16-ethercat.o \
+		nvm-3.16-ethercat.o \
+		ptp-3.16-ethercat.o
+
 
 KVERSION := $(shell uname -r)
 KDIR := /lib/modules/$(KVERSION)/build

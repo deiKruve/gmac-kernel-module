@@ -75,7 +75,7 @@ int ec_device_init(
     char ifname[10];
     char mb = 'x';
 #endif
-
+    printk ("entered ec_device_init");////////////////////////////////////////
     device->master = master;
     device->dev = NULL;
     device->poll = NULL;

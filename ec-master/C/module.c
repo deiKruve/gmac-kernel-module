@@ -42,6 +42,10 @@
 #include "device.h"
 #include "niniel_ada.h"
 
+/** Set to 1 to enable module operations debugging.
+ */
+#define DEBUG 1 // jdk testing
+
 /*****************************************************************************/
 
 #define MAX_MASTERS 32 /**< Maximum number of masters. */
@@ -56,7 +60,7 @@ static int ec_mac_parse(uint8_t *, const char *, int);
 /*****************************************************************************/
 
 static char *main_devices[MAX_MASTERS]; /**< Main devices parameter. */
-static unsigned int master_count; /**< Number of masters. */
+static unsigned int master_count = 1; /**< Number of masters. */
 static char *backup_devices[MAX_MASTERS]; /**< Backup devices parameter. */
 static unsigned int backup_count; /**< Number of backup devices. */
 static unsigned int debug_level;  /**< Debug level parameter. */
@@ -153,10 +157,11 @@ int __init ec_init_module(void)
             goto out_class;
         }
     }
-
+    //printk ("going to ec_master_init\n");/////////////////////////////
     for (i = 0; i < master_count; i++) {
         ret = ec_master_init(&masters[i], i, macs[i][0], macs[i][1],
                     device_number, class, debug_level);
+        //printk ("done ec_master_init\n");/////////////////////////////
         if (ret)
             goto out_free_masters;
     }
@@ -566,6 +571,11 @@ ec_master_t *ecrt_request_master_err(
     master->reserved = 1;
     up(&master_sem);
 
+    printk ("&master->index : %p\n ", &master->index);/////////////////
+    printk ("&master->master_sem : %p\n ", &master->master_sem);///////////
+    printk ("&master->devices[0] : %p\n ", &master->devices[0]);////////////
+    printk ("&master->macs[0] : %p\n ", &master->macs[0]);////////////
+    printk ("&master->device_sem : %p\n ", &master->device_sem);////////////////
     if (down_interruptible(&master->device_sem)) {
         errptr = ERR_PTR(-EINTR);
         goto out_release;
@@ -603,7 +613,12 @@ ec_master_t *ecrt_request_master_err(
     for (; dev_idx > 0; dev_idx--) {
         ec_device_t *device = &master->devices[dev_idx - 1];
         module_put(device->module);
+  /* e3:   73 6d                   jae    152 <ec_init_module+0x152> */
+  /* e5:   48 8b 34 dd 00 00 00    mov    0x0(,%rbx,8),%rsi */
+  /* ec:   00  */
+  /* ed:   80 3e 00                cmpb   $0x0,(%rsi) */
     }
+  
  out_release:
     master->reserved = 0;
  out_return:

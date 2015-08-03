@@ -180,5 +180,11 @@ kif_kthread_run (int (*thread_func)(void *), void *master, char *name)
   return kthread_run(thread_func, master, name);
 }
 
+void
+printkp (char *string, void *pointer)
+{
+  printk (string, pointer);
+}
+
 
   

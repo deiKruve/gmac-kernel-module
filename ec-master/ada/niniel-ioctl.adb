@@ -1,4 +1,5 @@
 
+with System.Address_To_Access_Conversions;
 with Ada.Unchecked_Conversion;
 with Errno_Base;
 
@@ -52,7 +53,8 @@ package body Niniel.Ioctl is
    function Ec_Ioctl_Request 
      (Master_A : access Mr.Ec_Master;     --  master.
       arg      : Ice.Void_Ptr;         --  ioctl() argument.
-      Ctx_A    : Ec_Ioctl_Context_A_type) -- Private data structure of file handle.
+      Ctx_A    : access Ec_Ioctl_Context_T) -- Private data structure of 
+                                            -- file handle.
      return Int
    is
       pragma Unreferenced (Arg);
@@ -87,20 +89,17 @@ package body Niniel.Ioctl is
    is
       use type Ioc.Ioctl_Cmd;
       use type Master.Master_Fsm_State_Type;
-      function Toa is new 
-        Ada.Unchecked_Conversion (Source => Mr.Ec_Master_Ptr,
-                                  Target => Mr.Ec_Master_A_Type);
-      function Toca is new 
-        Ada.Unchecked_Conversion (Source => Ec_Ioctl_Context_Ptr,
-                                  Target => Ec_Ioctl_Context_A_Type);
-      function Toxa is new 
-        Ada.Unchecked_Conversion (Source => Ec_Ioctl_Context_Ptr,
-                                  Target => Ec_Ioctl_Context_A_Type);
-      Ctx_A : constant Ec_Ioctl_Context_A_Type := Toxa (Ctx_P);
-      Master_A  : constant access Mr.Ec_Master := Toa (Master_P);
+      
+      package ecmas is new 
+        System.Address_To_Access_Conversions (Object => Mr.Ec_Master);
+      package Iocont is new
+        System.Address_To_Access_Conversions (Object => Ec_Ioctl_Context_t);
+      
+      Ctx_A : constant access Ec_Ioctl_Context_T := Iocont.To_Pointer (Ctx_P);
+      Master_A  : constant access Mr.Ec_Master := Ecmas.To_Pointer (Master_P);
       Ret : Ic.Int := -1;
    begin
-      
+      Mr.Niniel_Debug (Master_A, 0, "weare in ec_ioctl");
       if Cmd = Nioc.NINR_IOCTL_MODULE then
          ret := ec_ioctl_module(arg);
          null;
